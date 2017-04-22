@@ -41,6 +41,11 @@ var loadingScene = {
     .add('resource_sand', 'assets/images/resource_sand.png')
     .add('resource_water', 'assets/images/resource_water.png')
     
+    .add('resource_missing_overlay', 'assets/images/resource_missing_overlay.png')
+    
+    .add('helpicon_cross', 'assets/images/helpicon_cross.png')
+    .add('helpicon_check', 'assets/images/helpicon_check.png')
+    
     .load(function () {
       this.changeScene(localStorage.scene || 'gameScene', sceneParams)
     }.bind(this))
