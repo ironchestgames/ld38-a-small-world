@@ -155,6 +155,9 @@ var Tile = function (x, y, terrainType) {
   var resourceName = resourceNames[terrainType]
 
   this.container = new PIXI.Container()
+  this.iconsContainer = new PIXI.Container()
+  this.iconsContainer.y = 2
+  this.buildingContainer = new PIXI.Container()
 
   if (terrainType === BUILDING_HQ) {
     resourceName = resourceNames[TERRAIN_SAND]
@@ -173,9 +176,8 @@ var Tile = function (x, y, terrainType) {
     }
   }.bind(this))
 
-  this.iconsContainer = new PIXI.Container()
-
   this.container.addChild(this.terrainSprite)
+  this.container.addChild(this.buildingContainer)
   this.container.addChild(this.iconsContainer)
 
   this.container.x = x * 64
@@ -185,23 +187,19 @@ var Tile = function (x, y, terrainType) {
 Tile.prototype.changeBuilding = function (buildingType) {
   var resourceName = resourceNames[buildingType]
 
-  this.buildingSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
-  this.buildingSprite.x = this.x * 64
-  this.buildingSprite.y = this.y * 64
+  var buildingSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
 
   this.buildingType = buildingType
 
-  gameScene.buildingContainer.addChild(this.buildingSprite)
+  this.buildingContainer.addChild(buildingSprite)
 }
 
 Tile.prototype.update = function () {
-  this.iconsContainer.destroy()
+  this.iconsContainer.removeChildren()
 
   if (!this.buildingType) {
     return
   }
-  this.iconsContainer = new PIXI.Container()
-  this.container.addChild(this.iconsContainer)
 
   var neededResources = buildingNeeds[this.buildingType]
 
@@ -210,7 +208,7 @@ Tile.prototype.update = function () {
     if (!this.availableResources.includes(neededResource)) {
       var haha = neededResource.toLowerCase()
       var iconSprite = new PIXI.Sprite(PIXI.loader.resources[haha].texture)
-      iconSprite.x = i * 15
+      iconSprite.x = (64 - 15) - i * 15
       this.iconsContainer.addChild(iconSprite)
     }
   }
@@ -253,10 +251,8 @@ var gameScene = {
     this.gameContainer.y = 132
 
     this.tileContainer = new PIXI.Container()
-    this.buildingContainer = new PIXI.Container()
 
     this.gameContainer.addChild(this.tileContainer)
-    this.gameContainer.addChild(this.buildingContainer)
 
     this.buildingPanelContainer = new PIXI.Container()
     this.buildingPanelContainer.x = 656
