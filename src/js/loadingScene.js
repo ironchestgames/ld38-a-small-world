@@ -8,11 +8,11 @@ var loadingScene = {
     PIXI.loader
 
     // buttons
-    // .add('image_asset001', 'assets/images/image_asset001.png')
+    .add('tile_plain', 'assets/images/tile_plain.png')
     
-    // .load(function () {
+    .load(function () {
       this.changeScene(localStorage.scene || 'gameScene', sceneParams)
-    // }.bind(this))
+    }.bind(this))
   },
   destroy: function () {
 
