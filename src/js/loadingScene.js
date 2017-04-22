@@ -22,7 +22,7 @@ var loadingScene = {
     .add('ice_and_heat_to_water', 'assets/images/ice_and_heat_to_water.png')
     .add('ice_collector', 'assets/images/ice_collector.png')
     .add('living_quarters', 'assets/images/living_quarters.png')
-    .add('malm_to_metal', 'assets/images/malm_to_metal.png')
+    .add('ore_to_metal', 'assets/images/ore_to_metal.png')
     .add('mineral_and_metal_to_alloy', 'assets/images/mineral_and_metal_to_alloy.png')
     .add('mining', 'assets/images/mining.png')
     .add('quarry', 'assets/images/quarry.png')
