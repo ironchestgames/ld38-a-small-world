@@ -89,8 +89,7 @@ var isTileProducingResource = function (tile, resource) {
       return tile.buildingType == BUILDING_MINING && tile.availableResources.includes(RESOURCE_PEOPLE)
 
     case RESOURCE_PEOPLE:
-      return (tile.buildingType == BUILDING_LIVING_QUARTERS) || (tile.buildingType == BUILDING_HQ) &&
-        tile.availableResources.includes(RESOURCE_PEOPLE)
+      return (tile.buildingType == BUILDING_LIVING_QUARTERS) || (tile.buildingType == BUILDING_HQ)
 
     // level 2
     case RESOURCE_GLASS:
