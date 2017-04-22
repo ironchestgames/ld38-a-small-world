@@ -18,7 +18,7 @@
     "init": "npm run init:gitignore && npm run init:dirs",
     "version": "npm run export:version-js && npm run build:gh && git add -A"
   },
-  "author": "Fredrik Järnbröst",
+  "author": "Schweins",
   "license": "UNLICENSED",
   "devDependencies": {
     "beefy": "^2.1.8",
