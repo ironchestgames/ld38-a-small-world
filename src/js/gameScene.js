@@ -238,13 +238,14 @@ Tile.prototype.update = function () {
   }
 
   var neededResources = buildingNeeds[this.buildingType]
-
+  var neededResourcesCount = 0
   for (var i = 0; i < neededResources.length; i++) {
     var neededResource = neededResources[i]
     if (!this.availableResources.includes(neededResource)) {
       var haha = neededResource.toLowerCase()
       var iconSprite = new PIXI.Sprite(PIXI.loader.resources[haha].texture)
-      iconSprite.x = (64 - 15) - i * 15
+      iconSprite.x = (64 - 15) - neededResourcesCount * 15
+      neededResourcesCount++
       this.iconsContainer.addChild(iconSprite)
     }
   }
