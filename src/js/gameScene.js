@@ -60,6 +60,8 @@ var selectedBuildingButton = null
 
 var isTileProducingResource = function (tile, resource) {
   switch (resource) {
+
+    // level 1
     case RESOURCE_SAND:
       return tile.buildingType == BUILDING_QUARRY
 
@@ -68,6 +70,14 @@ var isTileProducingResource = function (tile, resource) {
 
     case RESOURCE_METAL:
       return tile.buildingType == BUILDING_MINING
+
+    case RESOURCE_PEOPLE:
+      return tile.buildingType == BUILDING_LIVING_QUARTERS
+
+    // level 2
+    case RESOURCE_GLAS:
+      return tile.buildingType == BUILDING_SAND_TO_GLASS &&
+          tile.availableResources.includes(RESOURCE_SAND)
 
   }
 }
@@ -102,9 +112,14 @@ var updateTiles = function () {
       tiles[r][c].availableResources = []
     }
   }
+
+  // level 1
   produceResource(RESOURCE_SAND)
   produceResource(RESOURCE_ICE)
   produceResource(RESOURCE_METAL)
+
+  // level 2
+  produceResource(RESOURCE_GLAS)
 }
 
 var Tile = function (x, y, terrainType) {
@@ -147,6 +162,17 @@ Tile.prototype.addBuilding = function (buildingType) {
   this.buildingType = buildingType
 
   gameScene.buildingContainer.addChild(this.buildingSprite)
+}
+
+Tile.prototype.isBuildingProducing = function () {
+  if (!this.buildingType) {
+    return false
+  }
+
+}
+
+Tile.prototype.update = function () {
+
 }
 
 var BuildingButton = function (buildingType, index) {
