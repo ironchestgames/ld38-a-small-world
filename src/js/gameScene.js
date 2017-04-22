@@ -134,14 +134,17 @@ var produceResource = function (resource) {
     for (var c = 0; c < colCount; c++) {
       var tile = tiles[r][c]
 
-      if (isTileProducingResource(resource)) {
+      if (isTileProducingResource(tile, resource)) {
         if (isInsideGrid(c + 1, r)) {
           tiles[r][c + 1].availableResources.push(resource)
-        } else if (isInsideGrid(c, r + 1)) {
+        }
+        if (isInsideGrid(c, r + 1)) {
           tiles[r + 1][c].availableResources.push(resource)
-        } else if (isInsideGrid(c - 1, r)) {
+        }
+        if (isInsideGrid(c - 1, r)) {
           tiles[r][c - 1].availableResources.push(resource)
-        } else if (isInsideGrid(c, r - 1)) {
+        }
+        if (isInsideGrid(c, r - 1)) {
           tiles[r - 1][c].availableResources.push(resource)
         }
       }
