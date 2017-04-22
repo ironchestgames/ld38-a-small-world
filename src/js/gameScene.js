@@ -162,7 +162,13 @@ var updateTiles = function () {
   produceResource(RESOURCE_METAL)
 
   // level 2
+  produceResource(RESOURCE_ICE)
   produceResource(RESOURCE_GLASS)
+  produceResource(RESOURCE_METAL)
+  produceResource(RESOURCE_MINERALS)
+  produceResource(RESOURCE_ALLOY)
+  produceResource(RESOURCE_WATER)
+  produceResource(RESOURCE_DOME)
 
   for (var r = 0; r < rowCount; r++) {
     for (var c = 0; c < colCount; c++) {
