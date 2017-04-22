@@ -76,8 +76,6 @@ buildingProvides[BUILDING_MINERAL_AND_METAL_TO_ALLOY] = RESOURCE_ALLOY
 buildingProvides[BUILDING_SAND_TO_GLASS] = RESOURCE_GLASS
 buildingProvides[BUILDING_SAND_TO_MINERALS] = RESOURCE_MINERALS
 
-console.log(buildingProvides)
-
 var resourceNames = {}
 resourceNames[TERRAIN_PLAIN] = 'tile_plain'
 resourceNames[TERRAIN_SAND] = 'tile_sand'
@@ -303,8 +301,55 @@ var getResourceConsumed = function (resource) {
   }).length
 }
 
+var findBuildingByType = function (buildingType) {
+  for (var r = 0; r < rowCount; r++) {
+    for (var c = 0; c < colCount; c++) {
+      var tile = tiles[r][c]
+      if (tile.buildingType === buildingType) {
+        return tile
+      }
+    }
+  }
+  return null
+}
+
 var terraform = function () {
-  
+  var tile = findBuildingByType(BUILDING_ALLOY_AND_GLASS_TO_DOME)
+  if (!(tile && isTileProducingResource(tile, RESOURCE_DOME))) {
+    console.log('NO DOME')
+    return
+  }
+
+  var tile = findBuildingByType(BUILDING_ICE_AND_HEAT_TO_WATER)
+  if (!(tile && isTileProducingResource(tile, RESOURCE_WATER))) {
+    console.log('NO WATERS')
+    return
+  }
+
+  var unbuiltIceTerrainCount = 0
+  for (var r = 0; r < rowCount; r++) {
+    for (var c = 0; c < colCount; c++) {
+      var tile = tiles[r][c]
+      if (tile.terrain === TERRAIN_ICE && tile.buildingType !== BUILDING_ICE_COLLECTOR) {
+        unbuiltIceTerrainCount++
+      }
+    }
+  }
+  if (unbuiltIceTerrainCount > 0) {
+    console.log('TOO MUCH ICE LEFT')
+    return
+  }
+
+  var peopleSaldo = getResourceProduced(RESOURCE_PEOPLE) - getResourceConsumed(RESOURCE_PEOPLE)
+  if (peopleSaldo < 0) {
+    console.log('SPACE UNION SHUTS YOU DOWN')
+    return
+  }
+
+  var total = (getResourceProduced(RESOURCE_PEOPLE) - getResourceConsumed(RESOURCE_PEOPLE)) +
+      (getResourceProduced(RESOURCE_METAL) - getResourceConsumed(RESOURCE_METAL)) +
+      (getResourceProduced(RESOURCE_MINERALS) - getResourceConsumed(RESOURCE_MINERALS))
+  console.log('TALLYHO', total)
 }
 
 var Tile = function (x, y, terrainType) {
