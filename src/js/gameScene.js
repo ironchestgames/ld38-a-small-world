@@ -77,6 +77,13 @@ resourceNames[BUILDING_MINERAL_AND_METAL_TO_ALLOY] = 'mineral_and_metal_to_alloy
 resourceNames[BUILDING_SAND_TO_GLASS] = 'sand_to_glass'
 resourceNames[BUILDING_SAND_TO_MINERALS] = 'sand_to_minerals'
 
+var terrains = [
+  TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_SAND,
+  TERRAIN_PLAIN, TERRAIN_PLAIN,TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN,
+  TERRAIN_PLAIN, BUILDING_HQ  ,TERRAIN_PLAIN, TERRAIN_ORE,   TERRAIN_PLAIN, TERRAIN_ORE,
+  TERRAIN_PLAIN, TERRAIN_PLAIN,TERRAIN_ICE,   TERRAIN_PLAIN, TERRAIN_ICE,   TERRAIN_PLAIN,
+]
+
 var selectedBuildingButton = null
 
 var buildingButtonTypes = [ // this is the order for the buttons
@@ -241,7 +248,7 @@ var Tile = function (x, y, terrainType) {
   this.buildingContainer = new PIXI.Container()
 
   if (terrainType === BUILDING_HQ) {
-    resourceName = resourceNames[TERRAIN_SAND]
+    resourceName = resourceNames[TERRAIN_PLAIN]
     this.terrainSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
     this.changeBuilding(BUILDING_HQ)
   } else {
@@ -371,13 +378,6 @@ var gameScene = {
     global.baseStage.addChild(this.container)
     this.container.addChild(this.gameContainer)
     this.container.addChild(this.buildingPanelContainer)
-
-    var terrains = [
-      TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_SAND,  TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_SAND,
-      TERRAIN_SAND,  TERRAIN_SAND, TERRAIN_SAND,  TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_SAND,
-      TERRAIN_PLAIN, BUILDING_HQ,  TERRAIN_PLAIN, TERRAIN_ORE,   TERRAIN_ORE,   TERRAIN_ORE,
-      TERRAIN_ORE,   TERRAIN_ORE,  TERRAIN_ICE,   TERRAIN_ICE,   TERRAIN_ICE,   TERRAIN_ICE,
-    ]
 
     tiles = []
     for (var r = 0; r < rowCount; r++) {
