@@ -1,6 +1,7 @@
 var gameVars = require('./gameVars')
 
 var tiles
+var buildingButtons
 
 var TERRAIN_SAND = 'TERRAIN_SAND'
 var TERRAIN_ICE = 'TERRAIN_ICE'
@@ -79,30 +80,28 @@ Tile.prototype.addBuilding = function (buildingType) {
   gameScene.buildingContainer.addChild(this.buildingSprite)
 }
 
-var addBuildingButton = function (buildingType, index) {
-  var buildingType = buildingType
+var BuildingButton = function (buildingType, index) {
+  this.buildingType = buildingType
 
   var resourceName = resourceNames[buildingType]
 
-  var buttonContainer = new PIXI.Container()
+  this.container = new PIXI.Container()
 
   var button = new PIXI.Sprite(PIXI.loader.resources['building_button'].texture)
   button.interactive = true
   button.on('click', function () {
     selectedBuildingButton = buildingType
   })
-  buttonContainer.addChild(button)
+  this.container.addChild(button)
 
   var buildingSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
   buildingSprite.width = 32
   buildingSprite.height = 32
   buildingSprite.x = 6
   buildingSprite.y = 6
-  buttonContainer.addChild(buildingSprite)
+  this.container.addChild(buildingSprite)
 
-  buttonContainer.y = index * 47
-
-  return buttonContainer
+  this.container.y = index * 47
 }
 
 var gameScene = {
@@ -171,7 +170,7 @@ var gameScene = {
       }
     }
 
-    var buildingButtons = [
+    var buildingButtonTypes = [
       BUILDING_HEAT_GENERATOR,
       BUILDING_MINING,
       BUILDING_QUARRY,
@@ -188,9 +187,13 @@ var gameScene = {
       BUILDING_SAND_TO_MINERALS,
     ]
 
-    for (var i = 0; i < buildingButtons.length; i++) {
-      var container = addBuildingButton(buildingButtons[i], i)
-      this.buildingPanelContainer.addChild(container)
+    buildingButtons = []
+
+    for (var i = 0; i < buildingButtonTypes.length; i++) {
+      var buildingType = buildingButtonTypes[i]
+      var buildingButton = new BuildingButton(buildingType, i)
+      buildingButtons[buildingType] = buildingButton
+      this.buildingPanelContainer.addChild(buildingButton.container)
     }
 
   },
