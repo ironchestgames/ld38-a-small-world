@@ -335,8 +335,10 @@ var BuildingButton = function (buildingType, index) {
   var button = new PIXI.Sprite(PIXI.loader.resources['building_button'].texture)
   button.interactive = true
   button.on('click', function () {
-    selectedBuildingButton = buildingType
-  })
+    if (this.isActive === true) {
+      selectedBuildingButton = buildingType
+    }
+  }.bind(this))
   this.container.addChild(button)
 
   var buildingSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
@@ -350,13 +352,13 @@ var BuildingButton = function (buildingType, index) {
 }
 
 BuildingButton.prototype.setActive = function (activeness) {
-  console.log('hej')
   if (activeness === false) {
-    console.log('inactive', this.buildingType)
     this.container.alpha = 0.5
   } else {
     this.container.alpha = 1
   }
+
+  this.isActive = !!activeness
 }
 
 var gameScene = {
