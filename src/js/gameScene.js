@@ -22,22 +22,39 @@ var BUILDING_MINERAL_AND_METAL_TO_ALLOY = 'BUILDING_MINERAL_AND_METAL_TO_ALLOY'
 var BUILDING_SAND_TO_GLASS = 'BUILDING_SAND_TO_GLASS'
 var BUILDING_SAND_TO_MINERALS = 'BUILDING_SAND_TO_MINERALS'
 
+var resourceNames = {}
+resourceNames[TERRAIN_SAND] = 'tile_plain'
+resourceNames[TERRAIN_ICE] = 'tile_ice'
+resourceNames[TERRAIN_ORE] = 'tile_ore'
+
+resourceNames[BUILDING_HEAT_GENERATOR] = 'heat_generator'
+resourceNames[BUILDING_MINING] = 'mining'
+resourceNames[BUILDING_QUARRY] = 'quarry'
+resourceNames[BUILDING_HQ] = 'BUILDING_HQ'
+resourceNames[BUILDING_ICE_COLLECTOR] = 'BUILDING_ICE_COLLECTOR'
+resourceNames[BUILDING_LIVING_QUARTERS] = 'BUILDING_LIVING_QUARTERS'
+resourceNames[BUILDING_ALLOY_AND_GLASS_TO_DOME] = 'BUILDING_ALLOY_AND_GLASS_TO_DOME'
+resourceNames[BUILDING_ICE_AND_HEAT_TO_WATER] = 'BUILDING_ICE_AND_HEAT_TO_WATER'
+resourceNames[BUILDING_MALM_TO_METAL] = 'BUILDING_MALM_TO_METAL'
+resourceNames[BUILDING_MINERAL_AND_METAL_TO_ALLOY] = 'BUILDING_MINERAL_AND_METAL_TO_ALLOY'
+resourceNames[BUILDING_SAND_TO_GLASS] = 'BUILDING_SAND_TO_GLASS'
+resourceNames[BUILDING_SAND_TO_MINERALS] = 'BUILDING_SAND_TO_MINERALS'
+
 var Tile = function (x, y, terrainType) {
   this.x = x
   this.y = y
   this.terrain = terrainType
   this.building = null
 
-  var resourceNames = {}
-  resourceNames[TERRAIN_SAND] = 'tile_plain'
-  resourceNames[TERRAIN_ICE] = 'tile_ice'
-  resourceNames[TERRAIN_ORE] = 'tile_ore'
-
   var resourceName = resourceNames[terrainType]
 
-  this.sprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
-  this.sprite.x = x * 64
-  this.sprite.y = y * 64
+  this.terrainSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
+  this.terrainSprite.x = x * 64
+  this.terrainSprite.y = y * 64
+}
+
+Tile.prototype.addBuilding = function (buildingType) {
+  // this.buildingSprite = 
 }
 
 var BuildingButton = function (buildingType) {
@@ -100,7 +117,7 @@ var gameScene = {
         var terrain = terrains.shift()
         var tile = new Tile(c, r, terrain)
         tiles[r][c] = tile
-        this.tileContainer.addChild(tile.sprite)
+        this.tileContainer.addChild(tile.terrainSprite)
       }
     }
 
