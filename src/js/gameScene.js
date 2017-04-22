@@ -6,6 +6,10 @@ var TERRAIN_SAND = 'TERRAIN_SAND'
 var TERRAIN_ICE = 'TERRAIN_ICE'
 var TERRAIN_ORE = 'TERRAIN_ORE'
 
+var BUILDING_ICE_COLLECTOR = 'BUILDING_ICE_COLLECTOR'
+var QUARRY = 'QUARRY'
+var MINING = 'MINING'
+
 var Tile = function (x, y, terrainType) {
   this.x = x
   this.y = y
@@ -17,7 +21,7 @@ var Tile = function (x, y, terrainType) {
   this.sprite.y = y * 64
 }
 
-Tile.prototype.draw = function () {
+var BuildingButton = function () {
 
 }
 
@@ -25,7 +29,18 @@ var gameScene = {
   name: 'gameScene',
   create: function (sceneParams) {
     this.container = new PIXI.Container()
+
+    this.tileContainer = new PIXI.Container()
+    this.tileContainer.x = 100
+    this.tileContainer.y = 100
+
+    this.buildingPanelContainer = new PIXI.Container()
+    this.buildingPanelContainer.x = 0
+    this.buildingPanelContainer.y = 0
+
     global.baseStage.addChild(this.container)
+    this.container.addChild(this.buildingPanelContainer)
+    this.container.addChild(this.tileContainer)
 
     var rowCount = 4
     var colCount = 6
@@ -65,9 +80,11 @@ var gameScene = {
         var terrain = terrains.splice(randomIndex, 1)
         var tile = new Tile(c, r, terrain)
         tiles[r][c] = tile
-        this.container.addChild(tile.sprite)
+        this.tileContainer.addChild(tile.sprite)
       }
     }
+
+
 
   },
   destroy: function () {
