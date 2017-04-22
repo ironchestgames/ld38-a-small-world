@@ -243,10 +243,19 @@ Tile.prototype.update = function () {
     var neededResource = neededResources[i]
     if (!this.availableResources.includes(neededResource)) {
       var haha = neededResource.toLowerCase()
+      var iconContainer = new PIXI.Container()
+
       var iconSprite = new PIXI.Sprite(PIXI.loader.resources[haha].texture)
-      iconSprite.x = (64 - 15) - neededResourcesCount * 15
+      var resource_missing_overlay = new PIXI.Sprite(PIXI.loader.resources['resource_missing_overlay'].texture)
+      resource_missing_overlay.x = -2
+      resource_missing_overlay.y = -2
+      iconContainer.addChild(iconSprite)
+      iconContainer.addChild(resource_missing_overlay)
+
+      iconContainer.x = (64 - 15) - neededResourcesCount * 15
       neededResourcesCount++
-      this.iconsContainer.addChild(iconSprite)
+
+      this.iconsContainer.addChild(iconContainer)
     }
   }
 }
