@@ -75,52 +75,51 @@ resourceNames[BUILDING_SAND_TO_MINERALS] = 'sand_to_minerals'
 
 var selectedBuildingButton = null
 
+var buildinghasAllRequiredResources = function(tile, resource) {
+  var filter = function(req) {
+    return req !== resource;
+  }
+  return buildingNeeds[tile.buildingType] && buildingNeeds[tile.buildingType].every(filter);
+}
+
 var isTileProducingResource = function (tile, resource) {
+  
   switch (resource) {
 
     // level 1
+    case RESOURCE_HEAT:
+      return tile.buildingType == BUILDING_HEAT_GENERATOR && buildinghasAllRequiredResources(tile, resource)
+
     case RESOURCE_SAND:
-      return tile.buildingType == BUILDING_QUARRY && tile.availableResources.includes(RESOURCE_PEOPLE)
+      return tile.buildingType == BUILDING_QUARRY && buildinghasAllRequiredResources(tile, resource)
 
     case RESOURCE_ICE:
-      return tile.buildingType == BUILDING_ICE_COLLECTOR && tile.availableResources.includes(RESOURCE_PEOPLE)
+      return tile.buildingType == BUILDING_ICE_COLLECTOR && buildinghasAllRequiredResources(tile, resource)
 
-    case RESOURCE_METAL:
-      return tile.buildingType == BUILDING_MINING && tile.availableResources.includes(RESOURCE_PEOPLE)
+    case RESOURCE_ORE:
+      return tile.buildingType == BUILDING_MINING && buildinghasAllRequiredResources(tile, resource)
 
     case RESOURCE_PEOPLE:
       return (tile.buildingType == BUILDING_LIVING_QUARTERS) || (tile.buildingType == BUILDING_HQ)
 
     // level 2
     case RESOURCE_GLASS:
-      return tile.buildingType == BUILDING_SAND_TO_GLASS &&
-          tile.availableResources.includes(RESOURCE_SAND) && tile.availableResources.includes(RESOURCE_PEOPLE)
+      return tile.buildingType == BUILDING_SAND_TO_GLASS && buildinghasAllRequiredResources(tile, resource)
 
     case RESOURCE_METAL:
-      return tile.buildingType == BUILDING_ORE_TO_METAL &&
-          tile.availableResources.includes(RESOURCE_ORE) && tile.availableResources.includes(RESOURCE_PEOPLE)
+      return tile.buildingType == BUILDING_ORE_TO_METAL && buildinghasAllRequiredResources(tile, resource)
 
     case RESOURCE_MINERALS:
-      return tile.buildingType == BUILDING_SAND_TO_MINERALS &&
-          tile.availableResources.includes(RESOURCE_SAND) && tile.availableResources.includes(RESOURCE_PEOPLE)
+      return tile.buildingType == BUILDING_SAND_TO_MINERALS && buildinghasAllRequiredResources(tile, resource)
 
     case RESOURCE_ALLOY:
-      return tile.buildingType == BUILDING_MINERAL_AND_METAL_TO_ALLOY &&
-          tile.availableResources.includes(RESOURCE_METAL) && 
-          tile.availableResources.includes(RESOURCE_MINERALS) && 
-          tile.availableResources.includes(RESOURCE_PEOPLE)
+      return tile.buildingType == BUILDING_MINERAL_AND_METAL_TO_ALLOY && buildinghasAllRequiredResources(tile, resource)
 
     case RESOURCE_DOME:
-      return tile.buildingType == BUILDING_ALLOY_AND_GLASS_TO_DOME &&
-          tile.availableResources.includes(RESOURCE_ALLOY) && 
-          tile.availableResources.includes(RESOURCE_DOME) && 
-          tile.availableResources.includes(RESOURCE_PEOPLE)
+      return tile.buildingType == BUILDING_ALLOY_AND_GLASS_TO_DOME && buildinghasAllRequiredResources(tile, resource)
 
     case RESOURCE_WATER:
-      return tile.buildingType == BUILDING_ICE_AND_HEAT_TO_WATER &&
-          tile.availableResources.includes(RESOURCE_ICE) && 
-          tile.availableResources.includes(RESOURCE_HEAT) && 
-          tile.availableResources.includes(RESOURCE_PEOPLE)
+      return tile.buildingType == BUILDING_ICE_AND_HEAT_TO_WATER && buildinghasAllRequiredResources(tile, resource)
 
   }
 }
@@ -162,16 +161,20 @@ var updateTiles = function () {
   // level 1
   produceResource(RESOURCE_SAND)
   produceResource(RESOURCE_ICE)
-  produceResource(RESOURCE_METAL)
+  produceResource(RESOURCE_ORE)
   produceResource(RESOURCE_PEOPLE)
+  produceResource(RESOURCE_HEAT)
 
   // level 2
-  produceResource(RESOURCE_ICE)
   produceResource(RESOURCE_GLASS)
   produceResource(RESOURCE_METAL)
   produceResource(RESOURCE_MINERALS)
-  produceResource(RESOURCE_ALLOY)
   produceResource(RESOURCE_WATER)
+
+  // level 3
+  produceResource(RESOURCE_ALLOY)
+
+  // level 4
   produceResource(RESOURCE_DOME)
 
   for (var r = 0; r < rowCount; r++) {
@@ -243,10 +246,19 @@ Tile.prototype.update = function () {
     var neededResource = neededResources[i]
     if (!this.availableResources.includes(neededResource)) {
       var haha = neededResource.toLowerCase()
+      var iconContainer = new PIXI.Container()
+
       var iconSprite = new PIXI.Sprite(PIXI.loader.resources[haha].texture)
-      iconSprite.x = (64 - 15) - neededResourcesCount * 15
+      var resource_missing_overlay = new PIXI.Sprite(PIXI.loader.resources['resource_missing_overlay'].texture)
+      resource_missing_overlay.x = -2
+      resource_missing_overlay.y = -2
+      iconContainer.addChild(iconSprite)
+      iconContainer.addChild(resource_missing_overlay)
+
+      iconContainer.x = (64 - 15) - neededResourcesCount * 15
       neededResourcesCount++
-      this.iconsContainer.addChild(iconSprite)
+
+      this.iconsContainer.addChild(iconContainer)
     }
   }
 }
@@ -282,6 +294,11 @@ var gameScene = {
 
     var backgroundImage = new PIXI.Sprite(PIXI.loader.resources['background'].texture)
     this.container.addChild(backgroundImage)
+
+    var asteroidImage = new PIXI.Sprite(PIXI.loader.resources['astroid'].texture)
+    asteroidImage.x = 160
+    asteroidImage.y = 110
+    this.container.addChild(asteroidImage)
 
     this.gameContainer = new PIXI.Container()
     this.gameContainer.x = 182

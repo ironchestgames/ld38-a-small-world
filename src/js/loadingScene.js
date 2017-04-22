@@ -14,6 +14,7 @@ var loadingScene = {
     .add('alloy_and_glass_to_dome', 'assets/images/alloy_and_glass_to_dome.png')
     .add('asteroid_resources_panel', 'assets/images/asteroid_resources_panel.png')
     .add('background', 'assets/images/background.png')
+    .add('astroid', 'assets/images/astroid.png')
     .add('base_resources_panel', 'assets/images/base_resources_panel.png')
     .add('building_button', 'assets/images/building_button.png')
     .add('building_panel', 'assets/images/building_panel.png')
