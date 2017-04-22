@@ -40,6 +40,8 @@ resourceNames[BUILDING_MINERAL_AND_METAL_TO_ALLOY] = 'mineral_and_metal_to_alloy
 resourceNames[BUILDING_SAND_TO_GLASS] = 'sand_to_glass'
 resourceNames[BUILDING_SAND_TO_MINERALS] = 'sand_to_minerals'
 
+var selectedBuildingButton = null
+
 var Tile = function (x, y, terrainType) {
   this.x = x
   this.y = y
@@ -61,7 +63,9 @@ var Tile = function (x, y, terrainType) {
 
   this.terrainSprite.interactive = true
   this.terrainSprite.on('click', function () {
-    this.addBuilding(BUILDING_HEAT_GENERATOR)
+    if (selectedBuildingButton) {
+      this.addBuilding(selectedBuildingButton)
+    }
   }.bind(this))
 }
 
@@ -75,10 +79,30 @@ Tile.prototype.addBuilding = function (buildingType) {
   gameScene.buildingContainer.addChild(this.buildingSprite)
 }
 
-var BuildingButton = function (buildingType) {
-  this.buildingType = buildingType
+var addBuildingButton = function (buildingType, index) {
+  var buildingType = buildingType
 
-  this.buttonContainer = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
+  var resourceName = resourceNames[buildingType]
+
+  var buttonContainer = new PIXI.Container()
+
+  var button = new PIXI.Sprite(PIXI.loader.resources['building_button'].texture)
+  button.interactive = true
+  button.on('click', function () {
+    selectedBuildingButton = buildingType
+  })
+  buttonContainer.addChild(button)
+
+  var buildingSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
+  buildingSprite.width = 32
+  buildingSprite.height = 32
+  buildingSprite.x = 6
+  buildingSprite.y = 6
+  buttonContainer.addChild(buildingSprite)
+
+  buttonContainer.y = index * 47
+
+  return buttonContainer
 }
 
 var gameScene = {
@@ -87,19 +111,22 @@ var gameScene = {
     this.container = new PIXI.Container()
 
     this.gameContainer = new PIXI.Container()
-    this.gameContainer.x = 100
-    this.gameContainer.y = 100
+    this.gameContainer.x = 182
+    this.gameContainer.y = 132
 
     this.tileContainer = new PIXI.Container()
     this.buildingContainer = new PIXI.Container()
 
+    this.gameContainer.addChild(this.tileContainer)
+    this.gameContainer.addChild(this.buildingContainer)
+
     this.buildingPanelContainer = new PIXI.Container()
+    this.buildingPanelContainer.x = 656
+    this.buildingPanelContainer.y = 38
 
     global.baseStage.addChild(this.container)
     this.container.addChild(this.gameContainer)
-
-    this.gameContainer.addChild(this.tileContainer)
-    this.gameContainer.addChild(this.buildingContainer)
+    this.container.addChild(this.buildingPanelContainer)
 
     var rowCount = 4
     var colCount = 6
@@ -142,6 +169,28 @@ var gameScene = {
         tiles[r][c] = tile
         this.tileContainer.addChild(tile.terrainSprite)
       }
+    }
+
+    var buildingButtons = [
+      BUILDING_HEAT_GENERATOR,
+      BUILDING_MINING,
+      BUILDING_QUARRY,
+      // BUILDING_HQ,
+      BUILDING_ICE_COLLECTOR,
+      BUILDING_LIVING_QUARTERS,
+
+      //Resource converters
+      BUILDING_ALLOY_AND_GLASS_TO_DOME,
+      BUILDING_ICE_AND_HEAT_TO_WATER,
+      BUILDING_ORE_TO_METAL,
+      BUILDING_MINERAL_AND_METAL_TO_ALLOY,
+      BUILDING_SAND_TO_GLASS,
+      BUILDING_SAND_TO_MINERALS,
+    ]
+
+    for (var i = 0; i < buildingButtons.length; i++) {
+      var container = addBuildingButton(buildingButtons[i], i)
+      this.buildingPanelContainer.addChild(container)
     }
 
   },
