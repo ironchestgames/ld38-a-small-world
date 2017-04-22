@@ -16,7 +16,14 @@ var Tile = function (x, y, terrainType) {
   this.terrain = terrainType
   this.building = null
 
-  this.sprite = new PIXI.Sprite(PIXI.loader.resources['tile_plain'].texture)
+  var resourceNames = {}
+  resourceNames[TERRAIN_SAND] = 'tile_plain'
+  resourceNames[TERRAIN_ICE] = 'tile_ice'
+  resourceNames[TERRAIN_ORE] = 'tile_ore'
+
+  var resourceName = resourceNames[terrainType]
+
+  this.sprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
   this.sprite.x = x * 64
   this.sprite.y = y * 64
 }
@@ -61,30 +68,29 @@ var gameScene = {
       TERRAIN_SAND,
       TERRAIN_SAND,
       TERRAIN_SAND,
-      TERRAIN_SAND,
-      TERRAIN_SAND,
-      TERRAIN_SAND,
-      TERRAIN_SAND,
-      TERRAIN_SAND,
-      TERRAIN_SAND,
-      TERRAIN_SAND,
-      TERRAIN_SAND,
-      TERRAIN_SAND,
+      TERRAIN_ORE,
+      TERRAIN_ORE,
+      TERRAIN_ORE,
+      TERRAIN_ORE,
+      TERRAIN_ORE,
+      TERRAIN_ICE,
+      TERRAIN_ICE,
+      TERRAIN_ICE,
+      TERRAIN_ICE,
     ]
 
     tiles = []
     for (var r = 0; r < rowCount; r++) {
       tiles[r] = []
       for (var c = 0; c < colCount; c++) {
-        var randomIndex = Math.floor(Math.random() * (rowCount * colCount))
-        var terrain = terrains.splice(randomIndex, 1)
+        // var randomIndex = Math.floor(Math.random() * terrains.length)
+        // var terrain = terrains.splice(randomIndex, 1)
+        var terrain = terrains.shift()
         var tile = new Tile(c, r, terrain)
         tiles[r][c] = tile
         this.tileContainer.addChild(tile.sprite)
       }
     }
-
-
 
   },
   destroy: function () {
