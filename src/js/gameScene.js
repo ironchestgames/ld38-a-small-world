@@ -7,8 +7,8 @@ var TERRAIN_ICE = 'TERRAIN_ICE'
 var TERRAIN_ORE = 'TERRAIN_ORE'
 
 var BUILDING_ICE_COLLECTOR = 'BUILDING_ICE_COLLECTOR'
-var QUARRY = 'QUARRY'
-var MINING = 'MINING'
+var BUILDING_QUARRY = 'BUILDING_QUARRY'
+var BUILDING_MINING = 'BUILDING_MINING'
 
 var Tile = function (x, y, terrainType) {
   this.x = x
@@ -21,8 +21,8 @@ var Tile = function (x, y, terrainType) {
   this.sprite.y = y * 64
 }
 
-var BuildingButton = function () {
-
+var BuildingButton = function (buildingType) {
+  this.buildingType = buildingType
 }
 
 var gameScene = {
