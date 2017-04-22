@@ -230,6 +230,7 @@ Tile.prototype.changeBuilding = function (buildingType) {
 
   this.buildingType = buildingType
 
+  this.buildingContainer.removeChildren()
   this.buildingContainer.addChild(buildingSprite)
 }
 
