@@ -80,16 +80,17 @@ var isTileProducingResource = function (tile, resource) {
 
     // level 1
     case RESOURCE_SAND:
-      return tile.buildingType == BUILDING_QUARRY
+      return tile.buildingType == BUILDING_QUARRY && tile.availableResources.includes(RESOURCE_PEOPLE)
 
     case RESOURCE_ICE:
-      return tile.buildingType == BUILDING_ICE_COLLECTOR
+      return tile.buildingType == BUILDING_ICE_COLLECTOR && tile.availableResources.includes(RESOURCE_PEOPLE)
 
     case RESOURCE_METAL:
-      return tile.buildingType == BUILDING_MINING
+      return tile.buildingType == BUILDING_MINING && tile.availableResources.includes(RESOURCE_PEOPLE)
 
     case RESOURCE_PEOPLE:
-      return (tile.buildingType == BUILDING_LIVING_QUARTERS) || (tile.buildingType == BUILDING_HQ)
+      return (tile.buildingType == BUILDING_LIVING_QUARTERS) || (tile.buildingType == BUILDING_HQ) &&
+        tile.availableResources.includes(RESOURCE_PEOPLE)
 
     // level 2
     case RESOURCE_GLASS:
