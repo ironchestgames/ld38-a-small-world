@@ -6,6 +6,8 @@ var colCount = 6
 var tiles
 var buildingButtons
 
+var baseProducedResources
+
 var TERRAIN_PLAIN = 'TERRAIN_PLAIN'
 var TERRAIN_SAND = 'TERRAIN_SAND'
 var TERRAIN_ICE = 'TERRAIN_ICE'
@@ -98,7 +100,7 @@ var buildingHasAllRequiredResources = function(tile) {
   var myBuildingNeeds = buildingNeeds[tile.buildingType]
   for (var i = 0; i < myBuildingNeeds.length; i++) {
     var buildingNeed = myBuildingNeeds[i]
-    if (!tile.availableResources.includes(buildingNeed)) {
+    if (!baseProducedResources.includes(buildingNeed)) {
       return false
     }
   }
@@ -161,18 +163,7 @@ var produceResource = function (resource) {
       var tile = tiles[r][c]
 
       if (isTileProducingResource(tile, resource)) {
-        if (isInsideGrid(c + 1, r)) {
-          tiles[r][c + 1].availableResources.push(resource)
-        }
-        if (isInsideGrid(c, r + 1)) {
-          tiles[r + 1][c].availableResources.push(resource)
-        }
-        if (isInsideGrid(c - 1, r)) {
-          tiles[r][c - 1].availableResources.push(resource)
-        }
-        if (isInsideGrid(c, r - 1)) {
-          tiles[r - 1][c].availableResources.push(resource)
-        }
+        baseProducedResources.push(resource)
       }
     }
   }
@@ -181,14 +172,11 @@ var produceResource = function (resource) {
 var updateGame = function () {
   updateTiles()
   updateBuildingButtons()
+  console.log(baseProducedResources)
 }
 
 var updateTiles = function () {
-  for (var r = 0; r < rowCount; r++) {
-    for (var c = 0; c < colCount; c++) {
-      tiles[r][c].availableResources = []
-    }
-  }
+  baseProducedResources = []
 
   // level 1
   produceResource(RESOURCE_PEOPLE)
@@ -244,7 +232,6 @@ var Tile = function (x, y, terrainType) {
   this.y = y
   this.terrain = terrainType
   this.buildingType = null
-  this.availableResources = []
 
   var resourceName = resourceNames[terrainType]
 
@@ -258,7 +245,6 @@ var Tile = function (x, y, terrainType) {
     this.terrainSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
     this.changeBuilding(BUILDING_HQ)
   } else {
-    this.availableResources.push(terrainType)
     this.terrainSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
   }
 
@@ -292,14 +278,6 @@ Tile.prototype.changeBuilding = function (buildingType) {
 Tile.prototype.update = function () {
   this.iconsContainer.removeChildren()
 
-  for (var i = 0; i < this.availableResources.length; i++) {
-    var hehe = this.availableResources[i].toLowerCase()
-    var icon = new PIXI.Sprite(PIXI.loader.resources[hehe].texture)
-    icon.x = 15 * i
-    icon.y = 15
-    this.iconsContainer.addChild(icon)
-  }
-
   if (!this.buildingType) {
     return
   }
@@ -308,7 +286,7 @@ Tile.prototype.update = function () {
   var neededResourcesCount = 0
   for (var i = 0; i < neededResources.length; i++) {
     var neededResource = neededResources[i]
-    if (!this.availableResources.includes(neededResource)) {
+    if (!baseProducedResources.includes(neededResource)) {
       var haha = neededResource.toLowerCase()
       var iconContainer = new PIXI.Container()
 
@@ -355,14 +333,14 @@ var BuildingButton = function (buildingType, index) {
 }
 
 BuildingButton.prototype.setActive = function (activeness) {
-  if (activeness === false) {
-    this.container.alpha = 0.5
-  } else {
-    this.container.alpha = 1
-  }
+  // if (activeness === false) {
+  //   this.container.alpha = 0.5
+  // } else {
+  //   this.container.alpha = 1
+  // }
 
-  this.isActive = !!activeness
-  // this.isActive = true
+  // this.isActive = !!activeness
+  this.isActive = true
 }
 
 var gameScene = {
