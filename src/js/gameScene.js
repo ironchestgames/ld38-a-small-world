@@ -7,6 +7,7 @@ var tiles
 var buildingButtons
 
 var baseProducedResources
+var baseUsedResources
 
 var TERRAIN_PLAIN = 'TERRAIN_PLAIN'
 var TERRAIN_SAND = 'TERRAIN_SAND'
@@ -96,6 +97,19 @@ var buildingButtonTypes = [ // this is the order for the buttons
   BUILDING_SAND_TO_MINERALS,
 ]
 
+var resourceTexts = {} // inited in gameScene create
+resourceTexts[RESOURCE_PEOPLE] = null
+resourceTexts[RESOURCE_HEAT] = null
+resourceTexts[RESOURCE_ORE] = null
+resourceTexts[RESOURCE_SAND] = null
+resourceTexts[RESOURCE_ICE] = null
+resourceTexts[RESOURCE_GLASS] = null
+resourceTexts[RESOURCE_METAL] = null
+resourceTexts[RESOURCE_MINERALS] = null
+resourceTexts[RESOURCE_ALLOY] = null
+resourceTexts[RESOURCE_WATER] = null
+resourceTexts[RESOURCE_DOME] = null
+
 var buildingHasAllRequiredResources = function(tile) {
   var myBuildingNeeds = buildingNeeds[tile.buildingType]
   for (var i = 0; i < myBuildingNeeds.length; i++) {
@@ -172,11 +186,12 @@ var produceResource = function (resource) {
 var updateGame = function () {
   updateTiles()
   updateBuildingButtons()
-  console.log(baseProducedResources)
+  updateNumbers()
 }
 
 var updateTiles = function () {
   baseProducedResources = []
+  baseUsedResources = []
 
   // level 1
   produceResource(RESOURCE_PEOPLE)
@@ -225,6 +240,41 @@ var updateBuildingButtons = function () {
       }
     }
   }
+}
+
+var updateNumbers = function () {
+  for (var resourceTextName in resourceTexts) {
+    var textObject = resourceTexts[resourceTextName]
+    var produced = getResourceProduced(resourceTextName)
+    var consumed = getResourceConsumed(resourceTextName)
+
+    textObject.style.fill = '#000000'
+    if (produced - consumed > 0) {
+      textObject.style.fill = '#00ff00'
+    } else if (produced - consumed < 0) {
+      textObject.style.fill = '#ff0000'
+    }
+
+    textObject.text = ': ' +
+        produced + ' / ' + 
+        consumed
+  }
+}
+
+var getResourceProduced = function (resource) {
+  return baseProducedResources.filter(function (producedResource) {
+    return producedResource === resource
+  }).length
+}
+
+var getResourceConsumed = function (resource) {
+  return baseUsedResources.filter(function (producedResource) {
+    return producedResource === resource
+  }).length
+}
+
+var terraform = function () {
+  
 }
 
 var Tile = function (x, y, terrainType) {
@@ -301,6 +351,8 @@ Tile.prototype.update = function () {
       neededResourcesCount++
 
       this.iconsContainer.addChild(iconContainer)
+    } else {
+      baseUsedResources.push(neededResource)
     }
   }
 }
@@ -368,9 +420,21 @@ var gameScene = {
     this.buildingPanelContainer.x = 656
     this.buildingPanelContainer.y = 38
 
+    this.resourcePanelContainer = new PIXI.Container()
+    var baseResourcesPanelBackground = new PIXI.Sprite(PIXI.loader.resources['base_resources_panel'].texture)
+    this.resourcePanelContainer.addChild(baseResourcesPanelBackground)
+
     global.baseStage.addChild(this.container)
     this.container.addChild(this.gameContainer)
     this.container.addChild(this.buildingPanelContainer)
+    this.container.addChild(this.resourcePanelContainer)
+
+    var terraformButton = new PIXI.Sprite(PIXI.loader.resources['terraform_button'].texture)
+    terraformButton.interactive = true
+    terraformButton.on('click', function () {
+      terraform()
+    })
+    this.container.addChild(terraformButton)
 
     var terrains = [
       TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_SAND,  TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_SAND,
@@ -390,6 +454,25 @@ var gameScene = {
         tiles[r][c] = tile
         this.tileContainer.addChild(tile.container)
       }
+    }
+
+    var yOffset = 50
+    for (var resourceTextName in resourceTexts) {
+      var textObject = new PIXI.Text('', { fontSize: 16, })
+      var iconSprite = new PIXI.Sprite(PIXI.loader.resources[resourceTextName.toLowerCase()].texture)
+      var container = new PIXI.Container()
+      container.addChild(iconSprite)
+      container.addChild(textObject)
+
+      iconSprite.y = 2
+      textObject.x = 16
+
+      container.y = yOffset
+      yOffset += 20
+
+      this.resourcePanelContainer.addChild(container)
+
+      resourceTexts[resourceTextName] = textObject
     }
 
     buildingButtons = {}
