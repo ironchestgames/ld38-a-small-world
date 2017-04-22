@@ -10,9 +10,9 @@ var loadingScene = {
     // buttons
     // .add('image_asset001', 'assets/images/image_asset001.png')
     
-    .load(function () {
+    // .load(function () {
       this.changeScene(localStorage.scene || 'gameScene', sceneParams)
-    }.bind(this))
+    // }.bind(this))
   },
   destroy: function () {
 
