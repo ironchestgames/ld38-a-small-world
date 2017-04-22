@@ -260,20 +260,12 @@ var updateTiles = function () {
 }
 
 var updateBuildingButtons = function () {
-  var availableResources = []
-  for (var r = 0; r < rowCount; r++) {
-    for (var c = 0; c < colCount; c++) {
-      var tile = tiles[r][c]
-      availableResources = availableResources.concat(tile.availableResources)
-    }
-  }
-
   for (var buildingType in buildingButtons) {
     var buildingButton = buildingButtons[buildingType]
     buildingButton.setActive(true)
     var myBuildingNeeds = buildingNeeds[buildingButton.buildingType]
     for (var i = 0; i < myBuildingNeeds.length; i++) {
-      if (!availableResources.includes(myBuildingNeeds[i])) {
+      if (!baseProducedResources.includes(myBuildingNeeds[i])) {
         buildingButton.setActive(false)
       }
     }
@@ -432,14 +424,14 @@ var BuildingButton = function (buildingType, index) {
 }
 
 BuildingButton.prototype.setActive = function (activeness) {
-  // if (activeness === false) {
-  //   this.container.alpha = 0.5
-  // } else {
-  //   this.container.alpha = 1
-  // }
+  if (activeness === false) {
+    this.container.alpha = 0.5
+  } else {
+     this.container.alpha = 1
+  }
 
-  // this.isActive = !!activeness
-  this.isActive = true
+  this.isActive = !!activeness
+  //this.isActive = true
 }
 
 var gameScene = {
