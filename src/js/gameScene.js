@@ -6,6 +6,7 @@ var colCount = 6
 var tiles
 var buildingButtons
 
+var TERRAIN_PLAIN = 'TERRAIN_PLAIN'
 var TERRAIN_SAND = 'TERRAIN_SAND'
 var TERRAIN_ICE = 'TERRAIN_ICE'
 var TERRAIN_ORE = 'TERRAIN_ORE'
@@ -56,7 +57,8 @@ buildingNeeds[BUILDING_SAND_TO_GLASS] = [RESOURCE_PEOPLE, RESOURCE_SAND]
 buildingNeeds[BUILDING_SAND_TO_MINERALS] = [RESOURCE_PEOPLE, RESOURCE_SAND]
 
 var resourceNames = {}
-resourceNames[TERRAIN_SAND] = 'tile_plain'
+resourceNames[TERRAIN_PLAIN] = 'tile_plain'
+resourceNames[TERRAIN_SAND] = 'tile_sand'
 resourceNames[TERRAIN_ICE] = 'tile_ice'
 resourceNames[TERRAIN_ORE] = 'tile_ore'
 
@@ -336,6 +338,7 @@ var BuildingButton = function (buildingType, index) {
   button.interactive = true
   button.on('click', function () {
     if (this.isActive === true) {
+      console.log(this.buildingType)
       selectedBuildingButton = buildingType
     }
   }.bind(this))
@@ -359,6 +362,7 @@ BuildingButton.prototype.setActive = function (activeness) {
   }
 
   this.isActive = !!activeness
+  // this.isActive = true
 }
 
 var gameScene = {
@@ -391,30 +395,10 @@ var gameScene = {
     this.container.addChild(this.buildingPanelContainer)
 
     var terrains = [
-      TERRAIN_SAND,
-      TERRAIN_SAND,
-      TERRAIN_SAND,
-      TERRAIN_SAND,
-      TERRAIN_SAND,
-      TERRAIN_SAND,
-      TERRAIN_SAND,
-      TERRAIN_SAND,
-      TERRAIN_SAND,
-      TERRAIN_SAND,
-      TERRAIN_SAND,
-      TERRAIN_SAND,
-      TERRAIN_SAND,
-      TERRAIN_SAND,
-      BUILDING_HQ,
-      TERRAIN_ORE,
-      TERRAIN_ORE,
-      TERRAIN_ORE,
-      TERRAIN_ORE,
-      TERRAIN_ORE,
-      TERRAIN_ICE,
-      TERRAIN_ICE,
-      TERRAIN_ICE,
-      TERRAIN_ICE,
+      TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_SAND,  TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_SAND,
+      TERRAIN_SAND,  TERRAIN_SAND, TERRAIN_SAND,  TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_SAND,
+      TERRAIN_PLAIN, BUILDING_HQ,  TERRAIN_PLAIN, TERRAIN_ORE,   TERRAIN_ORE,   TERRAIN_ORE,
+      TERRAIN_ORE,   TERRAIN_ORE,  TERRAIN_ICE,   TERRAIN_ICE,   TERRAIN_ICE,   TERRAIN_ICE,
     ]
 
     tiles = []
