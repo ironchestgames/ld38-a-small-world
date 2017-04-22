@@ -292,6 +292,11 @@ var gameScene = {
     var backgroundImage = new PIXI.Sprite(PIXI.loader.resources['background'].texture)
     this.container.addChild(backgroundImage)
 
+    var asteroidImage = new PIXI.Sprite(PIXI.loader.resources['astroid'].texture)
+    asteroidImage.x = 160
+    asteroidImage.y = 110
+    this.container.addChild(asteroidImage)
+
     this.gameContainer = new PIXI.Container()
     this.gameContainer.x = 182
     this.gameContainer.y = 132
