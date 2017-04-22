@@ -29,6 +29,18 @@ var loadingScene = {
     .add('sand_to_glass', 'assets/images/sand_to_glass.png')
     .add('sand_to_minerals', 'assets/images/sand_to_minerals.png')
     
+    .add('resource_alloy', 'assets/images/resource_alloy.png')
+    .add('resource_dome', 'assets/images/resource_dome.png')
+    .add('resource_glass', 'assets/images/resource_glass.png')
+    .add('resource_heat', 'assets/images/resource_heat.png')
+    .add('resource_ice', 'assets/images/resource_ice.png')
+    .add('resource_metal', 'assets/images/resource_metal.png')
+    .add('resource_minerals', 'assets/images/resource_minerals.png')
+    .add('resource_ore', 'assets/images/resource_ore.png')
+    .add('resource_people', 'assets/images/resource_people.png')
+    .add('resource_sand', 'assets/images/resource_sand.png')
+    .add('resource_water', 'assets/images/resource_water.png')
+    
     .load(function () {
       this.changeScene(localStorage.scene || 'gameScene', sceneParams)
     }.bind(this))
