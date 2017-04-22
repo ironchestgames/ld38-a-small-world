@@ -58,6 +58,25 @@ buildingNeeds[BUILDING_MINERAL_AND_METAL_TO_ALLOY] = [RESOURCE_PEOPLE, RESOURCE_
 buildingNeeds[BUILDING_SAND_TO_GLASS] = [RESOURCE_PEOPLE, RESOURCE_SAND]
 buildingNeeds[BUILDING_SAND_TO_MINERALS] = [RESOURCE_PEOPLE, RESOURCE_SAND]
 
+var buildingProvides = {}
+//Base buildings
+buildingProvides[BUILDING_HEAT_GENERATOR] = RESOURCE_HEAT
+buildingProvides[BUILDING_MINING] = RESOURCE_ORE
+buildingProvides[BUILDING_QUARRY] = RESOURCE_SAND
+buildingProvides[BUILDING_HQ] = RESOURCE_PEOPLE
+buildingProvides[BUILDING_ICE_COLLECTOR] = RESOURCE_ICE
+buildingProvides[BUILDING_LIVING_QUARTERS] = RESOURCE_PEOPLE
+
+//Resource converters
+buildingProvides[BUILDING_ALLOY_AND_GLASS_TO_DOME] = RESOURCE_DOME
+buildingProvides[BUILDING_ICE_AND_HEAT_TO_WATER] = RESOURCE_WATER
+buildingProvides[BUILDING_ORE_TO_METAL] = RESOURCE_METAL
+buildingProvides[BUILDING_MINERAL_AND_METAL_TO_ALLOY] = RESOURCE_ALLOY
+buildingProvides[BUILDING_SAND_TO_GLASS] = RESOURCE_GLASS
+buildingProvides[BUILDING_SAND_TO_MINERALS] = RESOURCE_MINERALS
+
+console.log(buildingProvides)
+
 var resourceNames = {}
 resourceNames[TERRAIN_PLAIN] = 'tile_plain'
 resourceNames[TERRAIN_SAND] = 'tile_sand'
@@ -76,6 +95,18 @@ resourceNames[BUILDING_ORE_TO_METAL] = 'ore_to_metal'
 resourceNames[BUILDING_MINERAL_AND_METAL_TO_ALLOY] = 'mineral_and_metal_to_alloy'
 resourceNames[BUILDING_SAND_TO_GLASS] = 'sand_to_glass'
 resourceNames[BUILDING_SAND_TO_MINERALS] = 'sand_to_minerals'
+
+resourceNames[RESOURCE_PEOPLE] = 'resource_people'
+resourceNames[RESOURCE_HEAT] = 'resource_heat'
+resourceNames[RESOURCE_ORE] = 'resource_ore'
+resourceNames[RESOURCE_SAND] = 'resource_sand'
+resourceNames[RESOURCE_ICE] = 'resource_ice'
+resourceNames[RESOURCE_GLASS] = 'resource_glass'
+resourceNames[RESOURCE_METAL] = 'resource_metal'
+resourceNames[RESOURCE_MINERALS] = 'resource_minerals'
+resourceNames[RESOURCE_ALLOY] = 'resource_alloy'
+resourceNames[RESOURCE_WATER] = 'resource_water'
+resourceNames[RESOURCE_DOME] = 'resource_dome'
 
 var terrains = [
   TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_SAND,
@@ -315,7 +346,7 @@ Tile.prototype.update = function () {
 var BuildingButton = function (buildingType, index) {
   this.buildingType = buildingType
 
-  var resourceName = resourceNames[buildingType]
+  var buildingResourceName = resourceNames[buildingType]
 
   this.container = new PIXI.Container()
 
@@ -329,12 +360,21 @@ var BuildingButton = function (buildingType, index) {
   }.bind(this))
   this.container.addChild(button)
 
-  var buildingSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
+  var buildingSprite = new PIXI.Sprite(PIXI.loader.resources[buildingResourceName].texture)
   buildingSprite.width = 32
   buildingSprite.height = 32
   buildingSprite.x = 6
   buildingSprite.y = 6
   this.container.addChild(buildingSprite)
+
+  var producingIconResourceName = resourceNames[buildingProvides[buildingType]];
+
+  var buildingProvidesSprite = new PIXI.Sprite(PIXI.loader.resources[producingIconResourceName].texture)
+  buildingProvidesSprite.width = 16
+  buildingProvidesSprite.height = 16
+  buildingProvidesSprite.x = 100
+  buildingProvidesSprite.y = 26
+  this.container.addChild(buildingProvidesSprite)
 
   this.container.y = index * 47
 }
