@@ -15,7 +15,7 @@ var RESOURCE_HEAT = 'RESOURCE_HEAT'
 var RESOURCE_ORE = 'RESOURCE_ORE'
 var RESOURCE_SAND = 'RESOURCE_SAND'
 var RESOURCE_ICE = 'RESOURCE_ICE'
-var RESOURCE_GLAS = 'RESOURCE_GLAS'
+var RESOURCE_GLASS = 'RESOURCE_GLASS'
 var RESOURCE_METAL = 'RESOURCE_METAL'
 var RESOURCE_MINERALS = 'RESOURCE_MINERALS'
 var RESOURCE_ALLOY = 'RESOURCE_ALLOY'
@@ -38,6 +38,23 @@ var BUILDING_MINERAL_AND_METAL_TO_ALLOY = 'BUILDING_MINERAL_AND_METAL_TO_ALLOY'
 var BUILDING_SAND_TO_GLASS = 'BUILDING_SAND_TO_GLASS'
 var BUILDING_SAND_TO_MINERALS = 'BUILDING_SAND_TO_MINERALS'
 
+var buildingNeeds = {}
+//Base buildings
+buildingNeeds[BUILDING_HEAT_GENERATOR] = [RESOURCE_PEOPLE]
+buildingNeeds[BUILDING_MINING] = [RESOURCE_PEOPLE]
+buildingNeeds[BUILDING_QUARRY] = [RESOURCE_PEOPLE]
+buildingNeeds[BUILDING_HQ] = []
+buildingNeeds[BUILDING_ICE_COLLECTOR] = [RESOURCE_PEOPLE]
+buildingNeeds[BUILDING_LIVING_QUARTERS] = []
+
+//Resource converters
+buildingNeeds[BUILDING_ALLOY_AND_GLASS_TO_DOME] = [RESOURCE_PEOPLE, RESOURCE_ALLOY, RESOURCE_GLASS]
+buildingNeeds[BUILDING_ICE_AND_HEAT_TO_WATER] = [RESOURCE_PEOPLE, RESOURCE_ICE, RESOURCE_HEAT]
+buildingNeeds[BUILDING_ORE_TO_METAL] = [RESOURCE_PEOPLE, RESOURCE_ORE]
+buildingNeeds[BUILDING_MINERAL_AND_METAL_TO_ALLOY] = [RESOURCE_PEOPLE, RESOURCE_METAL, RESOURCE_MINERALS]
+buildingNeeds[BUILDING_SAND_TO_GLASS] = [RESOURCE_PEOPLE, RESOURCE_SAND]
+buildingNeeds[BUILDING_SAND_TO_MINERALS] = [RESOURCE_PEOPLE, RESOURCE_SAND]
+
 var resourceNames = {}
 resourceNames[TERRAIN_SAND] = 'tile_plain'
 resourceNames[TERRAIN_ICE] = 'tile_ice'
@@ -58,10 +75,79 @@ resourceNames[BUILDING_SAND_TO_MINERALS] = 'sand_to_minerals'
 
 var selectedBuildingButton = null
 
+var isTileProducingResource = function (tile, resource) {
+  switch (resource) {
+
+    // level 1
+    case RESOURCE_SAND:
+      return tile.buildingType == BUILDING_QUARRY && tile.availableResources.includes(RESOURCE_PEOPLE)
+
+    case RESOURCE_ICE:
+      return tile.buildingType == BUILDING_ICE_COLLECTOR && tile.availableResources.includes(RESOURCE_PEOPLE)
+
+    case RESOURCE_METAL:
+      return tile.buildingType == BUILDING_MINING && tile.availableResources.includes(RESOURCE_PEOPLE)
+
+    case RESOURCE_PEOPLE:
+      return (tile.buildingType == BUILDING_LIVING_QUARTERS) || (tile.buildingType == BUILDING_HQ)
+
+    // level 2
+    case RESOURCE_GLASS:
+      return tile.buildingType == BUILDING_SAND_TO_GLASS &&
+          tile.availableResources.includes(RESOURCE_SAND) && tile.availableResources.includes(RESOURCE_PEOPLE)
+
+    case RESOURCE_METAL:
+      return tile.buildingType == BUILDING_ORE_TO_METAL &&
+          tile.availableResources.includes(RESOURCE_ORE) && tile.availableResources.includes(RESOURCE_PEOPLE)
+
+    case RESOURCE_MINERALS:
+      return tile.buildingType == BUILDING_SAND_TO_MINERALS &&
+          tile.availableResources.includes(RESOURCE_SAND) && tile.availableResources.includes(RESOURCE_PEOPLE)
+
+    case RESOURCE_ALLOY:
+      return tile.buildingType == BUILDING_MINERAL_AND_METAL_TO_ALLOY &&
+          tile.availableResources.includes(RESOURCE_METAL) && 
+          tile.availableResources.includes(RESOURCE_MINERALS) && 
+          tile.availableResources.includes(RESOURCE_PEOPLE)
+
+    case RESOURCE_DOME:
+      return tile.buildingType == BUILDING_ALLOY_AND_GLASS_TO_DOME &&
+          tile.availableResources.includes(RESOURCE_ALLOY) && 
+          tile.availableResources.includes(RESOURCE_DOME) && 
+          tile.availableResources.includes(RESOURCE_PEOPLE)
+
+    case RESOURCE_WATER:
+      return tile.buildingType == BUILDING_ICE_AND_HEAT_TO_WATER &&
+          tile.availableResources.includes(RESOURCE_ICE) && 
+          tile.availableResources.includes(RESOURCE_HEAT) && 
+          tile.availableResources.includes(RESOURCE_PEOPLE)
+
+  }
+}
+
+var isInsideGrid = function (x, y) {
+  return y >= 0 && y < rowCount && x >= 0 && x < colCount
+}
+
 var produceResource = function (resource) {
   for (var r = 0; r < rowCount; r++) {
     for (var c = 0; c < colCount; c++) {
+      var tile = tiles[r][c]
 
+      if (isTileProducingResource(tile, resource)) {
+        if (isInsideGrid(c + 1, r)) {
+          tiles[r][c + 1].availableResources.push(resource)
+        }
+        if (isInsideGrid(c, r + 1)) {
+          tiles[r + 1][c].availableResources.push(resource)
+        }
+        if (isInsideGrid(c - 1, r)) {
+          tiles[r][c - 1].availableResources.push(resource)
+        }
+        if (isInsideGrid(c, r - 1)) {
+          tiles[r - 1][c].availableResources.push(resource)
+        }
+      }
     }
   }
 }
@@ -72,47 +158,97 @@ var updateTiles = function () {
       tiles[r][c].availableResources = []
     }
   }
-  produceResource()
+
+  // level 1
+  produceResource(RESOURCE_SAND)
+  produceResource(RESOURCE_ICE)
+  produceResource(RESOURCE_METAL)
+  produceResource(RESOURCE_PEOPLE)
+
+  // level 2
+  produceResource(RESOURCE_ICE)
+  produceResource(RESOURCE_GLASS)
+  produceResource(RESOURCE_METAL)
+  produceResource(RESOURCE_MINERALS)
+  produceResource(RESOURCE_ALLOY)
+  produceResource(RESOURCE_WATER)
+  produceResource(RESOURCE_DOME)
+
+  for (var r = 0; r < rowCount; r++) {
+    for (var c = 0; c < colCount; c++) {
+      tiles[r][c].update()
+    }
+  }
 }
 
 var Tile = function (x, y, terrainType) {
   this.x = x
   this.y = y
   this.terrain = terrainType
-  this.building = null
+  this.buildingType = null
   this.availableResources = []
 
   var resourceName = resourceNames[terrainType]
 
+  this.container = new PIXI.Container()
+  this.iconsContainer = new PIXI.Container()
+  this.iconsContainer.y = 2
+  this.buildingContainer = new PIXI.Container()
+
   if (terrainType === BUILDING_HQ) {
     resourceName = resourceNames[TERRAIN_SAND]
     this.terrainSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
-    this.addBuilding(BUILDING_HQ)
+    this.changeBuilding(BUILDING_HQ)
   } else {
     this.availableResources.push(terrainType)
     this.terrainSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
   }
 
-  this.terrainSprite.x = x * 64
-  this.terrainSprite.y = y * 64
-
   this.terrainSprite.interactive = true
   this.terrainSprite.on('click', function () {
     if (selectedBuildingButton) {
-      this.addBuilding(selectedBuildingButton)
+      this.changeBuilding(selectedBuildingButton)
       updateTiles()
     }
   }.bind(this))
+
+  this.container.addChild(this.terrainSprite)
+  this.container.addChild(this.buildingContainer)
+  this.container.addChild(this.iconsContainer)
+
+  this.container.x = x * 64
+  this.container.y = y * 64
 }
 
-Tile.prototype.addBuilding = function (buildingType) {
+Tile.prototype.changeBuilding = function (buildingType) {
   var resourceName = resourceNames[buildingType]
 
-  this.buildingSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
-  this.buildingSprite.x = this.x * 64
-  this.buildingSprite.y = this.y * 64
+  var buildingSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
 
-  gameScene.buildingContainer.addChild(this.buildingSprite)
+  this.buildingType = buildingType
+
+  this.buildingContainer.addChild(buildingSprite)
+}
+
+Tile.prototype.update = function () {
+  this.iconsContainer.removeChildren()
+
+  if (!this.buildingType) {
+    return
+  }
+
+  var neededResources = buildingNeeds[this.buildingType]
+  var neededResourcesCount = 0
+  for (var i = 0; i < neededResources.length; i++) {
+    var neededResource = neededResources[i]
+    if (!this.availableResources.includes(neededResource)) {
+      var haha = neededResource.toLowerCase()
+      var iconSprite = new PIXI.Sprite(PIXI.loader.resources[haha].texture)
+      iconSprite.x = (64 - 15) - neededResourcesCount * 15
+      neededResourcesCount++
+      this.iconsContainer.addChild(iconSprite)
+    }
+  }
 }
 
 var BuildingButton = function (buildingType, index) {
@@ -152,10 +288,8 @@ var gameScene = {
     this.gameContainer.y = 132
 
     this.tileContainer = new PIXI.Container()
-    this.buildingContainer = new PIXI.Container()
 
     this.gameContainer.addChild(this.tileContainer)
-    this.gameContainer.addChild(this.buildingContainer)
 
     this.buildingPanelContainer = new PIXI.Container()
     this.buildingPanelContainer.x = 656
@@ -201,7 +335,7 @@ var gameScene = {
         var terrain = terrains.shift()
         var tile = new Tile(c, r, terrain)
         tiles[r][c] = tile
-        this.tileContainer.addChild(tile.terrainSprite)
+        this.tileContainer.addChild(tile.container)
       }
     }
 
