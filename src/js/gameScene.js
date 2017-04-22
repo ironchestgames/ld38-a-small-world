@@ -161,6 +161,7 @@ var updateTiles = function () {
   produceResource(RESOURCE_SAND)
   produceResource(RESOURCE_ICE)
   produceResource(RESOURCE_METAL)
+  produceResource(RESOURCE_PEOPLE)
 
   // level 2
   produceResource(RESOURCE_ICE)
