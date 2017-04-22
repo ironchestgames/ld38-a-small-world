@@ -48,17 +48,37 @@ var Tile = function (x, y, terrainType) {
 
   var resourceName = resourceNames[terrainType]
 
-  this.terrainSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
+  if (terrainType === BUILDING_HQ) {
+    resourceName = resourceNames[TERRAIN_SAND]
+    this.terrainSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
+    this.addBuilding(BUILDING_HQ)
+  } else {
+    this.terrainSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
+  }
+
   this.terrainSprite.x = x * 64
   this.terrainSprite.y = y * 64
+
+  this.terrainSprite.interactive = true
+  this.terrainSprite.on('click', function () {
+    this.addBuilding(BUILDING_HEAT_GENERATOR)
+  }.bind(this))
 }
 
 Tile.prototype.addBuilding = function (buildingType) {
-  // this.buildingSprite = 
+  var resourceName = resourceNames[buildingType]
+
+  this.buildingSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
+  this.buildingSprite.x = this.x * 64
+  this.buildingSprite.y = this.y * 64
+
+  gameScene.buildingContainer.addChild(this.buildingSprite)
 }
 
 var BuildingButton = function (buildingType) {
   this.buildingType = buildingType
+
+  this.buttonContainer = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
 }
 
 var gameScene = {
@@ -66,17 +86,20 @@ var gameScene = {
   create: function (sceneParams) {
     this.container = new PIXI.Container()
 
+    this.gameContainer = new PIXI.Container()
+    this.gameContainer.x = 100
+    this.gameContainer.y = 100
+
     this.tileContainer = new PIXI.Container()
-    this.tileContainer.x = 100
-    this.tileContainer.y = 100
+    this.buildingContainer = new PIXI.Container()
 
     this.buildingPanelContainer = new PIXI.Container()
-    this.buildingPanelContainer.x = 0
-    this.buildingPanelContainer.y = 0
 
     global.baseStage.addChild(this.container)
-    this.container.addChild(this.buildingPanelContainer)
-    this.container.addChild(this.tileContainer)
+    this.container.addChild(this.gameContainer)
+
+    this.gameContainer.addChild(this.tileContainer)
+    this.gameContainer.addChild(this.buildingContainer)
 
     var rowCount = 4
     var colCount = 6
@@ -96,7 +119,7 @@ var gameScene = {
       TERRAIN_SAND,
       TERRAIN_SAND,
       TERRAIN_SAND,
-      TERRAIN_SAND,
+      BUILDING_HQ,
       TERRAIN_ORE,
       TERRAIN_ORE,
       TERRAIN_ORE,
