@@ -1,5 +1,8 @@
 var gameVars = require('./gameVars')
 
+var rowCount = 4
+var colCount = 6
+
 var tiles
 var buildingButtons
 
@@ -43,11 +46,29 @@ resourceNames[BUILDING_SAND_TO_MINERALS] = 'sand_to_minerals'
 
 var selectedBuildingButton = null
 
+var produceResource = function (resource) {
+  for (var r = 0; r < rowCount; r++) {
+    for (var c = 0; c < colCount; c++) {
+
+    }
+  }
+}
+
+var updateTiles = function () {
+  for (var r = 0; r < rowCount; r++) {
+    for (var c = 0; c < colCount; c++) {
+      tiles[r][c].availableResources = []
+    }
+  }
+  produceResource()
+}
+
 var Tile = function (x, y, terrainType) {
   this.x = x
   this.y = y
   this.terrain = terrainType
   this.building = null
+  this.availableResources = []
 
   var resourceName = resourceNames[terrainType]
 
@@ -56,6 +77,7 @@ var Tile = function (x, y, terrainType) {
     this.terrainSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
     this.addBuilding(BUILDING_HQ)
   } else {
+    this.availableResources.push(terrainType)
     this.terrainSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
   }
 
@@ -66,6 +88,7 @@ var Tile = function (x, y, terrainType) {
   this.terrainSprite.on('click', function () {
     if (selectedBuildingButton) {
       this.addBuilding(selectedBuildingButton)
+      updateTiles()
     }
   }.bind(this))
 }
@@ -109,6 +132,9 @@ var gameScene = {
   create: function (sceneParams) {
     this.container = new PIXI.Container()
 
+    var backgroundImage = new PIXI.Sprite(PIXI.loader.resources['background'].texture)
+    this.container.addChild(backgroundImage)
+
     this.gameContainer = new PIXI.Container()
     this.gameContainer.x = 182
     this.gameContainer.y = 132
@@ -126,9 +152,6 @@ var gameScene = {
     global.baseStage.addChild(this.container)
     this.container.addChild(this.gameContainer)
     this.container.addChild(this.buildingPanelContainer)
-
-    var rowCount = 4
-    var colCount = 6
 
     var terrains = [
       TERRAIN_SAND,
