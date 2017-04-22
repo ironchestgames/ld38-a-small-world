@@ -48,12 +48,12 @@ buildingNeeds[BUILDING_ICE_COLLECTOR] = []
 buildingNeeds[BUILDING_LIVING_QUARTERS] = []
 
 //Resource converters
-buildingNeeds[BUILDING_ALLOY_AND_GLASS_TO_DOME] = [RESOURCE_ALLOY, RESOURCE_GLASS] // like this plz
-buildingNeeds[BUILDING_ICE_AND_HEAT_TO_WATER] = 'BUILDING_ICE_AND_HEAT_TO_WATER'
-buildingNeeds[BUILDING_ORE_TO_METAL] = 'BUILDING_ORE_TO_METAL'
-buildingNeeds[BUILDING_MINERAL_AND_METAL_TO_ALLOY] = 'BUILDING_MINERAL_AND_METAL_TO_ALLOY'
-buildingNeeds[BUILDING_SAND_TO_GLASS] = 'BUILDING_SAND_TO_GLASS'
-buildingNeeds[BUILDING_SAND_TO_MINERALS] = 'BUILDING_SAND_TO_MINERALS'
+buildingNeeds[BUILDING_ALLOY_AND_GLASS_TO_DOME] = [RESOURCE_ALLOY, RESOURCE_GLASS]
+buildingNeeds[BUILDING_ICE_AND_HEAT_TO_WATER] = [RESOURCE_ICE, RESOURCE_HEAT]
+buildingNeeds[BUILDING_ORE_TO_METAL] = [RESOURCE_ORE]
+buildingNeeds[BUILDING_MINERAL_AND_METAL_TO_ALLOY] = [RESOURCE_METAL, RESOURCE_MINERALS]
+buildingNeeds[BUILDING_SAND_TO_GLASS] = [RESOURCE_SAND]
+buildingNeeds[BUILDING_SAND_TO_MINERALS] = [RESOURCE_SAND]
 
 var resourceNames = {}
 resourceNames[TERRAIN_SAND] = 'tile_plain'
@@ -89,12 +89,38 @@ var isTileProducingResource = function (tile, resource) {
       return tile.buildingType == BUILDING_MINING
 
     case RESOURCE_PEOPLE:
-      return tile.buildingType == BUILDING_LIVING_QUARTERS
+      return (tile.buildingType == BUILDING_LIVING_QUARTERS) || (tile.buildingType == BUILDING_HQ)
 
     // level 2
     case RESOURCE_GLASS:
       return tile.buildingType == BUILDING_SAND_TO_GLASS &&
-          tile.availableResources.includes(RESOURCE_SAND)
+          tile.availableResources.includes(RESOURCE_SAND) && tile.availableResources.includes(RESOURCE_PEOPLE)
+
+    case RESOURCE_METAL:
+      return tile.buildingType == BUILDING_ORE_TO_METAL &&
+          tile.availableResources.includes(RESOURCE_ORE) && tile.availableResources.includes(RESOURCE_PEOPLE)
+
+    case RESOURCE_MINERALS:
+      return tile.buildingType == BUILDING_SAND_TO_MINERALS &&
+          tile.availableResources.includes(RESOURCE_SAND) && tile.availableResources.includes(RESOURCE_PEOPLE)
+
+    case RESOURCE_ALLOY:
+      return tile.buildingType == BUILDING_MINERAL_AND_METAL_TO_ALLOY &&
+          tile.availableResources.includes(RESOURCE_METAL) && 
+          tile.availableResources.includes(RESOURCE_MINERALS) && 
+          tile.availableResources.includes(RESOURCE_PEOPLE)
+
+    case RESOURCE_DOME:
+      return tile.buildingType == BUILDING_ALLOY_AND_GLASS_TO_DOME &&
+          tile.availableResources.includes(RESOURCE_ALLOY) && 
+          tile.availableResources.includes(RESOURCE_DOME) && 
+          tile.availableResources.includes(RESOURCE_PEOPLE)
+
+    case RESOURCE_WATER:
+      return tile.buildingType == BUILDING_ICE_AND_HEAT_TO_WATER &&
+          tile.availableResources.includes(RESOURCE_ICE) && 
+          tile.availableResources.includes(RESOURCE_HEAT) && 
+          tile.availableResources.includes(RESOURCE_PEOPLE)
 
   }
 }
