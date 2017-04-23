@@ -634,15 +634,15 @@ var gameScene = {
     var welcomeText = new PIXI.Text('Welcome to asteroid ' + region + '-56-AX-' + Math.round(Math.random() * 10032), { fontSize: 16, fill: '#ffffff'})
     welcomeText.x = 270
     welcomeText.y = 270
-    var tween_welcometext = new TweenLib.Tween({ alpha: 1 })
-      .to({alpha: 0}, 600)
-      .delay(400)
+
+    new TweenLib.Tween({ alpha: 1 })
+      .to({alpha: 0}, 600) //600
+      .delay(1) //400
       .easing(TweenLib.Easing.Quartic.Out)
-      .onUpdate(function(y) {
+      .onUpdate(function() {
         welcomeText.alpha = this.alpha;
       })
-      .start();
-    this.tweens.push(tween_welcometext)
+      .start()
     this.welcometextContainer.addChild(welcomeText)
 
     var backgroundImage = new PIXI.Sprite(PIXI.loader.resources['background'].texture)
@@ -658,15 +658,14 @@ var gameScene = {
     this.gameContainer = gameContainer;
     this.gameContainer.x = 182
     this.gameContainer.y = -500
-    var tween_gamecontainer = new TweenLib.Tween({ y: -500 })
-      .to({y: 132}, 3300)
+
+    new TweenLib.Tween({ y: -500 })
+      .to({y: 132}, 1) //3300
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function(y) {
         gameContainer.y = this.y;
       })
-      .start();
-
-    this.tweens.push(tween_gamecontainer)
+      .start()
 
     this.tileContainer = new PIXI.Container()
 
@@ -682,16 +681,14 @@ var gameScene = {
     this.buildingPanelContainer.x = 656
     this.buildingPanelContainer.y = 38 - 700
 
-    var tween_buildingPanel = new TweenLib.Tween({ y: 38 - 700 })
-      .to({y: 38}, 300)
-      .delay(3000)
+    new TweenLib.Tween({ y: 38 - 700 })
+      .to({y: 38}, 1) //300
+      .delay(1) //3000
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function() {
         buildingPanelContainer.y = this.y;
       })
-      .start();
-    this.tweens.push(tween_buildingPanel)
-
+      .start()
 
     var resourcePanelContainer = new PIXI.Container()
     this.resourcePanelContainer = resourcePanelContainer;
@@ -700,14 +697,13 @@ var gameScene = {
     this.resourcePanelContainer.y = 60 - 700
 
     var tween_resource_panel = new TweenLib.Tween({ y: 60 - 700 })
-      .to({y: 60}, 300)
-      .delay(3000)
+      .to({y: 60}, 1) //300
+      .delay(1) //3000
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function() {
         resourcePanelContainer.y = this.y;
       })
-      .start();
-    this.tweens.push(tween_resource_panel)
+      .start()
     this.resourcePanelContainer.addChild(baseResourcesPanelBackground)
 
     this.informationBoxContainer = new PIXI.Container()
@@ -726,12 +722,10 @@ var gameScene = {
     var terraformButton = new PIXI.Sprite(PIXI.loader.resources['terraform_button'].texture)
     terraformButton.interactive = true
     terraformButton.on('click', function () {
-      terraform()
-    })
+      this.showResultScreen()
+    }.bind(this))
 
     this.gameOverContainer = new PIXI.Container()
-    var gameOverBackground = new PIXI.Sprite(PIXI.loader.resources['background'].texture)
-    this.gameOverContainer.addChild(gameOverBackground)
     this.gameOverText = new PIXI.Text('', {
       fontSize: 20,
       fill: '#ffff00',
@@ -807,14 +801,40 @@ var gameScene = {
     selectedBuildingButton = null
     setInformationBoxText('')
   },
+  showResultScreen: function() {
+    var _gameContainer = this.gameContainer
+    new TweenLib.Tween({ y: 182 })
+      .to({y: 0}, 700)
+      .easing(TweenLib.Easing.Quartic.InOut)
+      .onUpdate(function() {
+        _gameContainer.y = this.y;
+      })
+      .onComplete(terraform)
+      .start()
+
+    var _buildingPanelContainer = this.buildingPanelContainer
+    new TweenLib.Tween({ x: 656 })
+      .to({x: 900}, 400)
+      .easing(TweenLib.Easing.Quartic.In)
+      .onUpdate(function() {
+        _buildingPanelContainer.x = this.x;
+      })
+      .start()
+
+    var _resourcePanelContainer = this.resourcePanelContainer
+    new TweenLib.Tween({ x: 20 })
+      .to({x: -300}, 400)
+      .easing(TweenLib.Easing.Quartic.In)
+      .onUpdate(function() {
+        _resourcePanelContainer.x = this.x;
+      })
+      .start()
+  },
   destroy: function () {
     this.container.destroy()
   },
   update: function (delta) {
-    this.totalTime = this.totalTime + delta;
-    this.tweens.forEach(function(hmm) {
-      hmm.update(this.totalTime);
-    }.bind(this))
+    TweenLib.update()
   },
   draw: function () {
     global.renderer.render(this.container)
