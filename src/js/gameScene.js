@@ -109,6 +109,29 @@ infoTexts[TERRAIN_ICE] = 'Ice'
 infoTexts[TERRAIN_ORE] = 'Ore'
 infoTexts[TERRAIN_DOME] = '(Dome placement)'
 
+var buttonHumanTexts = {}
+buttonHumanTexts[BUILDING_HEAT_GENERATOR] = 'Heat Generator'
+buttonHumanTexts[BUILDING_MINING] = 'Ore Mine'
+buttonHumanTexts[BUILDING_QUARRY] = 'Quarry'
+buttonHumanTexts[BUILDING_HQ] = 'Base HQ'
+buttonHumanTexts[BUILDING_ICE_COLLECTOR] = 'Ice Collector'
+buttonHumanTexts[BUILDING_LIVING_QUARTERS] = 'Living Quarters'
+buttonHumanTexts[BUILDING_METAL_AND_GLASS_TO_DOME] = 'Dome Maintena..'
+buttonHumanTexts[BUILDING_ICE_AND_HEAT_TO_WATER] = 'Water Plant'
+buttonHumanTexts[BUILDING_ORE_TO_METAL] = 'Metal Works'
+buttonHumanTexts[BUILDING_SAND_TO_GLASS] = 'Glass Works'
+buttonHumanTexts[BUILDING_DOME] = 'Dome'
+
+buttonHumanTexts[RESOURCE_PEOPLE] = 'People'
+buttonHumanTexts[RESOURCE_HEAT] = 'Heat'
+buttonHumanTexts[RESOURCE_ORE] = 'Ore'
+buttonHumanTexts[RESOURCE_SAND] = 'Sand'
+buttonHumanTexts[RESOURCE_ICE] = 'Ice'
+buttonHumanTexts[RESOURCE_GLASS] = 'Glass'
+buttonHumanTexts[RESOURCE_METAL] = 'Metal'
+buttonHumanTexts[RESOURCE_WATER] = 'Water'
+buttonHumanTexts[RESOURCE_DOME] = 'Dome'
+
 var score = {}
 
 var resourceScoreFactors = {}
@@ -374,7 +397,7 @@ var getResourceTallyHo = function (resource) {
 
 var getSurroundingTiles = function (tile) {
   var surroundingTiles = []
-  
+
   var tile = getInsideGrid(tile.x + 1, tile.y)
   if (tile) {
     surroundingTiles.push(tile)
@@ -394,7 +417,7 @@ var getSurroundingTiles = function (tile) {
   if (tile) {
     surroundingTiles.push(tile)
   }
-  
+
   return surroundingTiles
 }
 
@@ -624,15 +647,30 @@ var BuildingButton = function (buildingType, index) {
   buildingSprite.y = 6
   this.container.addChild(buildingSprite)
 
-  if (this.buildingType !== BUILDING_DOME) {
+  var buildingName = new PIXI.Text(buttonHumanTexts[buildingType], { fontSize: 12, fill: '#9e9e9e'})
+  buildingName.x = 42
+  buildingName.y = 7
+  this.container.addChild(buildingName)
+
+  if (this.buildingType === BUILDING_DOME) {
+    var producesName = new PIXI.Text('Encapsulation', { fontSize: 10, fill: '#9e9e9e'})
+    producesName.x = 42
+    producesName.y = 26
+    this.container.addChild(producesName)
+  } else {
     var producingIconResourceName = resourceNames[buildingProvides[buildingType]];
 
     var buildingProvidesSprite = new PIXI.Sprite(PIXI.loader.resources[producingIconResourceName].texture)
     buildingProvidesSprite.width = 16
     buildingProvidesSprite.height = 16
-    buildingProvidesSprite.x = 100
-    buildingProvidesSprite.y = 26
+    buildingProvidesSprite.x = 42
+    buildingProvidesSprite.y = 24
     this.container.addChild(buildingProvidesSprite)
+
+    var producesName = new PIXI.Text(buttonHumanTexts[buildingProvides[buildingType]], { fontSize: 10, fill: '#9e9e9e'})
+    producesName.x = 62
+    producesName.y = 26
+    this.container.addChild(producesName)
   }
 
   this.container.y = index * 47
