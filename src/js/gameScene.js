@@ -612,7 +612,7 @@ var gameScene = {
 
     this.welcometextContainer = new PIXI.Container()
     var region = (Math.random() < 0.5) ? 'PO' : 'KG';
-    var welcomeText = new PIXI.Text('Welcome, to asteroid ' + region + '-56-AX-' + Math.round(Math.random() * 10032), { fontSize: 16, fill: '#ffffff'})
+    var welcomeText = new PIXI.Text('Welcome to asteroid ' + region + '-56-AX-' + Math.round(Math.random() * 10032), { fontSize: 16, fill: '#ffffff'})
     welcomeText.x = 270
     welcomeText.y = 270
     var tween_welcometext = new TweenLib.Tween({ alpha: 1 })
@@ -635,20 +635,6 @@ var gameScene = {
     })
     this.container.addChild(backgroundImage)
 
-    var asteroidImage = new PIXI.Sprite(PIXI.loader.resources['astroid'].texture)
-    asteroidImage.x = 128
-    asteroidImage.y = -500
-
-    var tween_asteriod = new TweenLib.Tween({ y: -500 })
-      .to({y: 104}, 3300)
-      .easing(TweenLib.Easing.Quartic.Out)
-      .onUpdate(function(y) {
-        asteroidImage.y = this.y;
-      })
-      .start();
-    this.tweens.push(tween_asteriod)
-    this.container.addChild(asteroidImage)
-
     var gameContainer = new PIXI.Container()
     this.gameContainer = gameContainer;
     this.gameContainer.x = 182
@@ -665,6 +651,11 @@ var gameScene = {
 
     this.tileContainer = new PIXI.Container()
 
+    var asteroidSprite = new PIXI.Sprite(PIXI.loader.resources['astroid'].texture)
+    asteroidSprite.x = 128 - 182
+    asteroidSprite.y = 104 - 132
+
+    this.gameContainer.addChild(asteroidSprite)
     this.gameContainer.addChild(this.tileContainer)
 
     var buildingPanelContainer = new PIXI.Container()
@@ -794,6 +785,8 @@ var gameScene = {
 
     updateGame()
 
+    selectedBuildingButton = null
+    setInformationBoxText('')
   },
   destroy: function () {
     this.container.destroy()
