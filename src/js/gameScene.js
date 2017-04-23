@@ -647,34 +647,25 @@ var BuildingButton = function (buildingType, index) {
   this.container.addChild(buildingSprite)
 
   if (this.buildingType !== BUILDING_DOME) {
+    var buildingName = new PIXI.Text(buttonHumanTexts[buildingType], { fontSize: 12, fill: '#9e9e9e'})
+    buildingName.x = 42
+    buildingName.y = 7
+    this.container.addChild(buildingName)
+
     var producingIconResourceName = resourceNames[buildingProvides[buildingType]];
 
     var buildingProvidesSprite = new PIXI.Sprite(PIXI.loader.resources[producingIconResourceName].texture)
     buildingProvidesSprite.width = 16
     buildingProvidesSprite.height = 16
-    buildingProvidesSprite.x = 100
-    buildingProvidesSprite.y = 26
+    buildingProvidesSprite.x = 42
+    buildingProvidesSprite.y = 24
     this.container.addChild(buildingProvidesSprite)
+
+    var producesName = new PIXI.Text(buttonHumanTexts[buildingProvides[buildingType]], { fontSize: 10, fill: '#9e9e9e'})
+    producesName.x = 62
+    producesName.y = 26
+    this.container.addChild(producesName)
   }
-
-  var buildingName = new PIXI.Text(buttonHumanTexts[buildingType], { fontSize: 12, fill: '#9e9e9e'})
-  buildingName.x = 42
-  buildingName.y = 7
-  this.container.addChild(buildingName)
-
-  var producingIconResourceName = resourceNames[buildingProvides[buildingType]];
-
-  var buildingProvidesSprite = new PIXI.Sprite(PIXI.loader.resources[producingIconResourceName].texture)
-  buildingProvidesSprite.width = 16
-  buildingProvidesSprite.height = 16
-  buildingProvidesSprite.x = 42
-  buildingProvidesSprite.y = 24
-  this.container.addChild(buildingProvidesSprite)
-
-  var producesName = new PIXI.Text(buttonHumanTexts[buildingProvides[buildingType]], { fontSize: 10, fill: '#9e9e9e'})
-  producesName.x = 62
-  producesName.y = 26
-  this.container.addChild(producesName)
 
   this.container.y = index * 47
 }
