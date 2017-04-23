@@ -635,14 +635,37 @@ var gameScene = {
 
     this.gameContainer.addChild(this.tileContainer)
 
-    this.buildingPanelContainer = new PIXI.Container()
+    var buildingPanelContainer = new PIXI.Container()
+    this.buildingPanelContainer = buildingPanelContainer;
     this.buildingPanelContainer.x = 656
-    this.buildingPanelContainer.y = 38
+    this.buildingPanelContainer.y = 38 - 700
 
-    this.resourcePanelContainer = new PIXI.Container()
+    var tween_buildingPanel = new TweenLib.Tween({ y: 38 - 700 })
+      .to({y: 38}, 300)
+      .delay(3000)
+      .easing(TweenLib.Easing.Quartic.Out)
+      .onUpdate(function() {
+        buildingPanelContainer.y = this.y;
+      })
+      .start();
+    this.tweens.push(tween_buildingPanel)
+
+
+    var resourcePanelContainer = new PIXI.Container()
+    this.resourcePanelContainer = resourcePanelContainer;
     var baseResourcesPanelBackground = new PIXI.Sprite(PIXI.loader.resources['base_resources_panel'].texture)
     this.resourcePanelContainer.x = 20
-    this.resourcePanelContainer.y = 60
+    this.resourcePanelContainer.y = 60 - 700
+
+    var tween_resource_panel = new TweenLib.Tween({ y: 60 - 700 })
+      .to({y: 60}, 300)
+      .delay(3000)
+      .easing(TweenLib.Easing.Quartic.Out)
+      .onUpdate(function() {
+        resourcePanelContainer.y = this.y;
+      })
+      .start();
+    this.tweens.push(tween_resource_panel)
     this.resourcePanelContainer.addChild(baseResourcesPanelBackground)
 
     this.informationBoxContainer = new PIXI.Container()
