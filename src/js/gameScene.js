@@ -959,6 +959,8 @@ var gameScene = {
 
     this.container = new PIXI.Container()
 
+    var skipInto = false
+
     this.welcometextContainer = new PIXI.Container()
     var region = (Math.random() < 0.5) ? 'PO' : 'KG';
     var welcomeText = new PIXI.Text('Welcome to asteroid ' + region + '-56-AX-' + Math.round(Math.random() * 10032), { fontSize: 16, fill: '#ffffff'})
@@ -966,8 +968,8 @@ var gameScene = {
     welcomeText.y = 270
 
     new TweenLib.Tween({ alpha: 1 })
-      .to({alpha: 0}, 600) //600
-      .delay(1) //400
+      .to({alpha: 0}, (skipInto) ? 1 : 600)
+      .delay((skipInto) ? 1 : 1600)
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function() {
         welcomeText.alpha = this.alpha;
@@ -990,7 +992,8 @@ var gameScene = {
     this.gameContainer.y = -500
 
     new TweenLib.Tween({ y: -500 })
-      .to({y: 132}, 1) //3300
+      .to({y: 132}, (skipInto) ? 1 : 3300)
+      .delay((skipInto) ? 1 : 1200)
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function(y) {
         gameContainer.y = this.y;
@@ -1012,8 +1015,8 @@ var gameScene = {
     this.buildingPanelContainer.y = 38 - 700
 
     new TweenLib.Tween({ y: 38 - 700 })
-      .to({y: 38}, 1) //300
-      .delay(1) //3000
+      .to({y: 38}, (skipInto) ? 1 : 300)
+      .delay((skipInto) ? 1 : 3000)
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function() {
         buildingPanelContainer.y = this.y;
@@ -1027,8 +1030,8 @@ var gameScene = {
     this.resourcePanelContainer.y = 60 - 700
 
     var tween_resource_panel = new TweenLib.Tween({ y: 60 - 700 })
-      .to({y: 60}, 1) //300
-      .delay(1) //3000
+      .to({y: 60}, (skipInto) ? 1 : 300)
+      .delay((skipInto) ? 1 : 3000)
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function() {
         resourcePanelContainer.y = this.y;
@@ -1124,7 +1127,7 @@ var gameScene = {
   },
   transitionToResultScreen: function() {
     var _gameContainer = this.gameContainer
-    new TweenLib.Tween({ y: 182 })
+    new TweenLib.Tween({ y: 132 })
       .to({y: 0}, 700)
       .easing(TweenLib.Easing.Quartic.InOut)
       .onUpdate(function() {
