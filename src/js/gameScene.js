@@ -352,15 +352,30 @@ var findBuildingByType = function (buildingType) {
 }
 
 var terraform = function () {
+  var unbuiltTerrainCount = 0
+  for (var r = 0; r < rowCount; r++) {
+    for (var c = 0; c < colCount; c++) {
+      var tile = tiles[r][c]
+      if (!tile.buildingType) {
+        unbuiltTerrainCount++
+      }
+    }
+  }
+  var total = (getResourceProduced(RESOURCE_PEOPLE) - getResourceConsumed(RESOURCE_PEOPLE)) +
+      (getResourceProduced(RESOURCE_METAL) - getResourceConsumed(RESOURCE_METAL)) +
+      (getResourceProduced(RESOURCE_MINERALS) - getResourceConsumed(RESOURCE_MINERALS)) +
+      unbuiltTerrainCount
+
+
   var tile = findBuildingByType(BUILDING_ALLOY_AND_GLASS_TO_DOME)
   if (!(tile && isTileProducingResource(tile, RESOURCE_DOME))) {
-    setGameOverText('NO DOME')
+    setGameOverText('NO DOME\nLIVING QUARTERS SUPPLIES HELD FOR 3 MONTHS')
     return
   }
 
   var tile = findBuildingByType(BUILDING_ICE_AND_HEAT_TO_WATER)
   if (!(tile && isTileProducingResource(tile, RESOURCE_WATER))) {
-    setGameOverText('NO WATERS')
+    setGameOverText('NO WATER PLANT\nLIVING QUARTERS SUPPLIES HELD FOR 3 MONTHS')
     return
   }
 
@@ -374,20 +389,19 @@ var terraform = function () {
     }
   }
   if (unbuiltIceTerrainCount > 0) {
-    setGameOverText('TOO MUCH ICE LEFT')
+    setGameOverText('TOO MUCH ICE LEFT\nIT MELTED AND NOW EVERYTHING HAS ALGAE AND MOLD, NO TREES')
     return
   }
 
   var peopleSaldo = getResourceProduced(RESOURCE_PEOPLE) - getResourceConsumed(RESOURCE_PEOPLE)
   if (peopleSaldo < 0) {
-    setGameOverText('SPACE UNION SHUTS YOU DOWN')
+    total = Math.ceil(total * 0.5)
+    setGameOverText('SPACE UNION SHUTS YOU DOWN\n' + total + ' YEARS')
     return
   }
 
-  var total = (getResourceProduced(RESOURCE_PEOPLE) - getResourceConsumed(RESOURCE_PEOPLE)) +
-      (getResourceProduced(RESOURCE_METAL) - getResourceConsumed(RESOURCE_METAL)) +
-      (getResourceProduced(RESOURCE_MINERALS) - getResourceConsumed(RESOURCE_MINERALS))
-  setGameOverText('TALLYHO: ' + total)
+  total += 1
+  setGameOverText('THE COLONY LASTED ' + total + ' YEARS')
 }
 
 var setInformationBoxText = function (text) {
@@ -609,7 +623,7 @@ var gameScene = {
       fontSize: 20,
       fill: '#ffff00',
       wordWrap: true,
-      wordWrapWidth: 474,
+      wordWrapWidth: 600,
     })
     this.gameOverText.x = 100
     this.gameOverText.y = 100
