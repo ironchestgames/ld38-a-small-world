@@ -16,7 +16,7 @@ var loadingScene = {
     .add('tile_ore', 'assets/images/tile_ore.png')
     .add('tile_sand', 'assets/images/tile_sand.png')
 
-    .add('alloy_and_glass_to_dome', 'assets/images/alloy_and_glass_to_dome.png')
+    .add('dome_main', 'assets/images/dome_main.png')
     .add('asteroid_resources_panel', 'assets/images/asteroid_resources_panel.png')
     .add('end_screen_panel', 'assets/images/end_screen_panel.png')
     .add('background', 'assets/images/background.png')
