@@ -959,7 +959,6 @@ var gameScene = {
         yOffset += 20
 
         this.resultContainer.addChild(container)
-
       }
     }.bind(this)
 
@@ -969,13 +968,17 @@ var gameScene = {
     var flare_x = 340
     var flare_y = 90
 
+    var foundPositive = false
+    var foundNegative = false
+
     //Positive flares
     result.flares.forEach(function(flare) {
       if (flare === FLARE_DOME_BUILT) {
+        foundPositive = true
         var container = new PIXI.Container()
         var flare_super = new PIXI.Sprite(PIXI.loader.resources["flare_super"].texture)
         flare_super.y = 2
-        var textObject = new PIXI.Text("Dome built, yay", { fontSize: 16 })
+        var textObject = new PIXI.Text("The Dome is built and is sustaining an ecosystem", { fontSize: 16 })
         textObject.x = 44
         container.addChild(flare_super)
         container.addChild(textObject)
@@ -988,15 +991,22 @@ var gameScene = {
         flare_y += 26
       }
     }.bind(this))
+    if (!foundPositive) {
+      var textObject = new PIXI.Text("No bonuses - try to combine the placement\nof buildings and make sure to construct the dome.", { fontSize: 16 })
+      textObject.x = flare_x
+      textObject.y = flare_y
+      this.resultContainer.addChild(textObject)
+    }
 
     flare_y = 205
     //Negative flares
     result.flares.forEach(function(flare) {
       if (flare === FLARE_TOO_BIG_LQ_CLUSTER) {
+        foundNegative = true
         var container = new PIXI.Container()
         var flare_disaster = new PIXI.Sprite(PIXI.loader.resources["flare_disaster"].texture)
         flare_disaster.y = 2
-        var textObject = new PIXI.Text("LQ disaster", { fontSize: 16 })
+        var textObject = new PIXI.Text("More than two Living Quarters connected - Huge\nfire hazard and colony burned", { fontSize: 16 })
         textObject.x = 44
         container.addChild(flare_disaster)
         container.addChild(textObject)
@@ -1006,9 +1016,16 @@ var gameScene = {
 
         this.resultContainer.addChild(container)
 
-        flare_y += 26
+        flare_y += 40
       }
     }.bind(this))
+    if (!foundNegative) {
+      var textObject = new PIXI.Text("No penalties - good job!", { fontSize: 16 })
+      textObject.x = flare_x
+      textObject.y = flare_y
+      this.resultContainer.addChild(textObject)
+    }
+
 
     var titleText = new PIXI.Text('Colony results', { fontSize: 40, fill: '#000000'})
     titleText.x = 252
