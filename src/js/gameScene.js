@@ -158,6 +158,11 @@ resourceTexts[RESOURCE_METAL] = null
 resourceTexts[RESOURCE_WATER] = null
 resourceTexts[RESOURCE_DOME] = null
 
+var deselectBuildingButton = function () {
+  selectedBuildingButton = null
+  updateTileMarkers()
+}
+
 var buildingHasAllRequiredResources = function(tile) {
   var myBuildingNeeds = buildingNeeds[tile.buildingType]
   for (var i = 0; i < myBuildingNeeds.length; i++) {
@@ -432,21 +437,23 @@ var Tile = function (x, y, terrainType) {
       if (this.isAvailableForSelectedBuilding) {
         this.changeBuilding(selectedBuildingButton)
         updateGame()
+
+        deselectBuildingButton()
       } else {
         if (this.terrainType === BUILDING_HQ) {
           setInformationBoxText('Can\'t replace HQ')
+
+          deselectBuildingButton()
         } else {
           setInformationBoxText('Must place building on green tiles')
         }
       }
-      selectedBuildingButton = null
-      updateTileMarkers()
     } else {
-      setInformationBoxText(
-          'selected: ' +
-          infoTexts[this.buildingType] +
-          ', ' +
-          infoTexts[this.terrainType])
+      var str = infoTexts[this.terrainType]
+      if (this.buildingType && this.buildingType !== BUILDING_HQ) {
+        str = infoTexts[this.buildingType] + ', ' + str
+      }
+      setInformationBoxText(str)
     }
   }.bind(this))
 
@@ -527,7 +534,7 @@ var BuildingButton = function (buildingType, index) {
       updateTileMarkers()
       setInformationBoxText(infoTexts[this.buildingType])
     } else {
-      setInformationBoxText('not available at this time')
+      setInformationBoxText('This building is locked')
     }
   }.bind(this))
   this.container.addChild(button)
