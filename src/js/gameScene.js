@@ -21,8 +21,6 @@ var RESOURCE_SAND = 'RESOURCE_SAND'
 var RESOURCE_ICE = 'RESOURCE_ICE'
 var RESOURCE_GLASS = 'RESOURCE_GLASS'
 var RESOURCE_METAL = 'RESOURCE_METAL'
-var RESOURCE_MINERALS = 'RESOURCE_MINERALS'
-var RESOURCE_ALLOY = 'RESOURCE_ALLOY'
 var RESOURCE_WATER = 'RESOURCE_WATER'
 var RESOURCE_DOME = 'RESOURCE_DOME'
 
@@ -35,12 +33,10 @@ var BUILDING_ICE_COLLECTOR = 'BUILDING_ICE_COLLECTOR'
 var BUILDING_LIVING_QUARTERS = 'BUILDING_LIVING_QUARTERS'
 
 //Resource converters
-var BUILDING_ALLOY_AND_GLASS_TO_DOME = 'BUILDING_ALLOY_AND_GLASS_TO_DOME'
+var BUILDING_METAL_AND_GLASS_TO_DOME = 'BUILDING_METAL_AND_GLASS_TO_DOME'
 var BUILDING_ICE_AND_HEAT_TO_WATER = 'BUILDING_ICE_AND_HEAT_TO_WATER'
 var BUILDING_ORE_TO_METAL = 'BUILDING_ORE_TO_METAL'
-var BUILDING_MINERAL_AND_METAL_TO_ALLOY = 'BUILDING_MINERAL_AND_METAL_TO_ALLOY'
 var BUILDING_SAND_TO_GLASS = 'BUILDING_SAND_TO_GLASS'
-var BUILDING_SAND_TO_MINERALS = 'BUILDING_SAND_TO_MINERALS'
 
 var buildingNeeds = {}
 //Base buildings
@@ -52,12 +48,10 @@ buildingNeeds[BUILDING_ICE_COLLECTOR] = [RESOURCE_PEOPLE]
 buildingNeeds[BUILDING_LIVING_QUARTERS] = []
 
 //Resource converters
-buildingNeeds[BUILDING_ALLOY_AND_GLASS_TO_DOME] = [RESOURCE_PEOPLE, RESOURCE_ALLOY, RESOURCE_GLASS]
+buildingNeeds[BUILDING_METAL_AND_GLASS_TO_DOME] = [RESOURCE_PEOPLE, RESOURCE_GLASS]
 buildingNeeds[BUILDING_ICE_AND_HEAT_TO_WATER] = [RESOURCE_PEOPLE, RESOURCE_ICE, RESOURCE_HEAT]
 buildingNeeds[BUILDING_ORE_TO_METAL] = [RESOURCE_PEOPLE, RESOURCE_ORE]
-buildingNeeds[BUILDING_MINERAL_AND_METAL_TO_ALLOY] = [RESOURCE_PEOPLE, RESOURCE_METAL, RESOURCE_MINERALS]
 buildingNeeds[BUILDING_SAND_TO_GLASS] = [RESOURCE_PEOPLE, RESOURCE_SAND]
-buildingNeeds[BUILDING_SAND_TO_MINERALS] = [RESOURCE_PEOPLE, RESOURCE_SAND]
 
 var buildingProvides = {}
 //Base buildings
@@ -69,12 +63,10 @@ buildingProvides[BUILDING_ICE_COLLECTOR] = RESOURCE_ICE
 buildingProvides[BUILDING_LIVING_QUARTERS] = RESOURCE_PEOPLE
 
 //Resource converters
-buildingProvides[BUILDING_ALLOY_AND_GLASS_TO_DOME] = RESOURCE_DOME
+buildingProvides[BUILDING_METAL_AND_GLASS_TO_DOME] = RESOURCE_DOME
 buildingProvides[BUILDING_ICE_AND_HEAT_TO_WATER] = RESOURCE_WATER
 buildingProvides[BUILDING_ORE_TO_METAL] = RESOURCE_METAL
-buildingProvides[BUILDING_MINERAL_AND_METAL_TO_ALLOY] = RESOURCE_ALLOY
 buildingProvides[BUILDING_SAND_TO_GLASS] = RESOURCE_GLASS
-buildingProvides[BUILDING_SAND_TO_MINERALS] = RESOURCE_MINERALS
 
 var buildingTerrainPermissions = {}
 buildingTerrainPermissions[null] = []
@@ -86,12 +78,10 @@ buildingTerrainPermissions[BUILDING_ICE_COLLECTOR] = [TERRAIN_ICE]
 buildingTerrainPermissions[BUILDING_LIVING_QUARTERS] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ORE]
 
 //Resource converters
-buildingTerrainPermissions[BUILDING_ALLOY_AND_GLASS_TO_DOME] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
+buildingTerrainPermissions[BUILDING_METAL_AND_GLASS_TO_DOME] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
 buildingTerrainPermissions[BUILDING_ICE_AND_HEAT_TO_WATER] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
 buildingTerrainPermissions[BUILDING_ORE_TO_METAL] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
-buildingTerrainPermissions[BUILDING_MINERAL_AND_METAL_TO_ALLOY] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
 buildingTerrainPermissions[BUILDING_SAND_TO_GLASS] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
-buildingTerrainPermissions[BUILDING_SAND_TO_MINERALS] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
 
 var infoTexts = {}
 infoTexts[BUILDING_HEAT_GENERATOR] = 'BUILDING_HEAT_GENERATOR'
@@ -102,12 +92,10 @@ infoTexts[BUILDING_ICE_COLLECTOR] = 'BUILDING_ICE_COLLECTOR'
 infoTexts[BUILDING_LIVING_QUARTERS] = 'BUILDING_LIVING_QUARTERS'
 
 //Resource converters
-infoTexts[BUILDING_ALLOY_AND_GLASS_TO_DOME] = 'BUILDING_ALLOY_AND_GLASS_TO_DOME'
+infoTexts[BUILDING_METAL_AND_GLASS_TO_DOME] = 'BUILDING_METAL_AND_GLASS_TO_DOME'
 infoTexts[BUILDING_ICE_AND_HEAT_TO_WATER] = 'BUILDING_ICE_AND_HEAT_TO_WATER'
 infoTexts[BUILDING_ORE_TO_METAL] = 'BUILDING_ORE_TO_METAL'
-infoTexts[BUILDING_MINERAL_AND_METAL_TO_ALLOY] = 'BUILDING_MINERAL_AND_METAL_TO_ALLOY'
 infoTexts[BUILDING_SAND_TO_GLASS] = 'BUILDING_SAND_TO_GLASS'
-infoTexts[BUILDING_SAND_TO_MINERALS] = 'BUILDING_SAND_TO_MINERALS'
 
 infoTexts[TERRAIN_PLAIN] = 'TERRAIN_PLAIN'
 infoTexts[TERRAIN_SAND] = 'TERRAIN_SAND'
@@ -127,12 +115,10 @@ resourceNames[BUILDING_QUARRY] = 'quarry'
 resourceNames[BUILDING_HQ] = 'hq'
 resourceNames[BUILDING_ICE_COLLECTOR] = 'ice_collector'
 resourceNames[BUILDING_LIVING_QUARTERS] = 'living_quarters'
-resourceNames[BUILDING_ALLOY_AND_GLASS_TO_DOME] = 'alloy_and_glass_to_dome'
+resourceNames[BUILDING_METAL_AND_GLASS_TO_DOME] = 'alloy_and_glass_to_dome'
 resourceNames[BUILDING_ICE_AND_HEAT_TO_WATER] = 'ice_and_heat_to_water'
 resourceNames[BUILDING_ORE_TO_METAL] = 'ore_to_metal'
-resourceNames[BUILDING_MINERAL_AND_METAL_TO_ALLOY] = 'mineral_and_metal_to_alloy'
 resourceNames[BUILDING_SAND_TO_GLASS] = 'sand_to_glass'
-resourceNames[BUILDING_SAND_TO_MINERALS] = 'sand_to_minerals'
 
 resourceNames[RESOURCE_PEOPLE] = 'resource_people'
 resourceNames[RESOURCE_HEAT] = 'resource_heat'
@@ -141,8 +127,6 @@ resourceNames[RESOURCE_SAND] = 'resource_sand'
 resourceNames[RESOURCE_ICE] = 'resource_ice'
 resourceNames[RESOURCE_GLASS] = 'resource_glass'
 resourceNames[RESOURCE_METAL] = 'resource_metal'
-resourceNames[RESOURCE_MINERALS] = 'resource_minerals'
-resourceNames[RESOURCE_ALLOY] = 'resource_alloy'
 resourceNames[RESOURCE_WATER] = 'resource_water'
 resourceNames[RESOURCE_DOME] = 'resource_dome'
 
@@ -157,12 +141,10 @@ var buildingButtonTypes = [ // this is the order for the buttons
   BUILDING_LIVING_QUARTERS,
 
   //Resource converters
-  BUILDING_ALLOY_AND_GLASS_TO_DOME,
+  BUILDING_METAL_AND_GLASS_TO_DOME,
   BUILDING_ICE_AND_HEAT_TO_WATER,
   BUILDING_ORE_TO_METAL,
-  BUILDING_MINERAL_AND_METAL_TO_ALLOY,
   BUILDING_SAND_TO_GLASS,
-  BUILDING_SAND_TO_MINERALS,
 ]
 
 var resourceTexts = {} // inited in gameScene create
@@ -173,8 +155,6 @@ resourceTexts[RESOURCE_SAND] = null
 resourceTexts[RESOURCE_ICE] = null
 resourceTexts[RESOURCE_GLASS] = null
 resourceTexts[RESOURCE_METAL] = null
-resourceTexts[RESOURCE_MINERALS] = null
-resourceTexts[RESOURCE_ALLOY] = null
 resourceTexts[RESOURCE_WATER] = null
 resourceTexts[RESOURCE_DOME] = null
 
@@ -220,14 +200,8 @@ var isTileProducingResource = function (tile, resource) {
     case RESOURCE_METAL:
       return tile.buildingType == BUILDING_ORE_TO_METAL && buildingHasAllRequiredResources(tile)
 
-    case RESOURCE_MINERALS:
-      return tile.buildingType == BUILDING_SAND_TO_MINERALS && buildingHasAllRequiredResources(tile)
-
-    case RESOURCE_ALLOY:
-      return tile.buildingType == BUILDING_MINERAL_AND_METAL_TO_ALLOY && buildingHasAllRequiredResources(tile)
-
     case RESOURCE_DOME:
-      return tile.buildingType == BUILDING_ALLOY_AND_GLASS_TO_DOME && buildingHasAllRequiredResources(tile)
+      return tile.buildingType == BUILDING_METAL_AND_GLASS_TO_DOME && buildingHasAllRequiredResources(tile)
 
     case RESOURCE_WATER:
       return tile.buildingType == BUILDING_ICE_AND_HEAT_TO_WATER && buildingHasAllRequiredResources(tile)
@@ -280,11 +254,7 @@ var updateTiles = function () {
   // level 3
   produceResource(RESOURCE_GLASS)
   produceResource(RESOURCE_METAL)
-  produceResource(RESOURCE_MINERALS)
   produceResource(RESOURCE_WATER)
-
-  // level 4
-  produceResource(RESOURCE_ALLOY)
 
   // level 5
   produceResource(RESOURCE_DOME)
@@ -384,11 +354,10 @@ var terraform = function () {
   }
   var total = (getResourceProduced(RESOURCE_PEOPLE) - getResourceConsumed(RESOURCE_PEOPLE)) +
       (getResourceProduced(RESOURCE_METAL) - getResourceConsumed(RESOURCE_METAL)) +
-      (getResourceProduced(RESOURCE_MINERALS) - getResourceConsumed(RESOURCE_MINERALS)) +
       unbuiltTerrainCount
 
 
-  var tile = findBuildingByType(BUILDING_ALLOY_AND_GLASS_TO_DOME)
+  var tile = findBuildingByType(BUILDING_METAL_AND_GLASS_TO_DOME)
   if (!(tile && isTileProducingResource(tile, RESOURCE_DOME))) {
     setGameOverText('NO DOME\nLIVING QUARTERS SUPPLIES HELD FOR 3 MONTHS')
     return
