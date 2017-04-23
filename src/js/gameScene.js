@@ -1133,7 +1133,7 @@ var gameScene = {
   },
   transitionToResultScreen: function() {
     var _gameContainer = this.gameContainer
-    new TweenLib.Tween({ y: 182 })
+    new TweenLib.Tween({ y: 132 })
       .to({y: 0}, 700)
       .easing(TweenLib.Easing.Quartic.InOut)
       .onUpdate(function() {
