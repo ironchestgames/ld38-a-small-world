@@ -588,6 +588,8 @@ var gameScene = {
 
     this.resourcePanelContainer = new PIXI.Container()
     var baseResourcesPanelBackground = new PIXI.Sprite(PIXI.loader.resources['base_resources_panel'].texture)
+    this.resourcePanelContainer.x = 20
+    this.resourcePanelContainer.y = 60
     this.resourcePanelContainer.addChild(baseResourcesPanelBackground)
 
     this.informationBoxContainer = new PIXI.Container()
@@ -654,7 +656,7 @@ var gameScene = {
       }
     }
 
-    var yOffset = 50
+    var yOffset = 5
     for (var resourceTextName in resourceTexts) {
       var textObject = new PIXI.Text('', { fontSize: 16, })
       var iconSprite = new PIXI.Sprite(PIXI.loader.resources[resourceTextName.toLowerCase()].texture)
@@ -662,8 +664,9 @@ var gameScene = {
       container.addChild(iconSprite)
       container.addChild(textObject)
 
+      iconSprite.x = 6
       iconSprite.y = 2
-      textObject.x = 16
+      textObject.x = 22
 
       container.y = yOffset
       yOffset += 20
