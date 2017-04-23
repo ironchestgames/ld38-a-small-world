@@ -148,6 +148,7 @@ var SCORE_FACTOR_UNBUILT_TERRAIN = 12
 
 var FLARE_DOME_BUILT = 'FLARE_DOME_BUILT'
 var FLARE_TOO_BIG_LQ_CLUSTER = 'FLARE_TOO_BIG_LQ_CLUSTER'
+var FLARE_ICE_AND_DOME = 'FLARE_ICE_AND_DOME'
 
 var resourceNames = {}
 resourceNames[TERRAIN_PLAIN] = 'tile_plain'
@@ -474,6 +475,20 @@ var countScore = function () {
         break breakhere
       }
     }
+  }
+
+  var foundDome = false
+  var iceWithoutCollector = 0
+  for (var i = 0; i < tiles.length; i++) {
+    var tile = tiles[i]
+    if (tile.buildingType === BUILDING_DOME)
+      foundDome = true
+    if (tile.terrainType === TERRAIN_ICE && tile.buildingType !== BUILDING_ICE_COLLECTOR)
+      iceWithoutCollector++
+  }
+  if (foundDome && iceWithoutCollector > 0) {
+    score.flares.push(FLARE_ICE_AND_DOME)
+    score.totalFactors.push(0.25)
   }
 
   score.total =
@@ -1009,6 +1024,23 @@ var gameScene = {
         var flare_disaster = new PIXI.Sprite(PIXI.loader.resources["flare_disaster"].texture)
         flare_disaster.y = 2
         var textObject = new PIXI.Text("More than two Living Quarters connected - Huge\nfire hazard and colony burned", { fontSize: 16 })
+        textObject.x = 44
+        container.addChild(flare_disaster)
+        container.addChild(textObject)
+
+        container.x = flare_x
+        container.y = flare_y
+
+        this.resultContainer.addChild(container)
+
+        flare_y += 40
+      }
+      if (flare === FLARE_ICE_AND_DOME) {
+        foundNegative = true
+        var container = new PIXI.Container()
+        var flare_disaster = new PIXI.Sprite(PIXI.loader.resources["flare_disaster"].texture)
+        flare_disaster.y = 2
+        var textObject = new PIXI.Text("Unharvested ice inside dome, ecosystem is\noverrun by algae", { fontSize: 16 })
         textObject.x = 44
         container.addChild(flare_disaster)
         container.addChild(textObject)
