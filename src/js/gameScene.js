@@ -354,13 +354,13 @@ var findBuildingByType = function (buildingType) {
 var terraform = function () {
   var tile = findBuildingByType(BUILDING_ALLOY_AND_GLASS_TO_DOME)
   if (!(tile && isTileProducingResource(tile, RESOURCE_DOME))) {
-    console.log('NO DOME')
+    setGameOverText('NO DOME')
     return
   }
 
   var tile = findBuildingByType(BUILDING_ICE_AND_HEAT_TO_WATER)
   if (!(tile && isTileProducingResource(tile, RESOURCE_WATER))) {
-    console.log('NO WATERS')
+    setGameOverText('NO WATERS')
     return
   }
 
@@ -374,24 +374,30 @@ var terraform = function () {
     }
   }
   if (unbuiltIceTerrainCount > 0) {
-    console.log('TOO MUCH ICE LEFT')
+    setGameOverText('TOO MUCH ICE LEFT')
     return
   }
 
   var peopleSaldo = getResourceProduced(RESOURCE_PEOPLE) - getResourceConsumed(RESOURCE_PEOPLE)
   if (peopleSaldo < 0) {
-    console.log('SPACE UNION SHUTS YOU DOWN')
+    setGameOverText('SPACE UNION SHUTS YOU DOWN')
     return
   }
 
   var total = (getResourceProduced(RESOURCE_PEOPLE) - getResourceConsumed(RESOURCE_PEOPLE)) +
       (getResourceProduced(RESOURCE_METAL) - getResourceConsumed(RESOURCE_METAL)) +
       (getResourceProduced(RESOURCE_MINERALS) - getResourceConsumed(RESOURCE_MINERALS))
-  console.log('TALLYHO', total)
+  setGameOverText('TALLYHO: ' + total)
 }
 
 var setInformationBoxText = function (text) {
   gameScene.informationBoxText.text = text
+}
+
+var setGameOverText = function (text) {
+  gameScene.gameOverContainer.visible = true
+  gameScene.gameOverContainer.interactive = true
+  gameScene.gameOverText.text = text
 }
 
 var Tile = function (x, y, terrainType) {
@@ -590,18 +596,37 @@ var gameScene = {
     this.informationBoxContainer.x = 128
     this.informationBoxContainer.y = 104 + 364
 
-    global.baseStage.addChild(this.container)
-    this.container.addChild(this.gameContainer)
-    this.container.addChild(this.buildingPanelContainer)
-    this.container.addChild(this.resourcePanelContainer)
-    this.container.addChild(this.informationBoxContainer)
-
     var terraformButton = new PIXI.Sprite(PIXI.loader.resources['terraform_button'].texture)
     terraformButton.interactive = true
     terraformButton.on('click', function () {
       terraform()
     })
+
+    this.gameOverContainer = new PIXI.Container()
+    var gameOverBackground = new PIXI.Sprite(PIXI.loader.resources['background'].texture)
+    this.gameOverContainer.addChild(gameOverBackground)
+    this.gameOverText = new PIXI.Text('', {
+      fontSize: 20,
+      fill: '#ffff00',
+      wordWrap: true,
+      wordWrapWidth: 474,
+    })
+    this.gameOverText.x = 100
+    this.gameOverText.y = 100
+    this.gameOverContainer.addChild(this.gameOverText)
+    this.gameOverContainer.on('click', function () {
+      this.gameOverContainer.visible = false
+      this.gameOverContainer.interactive = false
+    }.bind(this))
+    this.gameOverContainer.visible = false
+
+    global.baseStage.addChild(this.container)
+    this.container.addChild(this.gameContainer)
+    this.container.addChild(this.buildingPanelContainer)
+    this.container.addChild(this.resourcePanelContainer)
+    this.container.addChild(this.informationBoxContainer)
     this.container.addChild(terraformButton)
+    this.container.addChild(this.gameOverContainer)
 
     tiles = []
     for (var r = 0; r < rowCount; r++) {
