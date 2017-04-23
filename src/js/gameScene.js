@@ -1012,12 +1012,12 @@ var gameScene = {
     colonyLifetimeTitle.y = 193
     this.resultContainer.addChild(colonyLifetimeTitle)
 
-    var lifetimeShadow = new PIXI.Text('456 years', { fontSize: 50, fill: '#000000'})
+    var lifetimeShadow = new PIXI.Text(result.total + ' years', { fontSize: 50, fill: '#000000'})
     lifetimeShadow.x = 94
     lifetimeShadow.y = 218
     this.resultContainer.addChild(lifetimeShadow)
 
-    var lifetime = new PIXI.Text('456 years', { fontSize: 50, fill: '#ffffff'})
+    var lifetime = new PIXI.Text(result.total + ' years', { fontSize: 50, fill: '#ffffff'})
     lifetime.x = 92
     lifetime.y = 216
     this.resultContainer.addChild(lifetime)
