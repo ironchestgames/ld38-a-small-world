@@ -759,6 +759,8 @@ var gameScene = {
 
     this.plantsSprite = new PIXI.Sprite(PIXI.loader.resources['plants'].texture)
     this.plantsSprite.visible = false
+    this.plantsSprite.x = 128 - 182
+    this.plantsSprite.y = 104 - 132
 
     this.gameContainer.addChild(asteroidSprite)
     this.gameContainer.addChild(this.plantsSprite)
