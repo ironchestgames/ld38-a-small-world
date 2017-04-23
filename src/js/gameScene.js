@@ -22,8 +22,6 @@ var RESOURCE_SAND = 'RESOURCE_SAND'
 var RESOURCE_ICE = 'RESOURCE_ICE'
 var RESOURCE_GLASS = 'RESOURCE_GLASS'
 var RESOURCE_METAL = 'RESOURCE_METAL'
-var RESOURCE_MINERALS = 'RESOURCE_MINERALS'
-var RESOURCE_ALLOY = 'RESOURCE_ALLOY'
 var RESOURCE_WATER = 'RESOURCE_WATER'
 var RESOURCE_DOME = 'RESOURCE_DOME'
 
@@ -36,12 +34,10 @@ var BUILDING_ICE_COLLECTOR = 'BUILDING_ICE_COLLECTOR'
 var BUILDING_LIVING_QUARTERS = 'BUILDING_LIVING_QUARTERS'
 
 //Resource converters
-var BUILDING_ALLOY_AND_GLASS_TO_DOME = 'BUILDING_ALLOY_AND_GLASS_TO_DOME'
+var BUILDING_METAL_AND_GLASS_TO_DOME = 'BUILDING_METAL_AND_GLASS_TO_DOME'
 var BUILDING_ICE_AND_HEAT_TO_WATER = 'BUILDING_ICE_AND_HEAT_TO_WATER'
 var BUILDING_ORE_TO_METAL = 'BUILDING_ORE_TO_METAL'
-var BUILDING_MINERAL_AND_METAL_TO_ALLOY = 'BUILDING_MINERAL_AND_METAL_TO_ALLOY'
 var BUILDING_SAND_TO_GLASS = 'BUILDING_SAND_TO_GLASS'
-var BUILDING_SAND_TO_MINERALS = 'BUILDING_SAND_TO_MINERALS'
 
 var buildingNeeds = {}
 //Base buildings
@@ -53,12 +49,10 @@ buildingNeeds[BUILDING_ICE_COLLECTOR] = [RESOURCE_PEOPLE]
 buildingNeeds[BUILDING_LIVING_QUARTERS] = []
 
 //Resource converters
-buildingNeeds[BUILDING_ALLOY_AND_GLASS_TO_DOME] = [RESOURCE_PEOPLE, RESOURCE_ALLOY, RESOURCE_GLASS]
+buildingNeeds[BUILDING_METAL_AND_GLASS_TO_DOME] = [RESOURCE_PEOPLE, RESOURCE_GLASS, RESOURCE_METAL]
 buildingNeeds[BUILDING_ICE_AND_HEAT_TO_WATER] = [RESOURCE_PEOPLE, RESOURCE_ICE, RESOURCE_HEAT]
 buildingNeeds[BUILDING_ORE_TO_METAL] = [RESOURCE_PEOPLE, RESOURCE_ORE]
-buildingNeeds[BUILDING_MINERAL_AND_METAL_TO_ALLOY] = [RESOURCE_PEOPLE, RESOURCE_METAL, RESOURCE_MINERALS]
 buildingNeeds[BUILDING_SAND_TO_GLASS] = [RESOURCE_PEOPLE, RESOURCE_SAND]
-buildingNeeds[BUILDING_SAND_TO_MINERALS] = [RESOURCE_PEOPLE, RESOURCE_SAND]
 
 var buildingProvides = {}
 //Base buildings
@@ -70,12 +64,10 @@ buildingProvides[BUILDING_ICE_COLLECTOR] = RESOURCE_ICE
 buildingProvides[BUILDING_LIVING_QUARTERS] = RESOURCE_PEOPLE
 
 //Resource converters
-buildingProvides[BUILDING_ALLOY_AND_GLASS_TO_DOME] = RESOURCE_DOME
+buildingProvides[BUILDING_METAL_AND_GLASS_TO_DOME] = RESOURCE_DOME
 buildingProvides[BUILDING_ICE_AND_HEAT_TO_WATER] = RESOURCE_WATER
 buildingProvides[BUILDING_ORE_TO_METAL] = RESOURCE_METAL
-buildingProvides[BUILDING_MINERAL_AND_METAL_TO_ALLOY] = RESOURCE_ALLOY
 buildingProvides[BUILDING_SAND_TO_GLASS] = RESOURCE_GLASS
-buildingProvides[BUILDING_SAND_TO_MINERALS] = RESOURCE_MINERALS
 
 var buildingTerrainPermissions = {}
 buildingTerrainPermissions[null] = []
@@ -87,12 +79,29 @@ buildingTerrainPermissions[BUILDING_ICE_COLLECTOR] = [TERRAIN_ICE]
 buildingTerrainPermissions[BUILDING_LIVING_QUARTERS] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ORE]
 
 //Resource converters
-buildingTerrainPermissions[BUILDING_ALLOY_AND_GLASS_TO_DOME] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
+buildingTerrainPermissions[BUILDING_METAL_AND_GLASS_TO_DOME] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
 buildingTerrainPermissions[BUILDING_ICE_AND_HEAT_TO_WATER] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
 buildingTerrainPermissions[BUILDING_ORE_TO_METAL] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
-buildingTerrainPermissions[BUILDING_MINERAL_AND_METAL_TO_ALLOY] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
 buildingTerrainPermissions[BUILDING_SAND_TO_GLASS] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
-buildingTerrainPermissions[BUILDING_SAND_TO_MINERALS] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
+
+var infoTexts = {}
+infoTexts[BUILDING_HEAT_GENERATOR] = 'Heat Generator\nProvides heat'
+infoTexts[BUILDING_MINING] = 'Ore Mine\nProvides ore from ore tiles'
+infoTexts[BUILDING_QUARRY] = 'Quarry\nProvides sand from sand tiles'
+infoTexts[BUILDING_HQ] = 'Base HQ\nProvides a starting population\nCan not be removed'
+infoTexts[BUILDING_ICE_COLLECTOR] = 'Ice Collector\nProvides ice from ice tiles'
+infoTexts[BUILDING_LIVING_QUARTERS] = 'Living Quarters\nProvides 4 people'
+
+//Resource converters
+infoTexts[BUILDING_METAL_AND_GLASS_TO_DOME] = 'Dome Maintenance Facility\nUses metal and glass to construct and maintain the dome'
+infoTexts[BUILDING_ICE_AND_HEAT_TO_WATER] = 'Water Plant\nUses ice and heat to provide and control water levels on the asteroid'
+infoTexts[BUILDING_ORE_TO_METAL] = 'Metal Works\nUses ore to provide metal'
+infoTexts[BUILDING_SAND_TO_GLASS] = 'Glass Works\nUses sand to provide glass'
+
+infoTexts[TERRAIN_PLAIN] = '(No resource)'
+infoTexts[TERRAIN_SAND] = 'Sand'
+infoTexts[TERRAIN_ICE] = 'Ice'
+infoTexts[TERRAIN_ORE] = 'Ore'
 
 
 var resourceNames = {}
@@ -107,12 +116,10 @@ resourceNames[BUILDING_QUARRY] = 'quarry'
 resourceNames[BUILDING_HQ] = 'hq'
 resourceNames[BUILDING_ICE_COLLECTOR] = 'ice_collector'
 resourceNames[BUILDING_LIVING_QUARTERS] = 'living_quarters'
-resourceNames[BUILDING_ALLOY_AND_GLASS_TO_DOME] = 'alloy_and_glass_to_dome'
+resourceNames[BUILDING_METAL_AND_GLASS_TO_DOME] = 'alloy_and_glass_to_dome'
 resourceNames[BUILDING_ICE_AND_HEAT_TO_WATER] = 'ice_and_heat_to_water'
 resourceNames[BUILDING_ORE_TO_METAL] = 'ore_to_metal'
-resourceNames[BUILDING_MINERAL_AND_METAL_TO_ALLOY] = 'mineral_and_metal_to_alloy'
 resourceNames[BUILDING_SAND_TO_GLASS] = 'sand_to_glass'
-resourceNames[BUILDING_SAND_TO_MINERALS] = 'sand_to_minerals'
 
 resourceNames[RESOURCE_PEOPLE] = 'resource_people'
 resourceNames[RESOURCE_HEAT] = 'resource_heat'
@@ -121,17 +128,8 @@ resourceNames[RESOURCE_SAND] = 'resource_sand'
 resourceNames[RESOURCE_ICE] = 'resource_ice'
 resourceNames[RESOURCE_GLASS] = 'resource_glass'
 resourceNames[RESOURCE_METAL] = 'resource_metal'
-resourceNames[RESOURCE_MINERALS] = 'resource_minerals'
-resourceNames[RESOURCE_ALLOY] = 'resource_alloy'
 resourceNames[RESOURCE_WATER] = 'resource_water'
 resourceNames[RESOURCE_DOME] = 'resource_dome'
-
-var map = [
-  TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_SAND,
-  TERRAIN_PLAIN, TERRAIN_PLAIN,TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN,
-  TERRAIN_PLAIN, BUILDING_HQ  ,TERRAIN_PLAIN, TERRAIN_ORE,   TERRAIN_PLAIN, TERRAIN_ORE,
-  TERRAIN_PLAIN, TERRAIN_PLAIN,TERRAIN_ICE,   TERRAIN_PLAIN, TERRAIN_ICE,   TERRAIN_PLAIN,
-]
 
 var selectedBuildingButton = null
 
@@ -144,12 +142,10 @@ var buildingButtonTypes = [ // this is the order for the buttons
   BUILDING_LIVING_QUARTERS,
 
   //Resource converters
-  BUILDING_ALLOY_AND_GLASS_TO_DOME,
+  BUILDING_METAL_AND_GLASS_TO_DOME,
   BUILDING_ICE_AND_HEAT_TO_WATER,
   BUILDING_ORE_TO_METAL,
-  BUILDING_MINERAL_AND_METAL_TO_ALLOY,
   BUILDING_SAND_TO_GLASS,
-  BUILDING_SAND_TO_MINERALS,
 ]
 
 var resourceTexts = {} // inited in gameScene create
@@ -160,12 +156,13 @@ resourceTexts[RESOURCE_SAND] = null
 resourceTexts[RESOURCE_ICE] = null
 resourceTexts[RESOURCE_GLASS] = null
 resourceTexts[RESOURCE_METAL] = null
-resourceTexts[RESOURCE_MINERALS] = null
-resourceTexts[RESOURCE_ALLOY] = null
 resourceTexts[RESOURCE_WATER] = null
 resourceTexts[RESOURCE_DOME] = null
 
-//var tweens = null
+var deselectBuildingButton = function () {
+  selectedBuildingButton = null
+  updateTileMarkers()
+}
 
 var buildingHasAllRequiredResources = function(tile) {
   var myBuildingNeeds = buildingNeeds[tile.buildingType]
@@ -209,14 +206,8 @@ var isTileProducingResource = function (tile, resource) {
     case RESOURCE_METAL:
       return tile.buildingType == BUILDING_ORE_TO_METAL && buildingHasAllRequiredResources(tile)
 
-    case RESOURCE_MINERALS:
-      return tile.buildingType == BUILDING_SAND_TO_MINERALS && buildingHasAllRequiredResources(tile)
-
-    case RESOURCE_ALLOY:
-      return tile.buildingType == BUILDING_MINERAL_AND_METAL_TO_ALLOY && buildingHasAllRequiredResources(tile)
-
     case RESOURCE_DOME:
-      return tile.buildingType == BUILDING_ALLOY_AND_GLASS_TO_DOME && buildingHasAllRequiredResources(tile)
+      return tile.buildingType == BUILDING_METAL_AND_GLASS_TO_DOME && buildingHasAllRequiredResources(tile)
 
     case RESOURCE_WATER:
       return tile.buildingType == BUILDING_ICE_AND_HEAT_TO_WATER && buildingHasAllRequiredResources(tile)
@@ -235,6 +226,13 @@ var produceResource = function (resource) {
 
       if (isTileProducingResource(tile, resource)) {
         baseProducedResources.push(resource)
+
+        // add in total 4 peoples from LQs
+        if (tile.buildingType === BUILDING_LIVING_QUARTERS && resource === RESOURCE_PEOPLE) {
+          baseProducedResources.push(resource)
+          baseProducedResources.push(resource)
+          baseProducedResources.push(resource)
+        }
       }
     }
   }
@@ -262,11 +260,7 @@ var updateTiles = function () {
   // level 3
   produceResource(RESOURCE_GLASS)
   produceResource(RESOURCE_METAL)
-  produceResource(RESOURCE_MINERALS)
   produceResource(RESOURCE_WATER)
-
-  // level 4
-  produceResource(RESOURCE_ALLOY)
 
   // level 5
   produceResource(RESOURCE_DOME)
@@ -366,11 +360,10 @@ var terraform = function () {
   }
   var total = (getResourceProduced(RESOURCE_PEOPLE) - getResourceConsumed(RESOURCE_PEOPLE)) +
       (getResourceProduced(RESOURCE_METAL) - getResourceConsumed(RESOURCE_METAL)) +
-      (getResourceProduced(RESOURCE_MINERALS) - getResourceConsumed(RESOURCE_MINERALS)) +
       unbuiltTerrainCount
 
 
-  var tile = findBuildingByType(BUILDING_ALLOY_AND_GLASS_TO_DOME)
+  var tile = findBuildingByType(BUILDING_METAL_AND_GLASS_TO_DOME)
   if (!(tile && isTileProducingResource(tile, RESOURCE_DOME))) {
     setGameOverText('NO DOME\nLIVING QUARTERS SUPPLIES HELD FOR 3 MONTHS')
     return
@@ -404,7 +397,7 @@ var terraform = function () {
   }
 
   total += 1
-  setGameOverText('THE COLONY LASTED ' + total + ' YEARS')
+  setGameOverText('THE COLONY LASTED ' + total + ' YEARS') // TODO: A MERE/THANKS TO YOU
 }
 
 var setInformationBoxText = function (text) {
@@ -444,18 +437,24 @@ var Tile = function (x, y, terrainType) {
     if (selectedBuildingButton) {
       if (this.isAvailableForSelectedBuilding) {
         this.changeBuilding(selectedBuildingButton)
-        selectedBuildingButton = null
         updateGame()
-        updateTileMarkers()
+
+        deselectBuildingButton()
       } else {
         if (this.terrainType === BUILDING_HQ) {
-          setInformationBoxText('can\'t replace HQ')
+          setInformationBoxText('Can\'t replace HQ')
+
+          deselectBuildingButton()
         } else {
-          setInformationBoxText('can\'t build there (reasons)')
+          setInformationBoxText('Must place building on green tiles')
         }
       }
     } else {
-      setInformationBoxText('selected: ' + this.buildingType + ', ' + this.terrainType)
+      var str = infoTexts[this.terrainType]
+      if (this.buildingType && this.buildingType !== BUILDING_HQ) {
+        str = infoTexts[this.buildingType] + ', ' + str
+      }
+      setInformationBoxText(str)
     }
   }.bind(this))
 
@@ -485,7 +484,7 @@ Tile.prototype.changeBuilding = function (buildingType) {
   this.buildingContainer.removeChildren()
   this.buildingContainer.addChild(buildingSprite)
 
-  setInformationBoxText('built: ' + this.buildingType)
+  setInformationBoxText('built: ' + this.buildingType) // unsure about this mofo
 }
 
 Tile.prototype.update = function () {
@@ -534,9 +533,9 @@ var BuildingButton = function (buildingType, index) {
       selectedBuildingButton = this.buildingType
 
       updateTileMarkers()
-      setInformationBoxText(this.buildingType)
+      setInformationBoxText(infoTexts[this.buildingType])
     } else {
-      setInformationBoxText('not available at this time')
+      setInformationBoxText('This building is locked')
     }
   }.bind(this))
   this.container.addChild(button)
@@ -580,6 +579,12 @@ var gameScene = {
     this.container = new PIXI.Container()
 
     var backgroundImage = new PIXI.Sprite(PIXI.loader.resources['background'].texture)
+    backgroundImage.interactive = true
+    backgroundImage.on('click', function () {
+      selectedBuildingButton = null
+      updateTileMarkers()
+      setInformationBoxText('')
+    })
     this.container.addChild(backgroundImage)
 
     var asteroidImage = new PIXI.Sprite(PIXI.loader.resources['astroid'].texture)
@@ -657,8 +662,7 @@ var gameScene = {
     this.gameOverText.y = 100
     this.gameOverContainer.addChild(this.gameOverText)
     this.gameOverContainer.on('click', function () {
-      this.gameOverContainer.visible = false
-      this.gameOverContainer.interactive = false
+      this.changeScene('gameScene') // start over
     }.bind(this))
     this.gameOverContainer.visible = false
 
@@ -669,6 +673,13 @@ var gameScene = {
     this.container.addChild(this.informationBoxContainer)
     this.container.addChild(terraformButton)
     this.container.addChild(this.gameOverContainer)
+
+    var map = [
+      TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_SAND,
+      TERRAIN_PLAIN, TERRAIN_PLAIN,TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN,
+      TERRAIN_PLAIN, BUILDING_HQ  ,TERRAIN_PLAIN, TERRAIN_ORE,   TERRAIN_PLAIN, TERRAIN_ORE,
+      TERRAIN_PLAIN, TERRAIN_PLAIN,TERRAIN_ICE,   TERRAIN_PLAIN, TERRAIN_ICE,   TERRAIN_PLAIN,
+    ]
 
     tiles = []
     for (var r = 0; r < rowCount; r++) {
