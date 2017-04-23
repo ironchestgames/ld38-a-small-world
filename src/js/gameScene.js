@@ -1172,7 +1172,7 @@ var gameScene = {
         var container = new PIXI.Container()
         var flare_super = new PIXI.Sprite(PIXI.loader.resources["flare_super"].texture)
         flare_super.y = 2
-        var textObject = new PIXI.Text("The Dome is built and is sustaining an ecosystem", { fontSize: 16 })
+        var textObject = new PIXI.Text("The Dome is built and is sustaining an ecosystem", { fontSize: 12 })
         textObject.x = 44
         container.addChild(flare_super)
         container.addChild(textObject)
@@ -1182,13 +1182,13 @@ var gameScene = {
 
         this.resultContainer.addChild(container)
 
-        flare_y += 26
+        flare_y += 20
       } else if (flare === FLARE_TREES_NEXT_TO_LQ) {
         foundPositive = true
         var container = new PIXI.Container()
         var flare_super = new PIXI.Sprite(PIXI.loader.resources["flare_super"].texture)
         flare_super.y = 2
-        var textObject = new PIXI.Text("Living Quarters have immediate access to a lush forest", { fontSize: 16 })
+        var textObject = new PIXI.Text("Living Quarters have immediate access to a lush forest", { fontSize: 12 })
         textObject.x = 44
         container.addChild(flare_super)
         container.addChild(textObject)
@@ -1198,11 +1198,11 @@ var gameScene = {
 
         this.resultContainer.addChild(container)
 
-        flare_y += 26
+        flare_y += 20
       }
     }.bind(this))
     if (!foundPositive) {
-      var textObject = new PIXI.Text("No bonuses - try to combine the placement\nof buildings and make sure to construct the dome.", { fontSize: 16 })
+      var textObject = new PIXI.Text("No bonuses - try to combine the placement\nof buildings and make sure to construct the dome.", { fontSize: 12 })
       textObject.x = flare_x
       textObject.y = flare_y
       this.resultContainer.addChild(textObject)
@@ -1216,7 +1216,7 @@ var gameScene = {
         var container = new PIXI.Container()
         var flare_disaster = new PIXI.Sprite(PIXI.loader.resources["flare_disaster"].texture)
         flare_disaster.y = 2
-        var textObject = new PIXI.Text("More than two adjacent Living Quarters causes\ndiseases to spread like the plague", { fontSize: 16 })
+        var textObject = new PIXI.Text("More than two adjacent Living Quarters causes\ndiseases to spread like the plague", { fontSize: 12 })
         textObject.x = 44
         container.addChild(flare_disaster)
         container.addChild(textObject)
@@ -1226,14 +1226,14 @@ var gameScene = {
 
         this.resultContainer.addChild(container)
 
-        flare_y += 40
+        flare_y += 34
       }
       if (flare === FLARE_ICE_AND_DOME) {
         foundNegative = true
         var container = new PIXI.Container()
         var flare_disaster = new PIXI.Sprite(PIXI.loader.resources["flare_disaster"].texture)
         flare_disaster.y = 2
-        var textObject = new PIXI.Text("Unharvested ice inside dome, ecosystem is\noverrun by algae", { fontSize: 16 })
+        var textObject = new PIXI.Text("Unharvested ice inside dome, ecosystem is\noverrun by algae", { fontSize: 12 })
         textObject.x = 44
         container.addChild(flare_disaster)
         container.addChild(textObject)
@@ -1243,14 +1243,14 @@ var gameScene = {
 
         this.resultContainer.addChild(container)
 
-        flare_y += 40
+        flare_y += 34
       }
       if (flare === FLARE_METAL_WORKS_NEXT_TO_TREES) {
         foundNegative = true
         var container = new PIXI.Container()
         var flare_disaster = new PIXI.Sprite(PIXI.loader.resources["flare_disaster"].texture)
         flare_disaster.y = 2
-        var textObject = new PIXI.Text("Metal Works next to forests is a huge fire hazard", { fontSize: 16 })
+        var textObject = new PIXI.Text("Metal Works next to forests is a huge fire hazard", { fontSize: 12 })
         textObject.x = 44
         container.addChild(flare_disaster)
         container.addChild(textObject)
@@ -1260,14 +1260,14 @@ var gameScene = {
 
         this.resultContainer.addChild(container)
 
-        flare_y += 26
+        flare_y += 20
       }
       if (flare === FLARE_OVERWORKED_POPULATION) {
         foundNegative = true
         var container = new PIXI.Container()
         var flare_disaster = new PIXI.Sprite(PIXI.loader.resources["flare_disaster"].texture)
         flare_disaster.y = 2
-        var textObject = new PIXI.Text("The Space Worker Union shuts you down because\nyour population is overworked", { fontSize: 16 })
+        var textObject = new PIXI.Text("The Space Worker Union shuts you down because\nyour population is overworked", { fontSize: 12 })
         textObject.x = 44
         container.addChild(flare_disaster)
         container.addChild(textObject)
@@ -1277,11 +1277,11 @@ var gameScene = {
 
         this.resultContainer.addChild(container)
 
-        flare_y += 40
+        flare_y += 34
       }
     }.bind(this))
     if (!foundNegative) {
-      var textObject = new PIXI.Text("No penalties - good job!", { fontSize: 16 })
+      var textObject = new PIXI.Text("No penalties - good job!", { fontSize: 12 })
       textObject.x = flare_x
       textObject.y = flare_y
       this.resultContainer.addChild(textObject)
@@ -1300,12 +1300,12 @@ var gameScene = {
 
     var bonusTitle = new PIXI.Text('Bonuses', { fontSize: 20, fill: '#000000'})
     bonusTitle.x = 337
-    bonusTitle.y = 66
+    bonusTitle.y = 63
     this.resultContainer.addChild(bonusTitle)
 
     var penaltyTitle = new PIXI.Text('Penalties', { fontSize: 20, fill: '#000000'})
     penaltyTitle.x = 337
-    penaltyTitle.y = 179
+    penaltyTitle.y = 176
     this.resultContainer.addChild(penaltyTitle)
 
     var colonyLifetimeShadowTitle = new PIXI.Text('Colony lifetime', { fontSize: 20, fill: '#000000'})
