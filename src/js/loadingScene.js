@@ -22,7 +22,7 @@ var loadingScene = {
     .add('end_screen_panel', 'assets/images/end_screen_panel.png')
     .add('background', 'assets/images/background.png')
     .add('astroid', 'assets/images/astroid.png')
-    .add('plants', 'assets/images/plants.png')
+    .add('astroid_green', 'assets/images/astroid_green.png')
     .add('trees', 'assets/images/trees.png')
     .add('base_resources_panel', 'assets/images/base_resources_panel.png')
     .add('building_button', 'assets/images/building_button.png')

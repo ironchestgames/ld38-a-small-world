@@ -136,7 +136,7 @@ var score = {}
 
 var resourceScoreFactors = {}
 resourceScoreFactors[RESOURCE_HEAT] = 4
-resourceScoreFactors[RESOURCE_PEOPLE] = 5
+resourceScoreFactors[RESOURCE_PEOPLE] = 4
 resourceScoreFactors[RESOURCE_SAND] = 2
 resourceScoreFactors[RESOURCE_GLASS] = 1
 resourceScoreFactors[RESOURCE_METAL] = 3
@@ -145,9 +145,9 @@ resourceScoreFactors[RESOURCE_WATER] = 10
 var SCORE_CONSTANT_DOME = 50
 var SCORE_CONSTANT_UNBUILT_TERRAIN = 12
 
-var SCORE_FACTOR_TOO_BIG_LQ_CLUSTER = -0.9
+var SCORE_FACTOR_TOO_BIG_LQ_CLUSTER = -0.65
 var SCORE_FACTOR_TREES_NEXT_TO_LQ = 0.05
-var SCORE_FACTOR_METAL_WORKS_NEXT_TO_TREES = -0.99
+var SCORE_FACTOR_METAL_WORKS_NEXT_TO_TREES = -0.7
 var SCORE_FACTOR_OVERWORKED_POPULATION = -0.75
 var SCORE_FACTOR_ICE_WITHOUT_COLLECTORS = -0.25
 
@@ -433,7 +433,7 @@ var getSurroundingTiles = function (tile) {
 }
 
 var terraform = function () {
-  gameScene.plantsSprite.visible = true
+  gameScene.asteroidSprite.texture = PIXI.loader.resources['astroid_green'].texture
 
   tiles.forEach(function (tile) {
     if (!tile.buildingType) {
@@ -969,17 +969,11 @@ var gameScene = {
 
     this.tileContainer = new PIXI.Container()
 
-    var asteroidSprite = new PIXI.Sprite(PIXI.loader.resources['astroid'].texture)
-    asteroidSprite.x = 128 - 182
-    asteroidSprite.y = 104 - 132
+    this.asteroidSprite = new PIXI.Sprite(PIXI.loader.resources['astroid'].texture)
+    this.asteroidSprite.x = 128 - 182
+    this.asteroidSprite.y = 104 - 132
 
-    this.plantsSprite = new PIXI.Sprite(PIXI.loader.resources['plants'].texture)
-    this.plantsSprite.visible = false
-    this.plantsSprite.x = 128 - 182
-    this.plantsSprite.y = 104 - 132
-
-    this.gameContainer.addChild(asteroidSprite)
-    this.gameContainer.addChild(this.plantsSprite)
+    this.gameContainer.addChild(this.asteroidSprite)
     this.gameContainer.addChild(this.tileContainer)
 
     var buildingPanelContainer = new PIXI.Container()
@@ -1257,7 +1251,7 @@ var gameScene = {
         var container = new PIXI.Container()
         var flare_disaster = new PIXI.Sprite(PIXI.loader.resources["flare_disaster"].texture)
         flare_disaster.y = 2
-        var textObject = new PIXI.Text("Unharvested ice inside dome, ecosystem is\noverrun by algae", { fontSize: 12 })
+        var textObject = new PIXI.Text("Unharvested ice inside dome, ecosystem is\nunbalanced and overrun with algae", { fontSize: 12 })
         textObject.x = 44
         container.addChild(flare_disaster)
         container.addChild(textObject)
