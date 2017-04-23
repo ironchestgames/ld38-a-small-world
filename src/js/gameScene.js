@@ -307,7 +307,7 @@ var updateNumbers = function () {
   }
 }
 
-var updateGreenMarkers = function () {
+var updateTileMarkers = function () {
   for (var r = 0; r < rowCount; r++) {
     for (var c = 0; c < colCount; c++) {
       var tile = tiles[r][c]
@@ -315,8 +315,13 @@ var updateGreenMarkers = function () {
           buildingTerrainPermissions[selectedBuildingButton].includes(tile.terrain)
 
       tile.greenMarkerSprite.visible = false
+      tile.yellowMarkerSprite.visible = false
       if (tile.isAvailableForSelectedBuilding) {
-        tile.greenMarkerSprite.visible = true
+        if (tile.buildingType) {
+          tile.yellowMarkerSprite.visible = true
+        } else {
+          tile.greenMarkerSprite.visible = true
+        }
       }
     }
   }
@@ -414,7 +419,7 @@ var Tile = function (x, y, terrainType) {
         this.changeBuilding(selectedBuildingButton)
         selectedBuildingButton = null
         updateGame()
-        updateGreenMarkers()
+        updateTileMarkers()
       }
     }
   }.bind(this))
@@ -422,10 +427,14 @@ var Tile = function (x, y, terrainType) {
   this.greenMarkerSprite = new PIXI.Sprite(PIXI.loader.resources['tile_placement_available'].texture)
   this.greenMarkerSprite.visible = false
 
+  this.yellowMarkerSprite = new PIXI.Sprite(PIXI.loader.resources['tile_placement_yellow'].texture)
+  this.yellowMarkerSprite.visible = false
+
   this.container.addChild(this.terrainSprite)
   this.container.addChild(this.buildingContainer)
   this.container.addChild(this.iconsContainer)
   this.container.addChild(this.greenMarkerSprite)
+  this.container.addChild(this.yellowMarkerSprite)
 
   this.container.x = x * 64
   this.container.y = y * 64
@@ -488,7 +497,7 @@ var BuildingButton = function (buildingType, index) {
       console.log(this.buildingType)
       selectedBuildingButton = this.buildingType
 
-      updateGreenMarkers()
+      updateTileMarkers()
     }
   }.bind(this))
   this.container.addChild(button)
