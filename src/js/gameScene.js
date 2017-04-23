@@ -562,6 +562,10 @@ var countScore = function () {
 
   score.total = Math.ceil(score.total)
 
+  if (score.total < 0) {
+    score.total = 0
+  }
+
   gameScene.showResultScreen(score)
 }
 
@@ -1198,7 +1202,7 @@ var gameScene = {
         var container = new PIXI.Container()
         var flare_disaster = new PIXI.Sprite(PIXI.loader.resources["flare_disaster"].texture)
         flare_disaster.y = 2
-        var textObject = new PIXI.Text("Metal Works next to forests is a huge fire hazard\n", { fontSize: 16 })
+        var textObject = new PIXI.Text("Metal Works next to forests is a huge fire hazard", { fontSize: 16 })
         textObject.x = 44
         container.addChild(flare_disaster)
         container.addChild(textObject)
@@ -1208,7 +1212,7 @@ var gameScene = {
 
         this.resultContainer.addChild(container)
 
-        flare_y += 40
+        flare_y += 26
       }
       if (flare === FLARE_OVERWORKED_POPULATION) {
         foundNegative = true
