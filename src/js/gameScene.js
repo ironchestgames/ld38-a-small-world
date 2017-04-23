@@ -125,13 +125,6 @@ resourceNames[RESOURCE_ALLOY] = 'resource_alloy'
 resourceNames[RESOURCE_WATER] = 'resource_water'
 resourceNames[RESOURCE_DOME] = 'resource_dome'
 
-var map = [
-  TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_SAND,
-  TERRAIN_PLAIN, TERRAIN_PLAIN,TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN,
-  TERRAIN_PLAIN, BUILDING_HQ  ,TERRAIN_PLAIN, TERRAIN_ORE,   TERRAIN_PLAIN, TERRAIN_ORE,
-  TERRAIN_PLAIN, TERRAIN_PLAIN,TERRAIN_ICE,   TERRAIN_PLAIN, TERRAIN_ICE,   TERRAIN_PLAIN,
-]
-
 var selectedBuildingButton = null
 
 var buildingButtonTypes = [ // this is the order for the buttons
@@ -401,7 +394,7 @@ var terraform = function () {
   }
 
   total += 1
-  setGameOverText('THE COLONY LASTED ' + total + ' YEARS')
+  setGameOverText('THE COLONY LASTED ' + total + ' YEARS') // TODO: A MERE/THANKS TO YOU
 }
 
 var setInformationBoxText = function (text) {
@@ -631,6 +624,7 @@ var gameScene = {
     this.gameOverContainer.on('click', function () {
       this.gameOverContainer.visible = false
       this.gameOverContainer.interactive = false
+      this.changeScene('gameScene')
     }.bind(this))
     this.gameOverContainer.visible = false
 
@@ -641,6 +635,13 @@ var gameScene = {
     this.container.addChild(this.informationBoxContainer)
     this.container.addChild(terraformButton)
     this.container.addChild(this.gameOverContainer)
+
+    var map = [
+      TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_SAND,
+      TERRAIN_PLAIN, TERRAIN_PLAIN,TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN,
+      TERRAIN_PLAIN, BUILDING_HQ  ,TERRAIN_PLAIN, TERRAIN_ORE,   TERRAIN_PLAIN, TERRAIN_ORE,
+      TERRAIN_PLAIN, TERRAIN_PLAIN,TERRAIN_ICE,   TERRAIN_PLAIN, TERRAIN_ICE,   TERRAIN_PLAIN,
+    ]
 
     tiles = []
     for (var r = 0; r < rowCount; r++) {
