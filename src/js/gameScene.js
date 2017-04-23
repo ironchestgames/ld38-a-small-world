@@ -225,6 +225,13 @@ var produceResource = function (resource) {
 
       if (isTileProducingResource(tile, resource)) {
         baseProducedResources.push(resource)
+
+        // add in total 4 peoples from LQs
+        if (tile.buildingType === BUILDING_LIVING_QUARTERS && resource === RESOURCE_PEOPLE) {
+          baseProducedResources.push(resource)
+          baseProducedResources.push(resource)
+          baseProducedResources.push(resource)
+        }
       }
     }
   }
@@ -624,9 +631,7 @@ var gameScene = {
     this.gameOverText.y = 100
     this.gameOverContainer.addChild(this.gameOverText)
     this.gameOverContainer.on('click', function () {
-      this.gameOverContainer.visible = false
-      this.gameOverContainer.interactive = false
-      this.changeScene('gameScene')
+      this.changeScene('gameScene') // start over
     }.bind(this))
     this.gameOverContainer.visible = false
 
