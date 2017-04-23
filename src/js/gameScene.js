@@ -578,6 +578,22 @@ var gameScene = {
 
     this.container = new PIXI.Container()
 
+    this.welcometextContainer = new PIXI.Container()
+    var region = (Math.random() < 0.5) ? 'PO' : 'KG';
+    var welcomeText = new PIXI.Text('Welcome, to asteroid ' + region + '-56-AX-' + Math.round(Math.random() * 10032), { fontSize: 16, fill: '#ffffff'})
+    welcomeText.x = 270
+    welcomeText.y = 270
+    var tween_welcometext = new TweenLib.Tween({ alpha: 1 })
+      .to({alpha: 0}, 600)
+      .delay(400)
+      .easing(TweenLib.Easing.Quartic.Out)
+      .onUpdate(function(y) {
+        welcomeText.alpha = this.alpha;
+      })
+      .start();
+    this.tweens.push(tween_welcometext)
+    this.welcometextContainer.addChild(welcomeText)
+
     var backgroundImage = new PIXI.Sprite(PIXI.loader.resources['background'].texture)
     backgroundImage.interactive = true
     backgroundImage.on('click', function () {
@@ -591,30 +607,29 @@ var gameScene = {
     asteroidImage.x = 128
     asteroidImage.y = -500
 
-    var tweenMaster2 = new TweenLib.Tween({ y: -500 })
-      .to({y: 104}, 3000)
+    var tween_asteriod = new TweenLib.Tween({ y: -500 })
+      .to({y: 104}, 3300)
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function(y) {
         asteroidImage.y = this.y;
       })
       .start();
-    this.tweens.push(tweenMaster2)
+    this.tweens.push(tween_asteriod)
     this.container.addChild(asteroidImage)
 
     var gameContainer = new PIXI.Container()
     this.gameContainer = gameContainer;
     this.gameContainer.x = 182
     this.gameContainer.y = -500
-    var tweenMaster = new TweenLib.Tween({ y: -500 })
-      .to({y: 132}, 3000)
+    var tween_gamecontainer = new TweenLib.Tween({ y: -500 })
+      .to({y: 132}, 3300)
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function(y) {
         gameContainer.y = this.y;
       })
       .start();
 
-    this.tweens.push(tweenMaster)
-    //window.kurt = tweenMaster;
+    this.tweens.push(tween_gamecontainer)
 
     this.tileContainer = new PIXI.Container()
 
@@ -667,6 +682,7 @@ var gameScene = {
     this.gameOverContainer.visible = false
 
     global.baseStage.addChild(this.container)
+    this.container.addChild(this.welcometextContainer)
     this.container.addChild(this.gameContainer)
     this.container.addChild(this.buildingPanelContainer)
     this.container.addChild(this.resourcePanelContainer)
