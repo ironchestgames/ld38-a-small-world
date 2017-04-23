@@ -38,6 +38,7 @@ var loadingScene = {
     .add('sand_to_glass', 'assets/images/sand_to_glass.png')
     .add('dome_main', 'assets/images/dome_main.png')
     .add('dome', 'assets/images/dome.png')
+    .add('dome_icon', 'assets/images/dome_icon.png')
 
     .add('resource_dome', 'assets/images/resource_dome.png')
     .add('resource_glass', 'assets/images/resource_glass.png')

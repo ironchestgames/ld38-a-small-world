@@ -166,6 +166,7 @@ resourceNames[BUILDING_ICE_AND_HEAT_TO_WATER] = 'ice_and_heat_to_water'
 resourceNames[BUILDING_ORE_TO_METAL] = 'ore_to_metal'
 resourceNames[BUILDING_SAND_TO_GLASS] = 'sand_to_glass'
 resourceNames[BUILDING_DOME] = 'dome'
+resourceNames.DOME_ICON = 'dome_icon'
 
 resourceNames[RESOURCE_PEOPLE] = 'resource_people'
 resourceNames[RESOURCE_HEAT] = 'resource_heat'
@@ -616,6 +617,10 @@ var BuildingButton = function (buildingType, index) {
   this.buildingType = buildingType
 
   var buildingResourceName = resourceNames[buildingType]
+
+  if (buildingType === BUILDING_DOME) {
+    buildingResourceName = resourceNames.DOME_ICON
+  }
 
   this.container = new PIXI.Container()
 
