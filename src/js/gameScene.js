@@ -14,6 +14,7 @@ var TERRAIN_PLAIN = 'TERRAIN_PLAIN'
 var TERRAIN_SAND = 'TERRAIN_SAND'
 var TERRAIN_ICE = 'TERRAIN_ICE'
 var TERRAIN_ORE = 'TERRAIN_ORE'
+var TERRAIN_DOME = 'TERRAIN_DOME'
 
 var RESOURCE_PEOPLE = 'RESOURCE_PEOPLE'
 var RESOURCE_HEAT = 'RESOURCE_HEAT'
@@ -38,6 +39,7 @@ var BUILDING_METAL_AND_GLASS_TO_DOME = 'BUILDING_METAL_AND_GLASS_TO_DOME'
 var BUILDING_ICE_AND_HEAT_TO_WATER = 'BUILDING_ICE_AND_HEAT_TO_WATER'
 var BUILDING_ORE_TO_METAL = 'BUILDING_ORE_TO_METAL'
 var BUILDING_SAND_TO_GLASS = 'BUILDING_SAND_TO_GLASS'
+var BUILDING_DOME = 'BUILDING_DOME'
 
 var buildingNeeds = {}
 //Base buildings
@@ -53,6 +55,7 @@ buildingNeeds[BUILDING_METAL_AND_GLASS_TO_DOME] = [RESOURCE_PEOPLE, RESOURCE_GLA
 buildingNeeds[BUILDING_ICE_AND_HEAT_TO_WATER] = [RESOURCE_PEOPLE, RESOURCE_ICE, RESOURCE_HEAT]
 buildingNeeds[BUILDING_ORE_TO_METAL] = [RESOURCE_PEOPLE, RESOURCE_ORE]
 buildingNeeds[BUILDING_SAND_TO_GLASS] = [RESOURCE_PEOPLE, RESOURCE_SAND]
+buildingNeeds[BUILDING_DOME] = [RESOURCE_DOME]
 
 var buildingProvides = {}
 //Base buildings
@@ -83,6 +86,7 @@ buildingTerrainPermissions[BUILDING_METAL_AND_GLASS_TO_DOME] = [TERRAIN_PLAIN, T
 buildingTerrainPermissions[BUILDING_ICE_AND_HEAT_TO_WATER] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
 buildingTerrainPermissions[BUILDING_ORE_TO_METAL] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
 buildingTerrainPermissions[BUILDING_SAND_TO_GLASS] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
+buildingTerrainPermissions[BUILDING_DOME] = [TERRAIN_DOME]
 
 var infoTexts = {}
 infoTexts[BUILDING_HEAT_GENERATOR] = 'Heat Generator\nProvides heat'
@@ -97,11 +101,13 @@ infoTexts[BUILDING_METAL_AND_GLASS_TO_DOME] = 'Dome Maintenance Facility\nUses m
 infoTexts[BUILDING_ICE_AND_HEAT_TO_WATER] = 'Water Plant\nUses ice and heat to provide and control water levels on the asteroid'
 infoTexts[BUILDING_ORE_TO_METAL] = 'Metal Works\nUses ore to provide metal'
 infoTexts[BUILDING_SAND_TO_GLASS] = 'Glass Works\nUses sand to provide glass'
+infoTexts[BUILDING_DOME] = 'Dome\nHolds the atmosphere'
 
 infoTexts[TERRAIN_PLAIN] = '(No resource)'
 infoTexts[TERRAIN_SAND] = 'Sand'
 infoTexts[TERRAIN_ICE] = 'Ice'
 infoTexts[TERRAIN_ORE] = 'Ore'
+infoTexts[TERRAIN_DOME] = '(Dome placement)'
 
 var score = {}
 
