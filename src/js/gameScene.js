@@ -1040,17 +1040,24 @@ var gameScene = {
     colonyLifetimeTitle.y = 193
     this.resultContainer.addChild(colonyLifetimeTitle)
 
-    var lifetimeShadow = new PIXI.Text(result.total + ' years', { fontSize: 50, fill: '#000000'})
-    lifetimeShadow.x = 94
-    lifetimeShadow.y = 218
-    this.resultContainer.addChild(lifetimeShadow)
-
-    var lifetime = new PIXI.Text(result.total + ' years', { fontSize: 50, fill: '#ffffff'})
+    var lifetime = new PIXI.Text('', { fontSize: 50, fill: '#ffffff',
+      dropShadow: true,
+      dropShadowBlur: 0,
+      dropShadowColor: '#000000',
+      dropShadowAngle: Math.PI / 6,
+      dropShadowDistance: 3,
+    })
     lifetime.x = 92
     lifetime.y = 216
     this.resultContainer.addChild(lifetime)
 
-
+    new TweenLib.Tween({ total: 0 })
+      .to({ total: result.total }, 1500)
+      .easing(TweenLib.Easing.Quartic.Out)
+      .onUpdate(function() {
+        lifetime.text = Math.round(this.total) + ' years'
+      })
+      .start()
 
   },
   destroy: function () {
