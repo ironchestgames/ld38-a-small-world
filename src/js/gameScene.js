@@ -573,9 +573,6 @@ BuildingButton.prototype.setActive = function (activeness) {
 var gameScene = {
   name: 'gameScene',
   create: function (sceneParams) {
-    this.tweens = []
-    this.totalTime = 0;
-
     this.container = new PIXI.Container()
 
     this.welcometextContainer = new PIXI.Container()
@@ -583,16 +580,15 @@ var gameScene = {
     var welcomeText = new PIXI.Text('Welcome to asteroid ' + region + '-56-AX-' + Math.round(Math.random() * 10032), { fontSize: 16, fill: '#ffffff'})
     welcomeText.x = 270
     welcomeText.y = 270
-    var tween_welcometext = new TweenLib.Tween({ alpha: 1 })
-      .to({alpha: 0}, 1000) //600
-      .delay(1000) //400
+
+    new TweenLib.Tween({ alpha: 1 })
+      .to({alpha: 0}, 600) //600
+      .delay(1) //400
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function() {
-        console.log('hej')
         welcomeText.alpha = this.alpha;
       })
       .start()
-    this.tweens.push(tween_welcometext)
     this.welcometextContainer.addChild(welcomeText)
 
     var backgroundImage = new PIXI.Sprite(PIXI.loader.resources['background'].texture)
@@ -608,15 +604,14 @@ var gameScene = {
     this.gameContainer = gameContainer;
     this.gameContainer.x = 182
     this.gameContainer.y = -500
-    var tween_gamecontainer = new TweenLib.Tween({ y: -500 })
-      .to({y: 132}, 3300) //3300
+
+    new TweenLib.Tween({ y: -500 })
+      .to({y: 132}, 1) //3300
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function(y) {
         gameContainer.y = this.y;
       })
       .start()
-
-    this.tweens.push(tween_gamecontainer)
 
     this.tileContainer = new PIXI.Container()
 
@@ -632,7 +627,7 @@ var gameScene = {
     this.buildingPanelContainer.x = 656
     this.buildingPanelContainer.y = 38 - 700
 
-    var tween_buildingPanel = new TweenLib.Tween({ y: 38 - 700 })
+    new TweenLib.Tween({ y: 38 - 700 })
       .to({y: 38}, 1) //300
       .delay(1) //3000
       .easing(TweenLib.Easing.Quartic.Out)
@@ -640,9 +635,6 @@ var gameScene = {
         buildingPanelContainer.y = this.y;
       })
       .start()
-
-    this.tweens.push(tween_buildingPanel)
-
 
     var resourcePanelContainer = new PIXI.Container()
     this.resourcePanelContainer = resourcePanelContainer;
@@ -658,7 +650,6 @@ var gameScene = {
         resourcePanelContainer.y = this.y;
       })
       .start()
-    this.tweens.push(tween_resource_panel)
     this.resourcePanelContainer.addChild(baseResourcesPanelBackground)
 
     this.informationBoxContainer = new PIXI.Container()
@@ -677,9 +668,7 @@ var gameScene = {
     var terraformButton = new PIXI.Sprite(PIXI.loader.resources['terraform_button'].texture)
     terraformButton.interactive = true
     terraformButton.on('click', function () {
-      console.log('WHAT THE FUCK')
-      //this.showResultScreen()
-      this.testAnim()
+      this.showResultScreen()
     }.bind(this))
 
     this.gameOverContainer = new PIXI.Container()
@@ -758,70 +747,40 @@ var gameScene = {
     selectedBuildingButton = null
     setInformationBoxText('')
   },
-  testAnim: function() {
-    console.log('testAnim')
-    //this.tweens.length = 0
-    //this.totalTime = 0
-    var _container = this.container;
-    var test = new TweenLib.Tween({ x: 0 })
-      .to({x: 100}, 700)
-      .delay(1)
-      //.easing(TweenLib.Easing.Quartic.Out)
-      .onUpdate(function() {
-        _container.x = this.x;
-        //console.log('kurt', _container.x, this.x)
-      })
-      .start()
-
-    // this.tweens.push(test)
-  },
   showResultScreen: function() {
-    console.log('showResultScreen')
-    this.tweens.length = 0
-    //this.totalTime = 0
-    var tween_gamecontainer_out = new TweenLib.Tween({ y: 182 })
+    var _gameContainer = this.gameContainer
+    new TweenLib.Tween({ y: 182 })
       .to({y: 0}, 700)
       .easing(TweenLib.Easing.Quartic.InOut)
       .onUpdate(function() {
-        this.gameContainer.y = this.y;
-        //console.log(this.gameContainer.y, this.y)
-      }.bind(this))
-      //.onComplete(terraform)
+        _gameContainer.y = this.y;
+      })
+      .onComplete(terraform)
       .start()
 
-
-    var tween_buildingPanel_out = new TweenLib.Tween({ x: 656 })
+    var _buildingPanelContainer = this.buildingPanelContainer
+    new TweenLib.Tween({ x: 656 })
       .to({x: 900}, 400)
       .easing(TweenLib.Easing.Quartic.In)
       .onUpdate(function() {
-        this.buildingPanelContainer.x = this.x;
-      }.bind(this))
+        _buildingPanelContainer.x = this.x;
+      })
       .start()
 
-    var tween_resource_panel_out = new TweenLib.Tween({ x: 20 })
+    var _resourcePanelContainer = this.resourcePanelContainer
+    new TweenLib.Tween({ x: 20 })
       .to({x: -300}, 400)
       .easing(TweenLib.Easing.Quartic.In)
       .onUpdate(function() {
-        this.resourcePanelContainer.x = this.x;
-      }.bind(this))
+        _resourcePanelContainer.x = this.x;
+      })
       .start()
-
-    this.tweens.push(tween_buildingPanel_out)
-    this.tweens.push(tween_resource_panel_out)
-    this.tweens.push(tween_gamecontainer_out)
-
-    //terraform();
   },
   destroy: function () {
     this.container.destroy()
   },
   update: function (delta) {
-    this.totalTime = this.totalTime + delta;
-    //console.log(this.totalTime, this.tweens)
-    /*this.tweens.forEach(function(hmm) {
-      hmm.update(this.totalTime);
-    }.bind(this))*/
-    TweenLib.update(this.totalTime)
+    TweenLib.update()
   },
   draw: function () {
     global.renderer.render(this.container)
