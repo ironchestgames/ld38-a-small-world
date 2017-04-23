@@ -241,24 +241,24 @@ var isTileProducingResource = function (tile, resource) {
   }
 }
 
-var isInsideGrid = function (x, y) {
-  return y >= 0 && y < rowCount && x >= 0 && x < colCount
+var getInsideGrid = function (x, y) {
+  return tiles.find(function (tile) {
+    return tile.x === x && tile.y === y
+  })
 }
 
 var produceResource = function (resource) {
-  for (var r = 0; r < rowCount; r++) {
-    for (var c = 0; c < colCount; c++) {
-      var tile = tiles[r][c]
+  for (var i = 0; i < tiles.length; i++) {
+    var tile = tiles[i]
 
-      if (isTileProducingResource(tile, resource)) {
+    if (isTileProducingResource(tile, resource)) {
+      baseProducedResources.push(resource)
+
+      // add in total 4 peoples from LQs
+      if (tile.buildingType === BUILDING_LIVING_QUARTERS && resource === RESOURCE_PEOPLE) {
         baseProducedResources.push(resource)
-
-        // add in total 4 peoples from LQs
-        if (tile.buildingType === BUILDING_LIVING_QUARTERS && resource === RESOURCE_PEOPLE) {
-          baseProducedResources.push(resource)
-          baseProducedResources.push(resource)
-          baseProducedResources.push(resource)
-        }
+        baseProducedResources.push(resource)
+        baseProducedResources.push(resource)
       }
     }
   }
@@ -291,10 +291,8 @@ var updateTiles = function () {
   // level 5
   produceResource(RESOURCE_DOME)
 
-  for (var r = 0; r < rowCount; r++) {
-    for (var c = 0; c < colCount; c++) {
-      tiles[r][c].update()
-    }
+  for (var i = 0; i < tiles.length; i++) {
+    tiles[i].update()
   }
 }
 
@@ -331,20 +329,18 @@ var updateNumbers = function () {
 }
 
 var updateTileMarkers = function () {
-  for (var r = 0; r < rowCount; r++) {
-    for (var c = 0; c < colCount; c++) {
-      var tile = tiles[r][c]
-      tile.isAvailableForSelectedBuilding =
-          buildingTerrainPermissions[selectedBuildingButton].includes(tile.terrainType)
+  for (var i = 0; i < tiles.length; i++) {
+    var tile = tiles[i]
+    tile.isAvailableForSelectedBuilding =
+        buildingTerrainPermissions[selectedBuildingButton].includes(tile.terrainType)
 
-      tile.greenMarkerSprite.visible = false
-      tile.yellowMarkerSprite.visible = false
-      if (tile.isAvailableForSelectedBuilding) {
-        if (tile.buildingType) {
-          tile.yellowMarkerSprite.visible = true
-        } else {
-          tile.greenMarkerSprite.visible = true
-        }
+    tile.greenMarkerSprite.visible = false
+    tile.yellowMarkerSprite.visible = false
+    if (tile.isAvailableForSelectedBuilding) {
+      if (tile.buildingType) {
+        tile.yellowMarkerSprite.visible = true
+      } else {
+        tile.greenMarkerSprite.visible = true
       }
     }
   }
@@ -363,12 +359,10 @@ var getResourceConsumed = function (resource) {
 }
 
 var findBuildingByType = function (buildingType) {
-  for (var r = 0; r < rowCount; r++) {
-    for (var c = 0; c < colCount; c++) {
-      var tile = tiles[r][c]
-      if (tile.buildingType === buildingType) {
-        return tile
-      }
+  for (var i = 0; i < tiles.length; i++) {
+    var tile = tiles[i]
+    if (tile.buildingType === buildingType) {
+      return tile
     }
   }
   return null
@@ -380,18 +374,27 @@ var getResourceTallyHo = function (resource) {
 
 var getSurroundingTiles = function (tile) {
   var surroundingTiles = []
-  if (isInsideGrid(tile.x + 1, tile.y)) {
-    surroundingTiles.push(tiles[tile.y][tile.x + 1])
+  
+  var tile = getInsideGrid(tile.x + 1, tile.y)
+  if (tile) {
+    surroundingTiles.push(tile)
   }
-  if (isInsideGrid(tile.x, tile.y + 1)) {
-    surroundingTiles.push(tiles[tile.y + 1][tile.x])
+
+  tile = getInsideGrid(tile.x, tile.y + 1)
+  if (tile) {
+    surroundingTiles.push(tile)
   }
-  if (isInsideGrid(tile.x - 1, tile.y)) {
-    surroundingTiles.push(tiles[tile.y][tile.x - 1])
+
+  tile = getInsideGrid(tile.x - 1, tile.y)
+  if (tile) {
+    surroundingTiles.push(tile)
   }
-  if (isInsideGrid(tile.x, tile.y - 1)) {
-    surroundingTiles.push(tiles[tile.y - 1][tile.x])
+
+  tile = getInsideGrid(tile.x, tile.y - 1)
+  if (tile) {
+    surroundingTiles.push(tile)
   }
+  
   return surroundingTiles
 }
 
@@ -413,31 +416,27 @@ var terraform = function () {
     score.flares.push(FLARE_DOME_BUILT)
 
     var unbuiltTerrainCount = 0
-    for (var r = 0; r < rowCount; r++) {
-      for (var c = 0; c < colCount; c++) {
-        var tile = tiles[r][c]
-        if (!tile.buildingType) {
-          unbuiltTerrainCount++
-        }
+    for (var i = 0; i < tiles.length; i++) {
+      var tile = tiles[i]
+      if (!tile.buildingType) {
+        unbuiltTerrainCount++
       }
     }
 
     score.extra += unbuiltTerrainCount * SCORE_FACTOR_UNBUILT_TERRAIN
   }
 
-  breakhere: for (var r = 0; r < rowCount; r++) {
-    for (var c = 0; c < colCount; c++) {
-      var tile = tiles[r][c]
-      if (tile.buildingType === BUILDING_LIVING_QUARTERS) {
-        var surroundingTiles = getSurroundingTiles(tile)
-        var surroundingLivingQuarters = surroundingTiles.filter(function (_tile) {
-          return _tile.buildingType === BUILDING_LIVING_QUARTERS
-        })
-        if (surroundingLivingQuarters.length > 1) {
-          score.totalFactors.push(SCORE_FACTOR_TOO_BIG_LQ_CLUSTER)
-          score.flares.push(FLARE_TOO_BIG_LQ_CLUSTER)
-          break breakhere
-        }
+  breakhere: for (var i = 0; i < tiles.length; i++) {
+    var tile = tiles[i]
+    if (tile.buildingType === BUILDING_LIVING_QUARTERS) {
+      var surroundingTiles = getSurroundingTiles(tile)
+      var surroundingLivingQuarters = surroundingTiles.filter(function (_tile) {
+        return _tile.buildingType === BUILDING_LIVING_QUARTERS
+      })
+      if (surroundingLivingQuarters.length > 1) {
+        score.totalFactors.push(SCORE_FACTOR_TOO_BIG_LQ_CLUSTER)
+        score.flares.push(FLARE_TOO_BIG_LQ_CLUSTER)
+        break breakhere
       }
     }
   }
@@ -754,11 +753,10 @@ var gameScene = {
 
     tiles = []
     for (var r = 0; r < rowCount; r++) {
-      tiles[r] = []
       for (var c = 0; c < colCount; c++) {
         var terrainType = map.shift()
         var tile = new Tile(c, r, terrainType)
-        tiles[r][c] = tile
+        tiles.push(tile)
         this.tileContainer.addChild(tile.container)
       }
     }
