@@ -447,19 +447,11 @@ var terraform = function () {
 
   score.total = Math.ceil(score.total)
 
-  setGameOverText('THE COLONY LASTED ' + score.total + ' YEARS')
-
   gameScene.showResultScreen(score)
 }
 
 var setInformationBoxText = function (text) {
   gameScene.informationBoxText.text = text
-}
-
-var setGameOverText = function (text) {
-  gameScene.gameOverContainer.visible = true
-  gameScene.gameOverContainer.interactive = true
-  gameScene.gameOverText.text = text
 }
 
 var Tile = function (x, y, terrainType) {
@@ -727,21 +719,6 @@ var gameScene = {
       this.transitionToResultScreen()
     }.bind(this))
 
-    this.gameOverContainer = new PIXI.Container()
-    this.gameOverText = new PIXI.Text('', {
-      fontSize: 20,
-      fill: '#ffff00',
-      wordWrap: true,
-      wordWrapWidth: 600,
-    })
-    this.gameOverText.x = 100
-    this.gameOverText.y = 100
-    this.gameOverContainer.addChild(this.gameOverText)
-    this.gameOverContainer.on('click', function () {
-      this.changeScene('gameScene') // start over
-    }.bind(this))
-    this.gameOverContainer.visible = false
-
     global.baseStage.addChild(this.container)
     this.container.addChild(this.welcometextContainer)
     this.container.addChild(this.gameContainer)
@@ -749,7 +726,6 @@ var gameScene = {
     this.container.addChild(this.resourcePanelContainer)
     this.container.addChild(this.informationBoxContainer)
     this.container.addChild(terraformButton)
-    this.container.addChild(this.gameOverContainer)
 
     var map = [
       TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_SAND,
@@ -839,6 +815,10 @@ var gameScene = {
     this.container.addChild(this.resultContainer)
 
     var end_panel = new PIXI.Sprite(PIXI.loader.resources['end_screen_panel'].texture)
+    end_panel.on('click', function () {
+      this.changeScene('gameScene') // start over
+    }.bind(this))
+    end_panel.interactive = true
     this.resultContainer.addChild(end_panel)
 
     var titleText = new PIXI.Text('Colony results', { fontSize: 40, fill: '#000000'})
@@ -870,6 +850,16 @@ var gameScene = {
     colonyLifetimeTitle.x = 128
     colonyLifetimeTitle.y = 193
     this.resultContainer.addChild(colonyLifetimeTitle)
+
+    var lifetimeShadow = new PIXI.Text('456 years', { fontSize: 50, fill: '#000000'})
+    lifetimeShadow.x = 94
+    lifetimeShadow.y = 218
+    this.resultContainer.addChild(lifetimeShadow)
+
+    var lifetime = new PIXI.Text('456 years', { fontSize: 50, fill: '#ffffff'})
+    lifetime.x = 92
+    lifetime.y = 216
+    this.resultContainer.addChild(lifetime)
 
 
 
