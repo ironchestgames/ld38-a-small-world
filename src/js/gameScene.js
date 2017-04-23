@@ -93,6 +93,27 @@ buildingTerrainPermissions[BUILDING_MINERAL_AND_METAL_TO_ALLOY] = [TERRAIN_PLAIN
 buildingTerrainPermissions[BUILDING_SAND_TO_GLASS] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
 buildingTerrainPermissions[BUILDING_SAND_TO_MINERALS] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
 
+var infoTexts = {}
+infoTexts[BUILDING_HEAT_GENERATOR] = 'BUILDING_HEAT_GENERATOR'
+infoTexts[BUILDING_MINING] = 'BUILDING_MINING'
+infoTexts[BUILDING_QUARRY] = 'BUILDING_QUARRY'
+infoTexts[BUILDING_HQ] = 'BUILDING_HQ'
+infoTexts[BUILDING_ICE_COLLECTOR] = 'BUILDING_ICE_COLLECTOR'
+infoTexts[BUILDING_LIVING_QUARTERS] = 'BUILDING_LIVING_QUARTERS'
+
+//Resource converters
+infoTexts[BUILDING_ALLOY_AND_GLASS_TO_DOME] = 'BUILDING_ALLOY_AND_GLASS_TO_DOME'
+infoTexts[BUILDING_ICE_AND_HEAT_TO_WATER] = 'BUILDING_ICE_AND_HEAT_TO_WATER'
+infoTexts[BUILDING_ORE_TO_METAL] = 'BUILDING_ORE_TO_METAL'
+infoTexts[BUILDING_MINERAL_AND_METAL_TO_ALLOY] = 'BUILDING_MINERAL_AND_METAL_TO_ALLOY'
+infoTexts[BUILDING_SAND_TO_GLASS] = 'BUILDING_SAND_TO_GLASS'
+infoTexts[BUILDING_SAND_TO_MINERALS] = 'BUILDING_SAND_TO_MINERALS'
+
+infoTexts[TERRAIN_PLAIN] = 'TERRAIN_PLAIN'
+infoTexts[TERRAIN_SAND] = 'TERRAIN_SAND'
+infoTexts[TERRAIN_ICE] = 'TERRAIN_ICE'
+infoTexts[TERRAIN_ORE] = 'TERRAIN_ORE'
+
 
 var resourceNames = {}
 resourceNames[TERRAIN_PLAIN] = 'tile_plain'
@@ -452,7 +473,11 @@ var Tile = function (x, y, terrainType) {
         }
       }
     } else {
-      setInformationBoxText('selected: ' + this.buildingType + ', ' + this.terrainType)
+      setInformationBoxText(
+          'selected: ' +
+          infoTexts[this.buildingType] +
+          ', ' +
+          infoTexts[this.terrainType])
     }
   }.bind(this))
 
@@ -482,7 +507,7 @@ Tile.prototype.changeBuilding = function (buildingType) {
   this.buildingContainer.removeChildren()
   this.buildingContainer.addChild(buildingSprite)
 
-  setInformationBoxText('built: ' + this.buildingType)
+  setInformationBoxText('built: ' + this.buildingType) // unsure about this mofo
 }
 
 Tile.prototype.update = function () {
@@ -531,7 +556,7 @@ var BuildingButton = function (buildingType, index) {
       selectedBuildingButton = this.buildingType
 
       updateTileMarkers()
-      setInformationBoxText(this.buildingType)
+      setInformationBoxText(infoTexts[this.buildingType])
     } else {
       setInformationBoxText('not available at this time')
     }
