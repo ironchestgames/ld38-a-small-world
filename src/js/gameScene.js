@@ -148,12 +148,16 @@ var SCORE_CONSTANT_UNBUILT_TERRAIN = 12
 var SCORE_FACTOR_TOO_BIG_LQ_CLUSTER = -0.9
 var SCORE_FACTOR_TREES_NEXT_TO_LQ = 0.05
 var SCORE_FACTOR_METAL_WORKS_NEXT_TO_TREES = -0.99
+var SCORE_FACTOR_OVERWORKED_POPULATION = -0.75
+var SCORE_FACTOR_ICE_WITHOUT_COLLECTORS = -0.25
 
 var FLARE_DOME_BUILT = 'FLARE_DOME_BUILT'
+var FLARE_TREES_NEXT_TO_LQ = 'FLARE_TREES_NEXT_TO_LQ'
+
 var FLARE_TOO_BIG_LQ_CLUSTER = 'FLARE_TOO_BIG_LQ_CLUSTER'
 var FLARE_ICE_AND_DOME = 'FLARE_ICE_AND_DOME'
-var FLARE_TREES_NEXT_TO_LQ = 'FLARE_TREES_NEXT_TO_LQ'
 var FLARE_METAL_WORKS_NEXT_TO_TREES = 'FLARE_METAL_WORKS_NEXT_TO_TREES'
+var FLARE_OVERWORKED_POPULATION = 'FLARE_OVERWORKED_POPULATION'
 
 var resourceNames = {}
 resourceNames[TERRAIN_PLAIN] = 'tile_plain'
@@ -520,6 +524,7 @@ var countScore = function () {
     }
   }
 
+  // ICE WITHOUT COLLECTORS
   var foundDome = false
   var iceWithoutCollector = 0
   for (var i = 0; i < tiles.length; i++) {
@@ -531,7 +536,13 @@ var countScore = function () {
   }
   if (foundDome && iceWithoutCollector > 0) {
     score.flares.push(FLARE_ICE_AND_DOME)
-    score.totalFactors.push(0.25)
+    score.totalFactors.push(SCORE_FACTOR_ICE_WITHOUT_COLLECTORS)
+  }
+
+  // OVERWORKED POPULATION
+  if (getResourceProduced(RESOURCE_PEOPLE) - getResourceConsumed(RESOURCE_PEOPLE) < 0) {
+    score.flares.push(FLARE_OVERWORKED_POPULATION)
+    score.totalFactors.push(SCORE_FACTOR_OVERWORKED_POPULATION)
   }
 
   var baseTotal =
@@ -1119,6 +1130,23 @@ var gameScene = {
         var flare_disaster = new PIXI.Sprite(PIXI.loader.resources["flare_disaster"].texture)
         flare_disaster.y = 2
         var textObject = new PIXI.Text("Metal Works next to forests is a huge fire hazard\n", { fontSize: 16 })
+        textObject.x = 44
+        container.addChild(flare_disaster)
+        container.addChild(textObject)
+
+        container.x = flare_x
+        container.y = flare_y
+
+        this.resultContainer.addChild(container)
+
+        flare_y += 40
+      }
+      if (flare === FLARE_OVERWORKED_POPULATION) {
+        foundNegative = true
+        var container = new PIXI.Container()
+        var flare_disaster = new PIXI.Sprite(PIXI.loader.resources["flare_disaster"].texture)
+        flare_disaster.y = 2
+        var textObject = new PIXI.Text("The Space Worker Union shuts you down because\nyour population is overworked", { fontSize: 16 })
         textObject.x = 44
         container.addChild(flare_disaster)
         container.addChild(textObject)
