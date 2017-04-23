@@ -1264,7 +1264,7 @@ var gameScene = {
         var container = new PIXI.Container()
         var flare_disaster = new PIXI.Sprite(PIXI.loader.resources["flare_disaster"].texture)
         flare_disaster.y = 2
-        var textObject = new PIXI.Text("More than two adjacent Living Quarters causes\ndiseases to spread like the plague", { fontSize: 12 })
+        var textObject = new PIXI.Text("More than two adjacent Living Quarters causes diseases\nto spread like the plague", { fontSize: 12 })
         textObject.x = 44
         container.addChild(flare_disaster)
         container.addChild(textObject)
@@ -1281,7 +1281,7 @@ var gameScene = {
         var container = new PIXI.Container()
         var flare_disaster = new PIXI.Sprite(PIXI.loader.resources["flare_disaster"].texture)
         flare_disaster.y = 2
-        var textObject = new PIXI.Text("Unharvested ice inside dome, ecosystem is\nunbalanced and overrun with algae", { fontSize: 12 })
+        var textObject = new PIXI.Text("Unharvested ice inside dome, ecosystem is unbalanced and\noverrun with algae", { fontSize: 12 })
         textObject.x = 44
         container.addChild(flare_disaster)
         container.addChild(textObject)
