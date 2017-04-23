@@ -120,6 +120,7 @@ buttonHumanTexts[BUILDING_METAL_AND_GLASS_TO_DOME] = 'Dome Maintena..'
 buttonHumanTexts[BUILDING_ICE_AND_HEAT_TO_WATER] = 'Water Plant'
 buttonHumanTexts[BUILDING_ORE_TO_METAL] = 'Metal Works'
 buttonHumanTexts[BUILDING_SAND_TO_GLASS] = 'Glass Works'
+buttonHumanTexts[BUILDING_DOME] = 'Dome'
 
 buttonHumanTexts[RESOURCE_PEOPLE] = 'People'
 buttonHumanTexts[RESOURCE_HEAT] = 'Heat'
@@ -646,12 +647,17 @@ var BuildingButton = function (buildingType, index) {
   buildingSprite.y = 6
   this.container.addChild(buildingSprite)
 
-  if (this.buildingType !== BUILDING_DOME) {
-    var buildingName = new PIXI.Text(buttonHumanTexts[buildingType], { fontSize: 12, fill: '#9e9e9e'})
-    buildingName.x = 42
-    buildingName.y = 7
-    this.container.addChild(buildingName)
+  var buildingName = new PIXI.Text(buttonHumanTexts[buildingType], { fontSize: 12, fill: '#9e9e9e'})
+  buildingName.x = 42
+  buildingName.y = 7
+  this.container.addChild(buildingName)
 
+  if (this.buildingType === BUILDING_DOME) {
+    var producesName = new PIXI.Text('Encapsulation', { fontSize: 10, fill: '#9e9e9e'})
+    producesName.x = 42
+    producesName.y = 26
+    this.container.addChild(producesName)
+  } else {
     var producingIconResourceName = resourceNames[buildingProvides[buildingType]];
 
     var buildingProvidesSprite = new PIXI.Sprite(PIXI.loader.resources[producingIconResourceName].texture)
