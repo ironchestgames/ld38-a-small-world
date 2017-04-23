@@ -603,20 +603,6 @@ var gameScene = {
     })
     this.container.addChild(backgroundImage)
 
-    var asteroidImage = new PIXI.Sprite(PIXI.loader.resources['astroid'].texture)
-    asteroidImage.x = 128
-    asteroidImage.y = -500
-
-    var tween_asteriod = new TweenLib.Tween({ y: -500 })
-      .to({y: 104}, 3300)
-      .easing(TweenLib.Easing.Quartic.Out)
-      .onUpdate(function(y) {
-        asteroidImage.y = this.y;
-      })
-      .start();
-    this.tweens.push(tween_asteriod)
-    this.container.addChild(asteroidImage)
-
     var gameContainer = new PIXI.Container()
     this.gameContainer = gameContainer;
     this.gameContainer.x = 182
@@ -633,6 +619,11 @@ var gameScene = {
 
     this.tileContainer = new PIXI.Container()
 
+    var asteroidSprite = new PIXI.Sprite(PIXI.loader.resources['astroid'].texture)
+    asteroidSprite.x = 128 - 182
+    asteroidSprite.y = 104 - 132
+
+    this.gameContainer.addChild(asteroidSprite)
     this.gameContainer.addChild(this.tileContainer)
 
     var buildingPanelContainer = new PIXI.Container()
