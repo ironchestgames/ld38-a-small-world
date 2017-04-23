@@ -827,6 +827,36 @@ Tile.prototype.changeBuilding = function (buildingType) {
       .start()
   }
 
+  if (buildingType === BUILDING_SAND_TO_GLASS) {
+    var sheet_textures = []
+    sheet_textures.push(new PIXI.Texture(PIXI.loader.resources["sand_to_glass-sheet"].texture,
+      new PIXI.Rectangle(0, 0, 64, 64)))
+
+    sheet_textures.push(new PIXI.Texture(PIXI.loader.resources["sand_to_glass-sheet"].texture,
+      new PIXI.Rectangle(64, 0, 64, 64)))
+
+    sheet_textures.push(new PIXI.Texture(PIXI.loader.resources["sand_to_glass-sheet"].texture,
+      new PIXI.Rectangle(64 * 2, 0, 64, 64)))
+
+    sheet_textures.push(new PIXI.Texture(PIXI.loader.resources["sand_to_glass-sheet"].texture,
+      new PIXI.Rectangle(64 * 3, 0, 64, 64)))
+
+    sheet_textures.push(new PIXI.Texture(PIXI.loader.resources["sand_to_glass-sheet"].texture,
+      new PIXI.Rectangle(64 * 4, 0, 64, 64)))
+
+    sheet_textures.push(new PIXI.Texture(PIXI.loader.resources["sand_to_glass-sheet"].texture,
+      new PIXI.Rectangle(64 * 5, 0, 64, 64)))
+
+    new TweenLib.Tween({ index: 0 })
+      .to({index: 70}, 8000)
+      .repeat(Infinity)
+      .onUpdate(function() {
+        var idx = (this.index > 5) ? 0 : Math.round(this.index);
+        buildingSprite.texture = sheet_textures[idx]
+      })
+      .start()
+  }
+
   this.buildingType = buildingType
 
   this.buildingContainer.removeChildren()
