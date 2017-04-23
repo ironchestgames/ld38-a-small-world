@@ -811,11 +811,17 @@ Tile.prototype.changeBuilding = function (buildingType) {
     sheet_textures.push(new PIXI.Texture(PIXI.loader.resources["living_quarters_spritesheet"].texture,
       new PIXI.Rectangle(64 * 3, 0, 64, 64)))
 
+    sheet_textures.push(new PIXI.Texture(PIXI.loader.resources["living_quarters_spritesheet"].texture,
+      new PIXI.Rectangle(64 * 2, 0, 64, 64)))
+
+    sheet_textures.push(new PIXI.Texture(PIXI.loader.resources["living_quarters_spritesheet"].texture,
+      new PIXI.Rectangle(64, 0, 64, 64)))
+
     new TweenLib.Tween({ index: 0 })
-      .to({index: 20}, 5000)
+      .to({index: 6}, 3000)
       .repeat(Infinity)
       .onUpdate(function() {
-        var idx = (this.index > 3) ? 0 : Math.round(this.index);
+        var idx = (this.index > 5) ? 0 : Math.ceil(this.index);
         buildingSprite.texture = sheet_textures[idx]
       })
       .start()
