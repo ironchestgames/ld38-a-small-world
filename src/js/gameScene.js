@@ -584,13 +584,14 @@ var gameScene = {
     welcomeText.x = 270
     welcomeText.y = 270
     var tween_welcometext = new TweenLib.Tween({ alpha: 1 })
-      .to({alpha: 0}, 600)
-      .delay(400)
+      .to({alpha: 0}, 1000) //600
+      .delay(1000) //400
       .easing(TweenLib.Easing.Quartic.Out)
-      .onUpdate(function(y) {
+      .onUpdate(function() {
+        console.log('hej')
         welcomeText.alpha = this.alpha;
       })
-      .start();
+      .start()
     this.tweens.push(tween_welcometext)
     this.welcometextContainer.addChild(welcomeText)
 
@@ -608,12 +609,12 @@ var gameScene = {
     this.gameContainer.x = 182
     this.gameContainer.y = -500
     var tween_gamecontainer = new TweenLib.Tween({ y: -500 })
-      .to({y: 132}, 3300)
+      .to({y: 132}, 3300) //3300
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function(y) {
         gameContainer.y = this.y;
       })
-      .start();
+      .start()
 
     this.tweens.push(tween_gamecontainer)
 
@@ -632,13 +633,14 @@ var gameScene = {
     this.buildingPanelContainer.y = 38 - 700
 
     var tween_buildingPanel = new TweenLib.Tween({ y: 38 - 700 })
-      .to({y: 38}, 300)
-      .delay(3000)
+      .to({y: 38}, 1) //300
+      .delay(1) //3000
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function() {
         buildingPanelContainer.y = this.y;
       })
-      .start();
+      .start()
+
     this.tweens.push(tween_buildingPanel)
 
 
@@ -649,13 +651,13 @@ var gameScene = {
     this.resourcePanelContainer.y = 60 - 700
 
     var tween_resource_panel = new TweenLib.Tween({ y: 60 - 700 })
-      .to({y: 60}, 300)
-      .delay(3000)
+      .to({y: 60}, 1) //300
+      .delay(1) //3000
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function() {
         resourcePanelContainer.y = this.y;
       })
-      .start();
+      .start()
     this.tweens.push(tween_resource_panel)
     this.resourcePanelContainer.addChild(baseResourcesPanelBackground)
 
@@ -675,12 +677,12 @@ var gameScene = {
     var terraformButton = new PIXI.Sprite(PIXI.loader.resources['terraform_button'].texture)
     terraformButton.interactive = true
     terraformButton.on('click', function () {
-      terraform()
-    })
+      console.log('WHAT THE FUCK')
+      //this.showResultScreen()
+      this.testAnim()
+    }.bind(this))
 
     this.gameOverContainer = new PIXI.Container()
-    var gameOverBackground = new PIXI.Sprite(PIXI.loader.resources['background'].texture)
-    this.gameOverContainer.addChild(gameOverBackground)
     this.gameOverText = new PIXI.Text('', {
       fontSize: 20,
       fill: '#ffff00',
@@ -756,14 +758,70 @@ var gameScene = {
     selectedBuildingButton = null
     setInformationBoxText('')
   },
+  testAnim: function() {
+    console.log('testAnim')
+    //this.tweens.length = 0
+    //this.totalTime = 0
+    var _container = this.container;
+    var test = new TweenLib.Tween({ x: 0 })
+      .to({x: 100}, 700)
+      .delay(1)
+      //.easing(TweenLib.Easing.Quartic.Out)
+      .onUpdate(function() {
+        _container.x = this.x;
+        //console.log('kurt', _container.x, this.x)
+      })
+      .start()
+
+    // this.tweens.push(test)
+  },
+  showResultScreen: function() {
+    console.log('showResultScreen')
+    this.tweens.length = 0
+    //this.totalTime = 0
+    var tween_gamecontainer_out = new TweenLib.Tween({ y: 182 })
+      .to({y: 0}, 700)
+      .easing(TweenLib.Easing.Quartic.InOut)
+      .onUpdate(function() {
+        this.gameContainer.y = this.y;
+        //console.log(this.gameContainer.y, this.y)
+      }.bind(this))
+      //.onComplete(terraform)
+      .start()
+
+
+    var tween_buildingPanel_out = new TweenLib.Tween({ x: 656 })
+      .to({x: 900}, 400)
+      .easing(TweenLib.Easing.Quartic.In)
+      .onUpdate(function() {
+        this.buildingPanelContainer.x = this.x;
+      }.bind(this))
+      .start()
+
+    var tween_resource_panel_out = new TweenLib.Tween({ x: 20 })
+      .to({x: -300}, 400)
+      .easing(TweenLib.Easing.Quartic.In)
+      .onUpdate(function() {
+        this.resourcePanelContainer.x = this.x;
+      }.bind(this))
+      .start()
+
+    this.tweens.push(tween_buildingPanel_out)
+    this.tweens.push(tween_resource_panel_out)
+    this.tweens.push(tween_gamecontainer_out)
+
+    //terraform();
+  },
   destroy: function () {
     this.container.destroy()
   },
   update: function (delta) {
     this.totalTime = this.totalTime + delta;
-    this.tweens.forEach(function(hmm) {
+    //console.log(this.totalTime, this.tweens)
+    /*this.tweens.forEach(function(hmm) {
       hmm.update(this.totalTime);
-    }.bind(this))
+    }.bind(this))*/
+    TweenLib.update(this.totalTime)
   },
   draw: function () {
     global.renderer.render(this.container)
