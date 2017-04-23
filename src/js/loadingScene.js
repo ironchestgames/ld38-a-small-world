@@ -44,6 +44,7 @@ var loadingScene = {
 
     .add('dome_main_spritesheet', 'assets/images/dome_main_spritesheet.png')
     .add('ore_to_metal-sheet', 'assets/images/ore_to_metal-sheet.png')
+    .add('mining-sheet', 'assets/images/mining-sheet.png')
 
     .add('resource_dome', 'assets/images/resource_dome.png')
     .add('resource_glass', 'assets/images/resource_glass.png')
