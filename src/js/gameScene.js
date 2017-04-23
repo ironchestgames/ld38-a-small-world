@@ -14,6 +14,7 @@ var TERRAIN_PLAIN = 'TERRAIN_PLAIN'
 var TERRAIN_SAND = 'TERRAIN_SAND'
 var TERRAIN_ICE = 'TERRAIN_ICE'
 var TERRAIN_ORE = 'TERRAIN_ORE'
+var TERRAIN_DOME = 'TERRAIN_DOME'
 
 var RESOURCE_PEOPLE = 'RESOURCE_PEOPLE'
 var RESOURCE_HEAT = 'RESOURCE_HEAT'
@@ -38,6 +39,7 @@ var BUILDING_METAL_AND_GLASS_TO_DOME = 'BUILDING_METAL_AND_GLASS_TO_DOME'
 var BUILDING_ICE_AND_HEAT_TO_WATER = 'BUILDING_ICE_AND_HEAT_TO_WATER'
 var BUILDING_ORE_TO_METAL = 'BUILDING_ORE_TO_METAL'
 var BUILDING_SAND_TO_GLASS = 'BUILDING_SAND_TO_GLASS'
+var BUILDING_DOME = 'BUILDING_DOME'
 
 var buildingNeeds = {}
 //Base buildings
@@ -53,6 +55,7 @@ buildingNeeds[BUILDING_METAL_AND_GLASS_TO_DOME] = [RESOURCE_PEOPLE, RESOURCE_GLA
 buildingNeeds[BUILDING_ICE_AND_HEAT_TO_WATER] = [RESOURCE_PEOPLE, RESOURCE_ICE, RESOURCE_HEAT]
 buildingNeeds[BUILDING_ORE_TO_METAL] = [RESOURCE_PEOPLE, RESOURCE_ORE]
 buildingNeeds[BUILDING_SAND_TO_GLASS] = [RESOURCE_PEOPLE, RESOURCE_SAND]
+buildingNeeds[BUILDING_DOME] = [RESOURCE_DOME]
 
 var buildingProvides = {}
 //Base buildings
@@ -83,6 +86,7 @@ buildingTerrainPermissions[BUILDING_METAL_AND_GLASS_TO_DOME] = [TERRAIN_PLAIN, T
 buildingTerrainPermissions[BUILDING_ICE_AND_HEAT_TO_WATER] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
 buildingTerrainPermissions[BUILDING_ORE_TO_METAL] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
 buildingTerrainPermissions[BUILDING_SAND_TO_GLASS] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
+buildingTerrainPermissions[BUILDING_DOME] = [TERRAIN_DOME]
 
 var infoTexts = {}
 infoTexts[BUILDING_HEAT_GENERATOR] = 'Heat Generator\nProvides heat'
@@ -97,11 +101,13 @@ infoTexts[BUILDING_METAL_AND_GLASS_TO_DOME] = 'Dome Maintenance Facility\nUses m
 infoTexts[BUILDING_ICE_AND_HEAT_TO_WATER] = 'Water Plant\nUses ice and heat to provide and control water levels on the asteroid'
 infoTexts[BUILDING_ORE_TO_METAL] = 'Metal Works\nUses ore to provide metal'
 infoTexts[BUILDING_SAND_TO_GLASS] = 'Glass Works\nUses sand to provide glass'
+infoTexts[BUILDING_DOME] = 'Dome\nHolds atmosphere'
 
 infoTexts[TERRAIN_PLAIN] = '(No resource)'
 infoTexts[TERRAIN_SAND] = 'Sand'
 infoTexts[TERRAIN_ICE] = 'Ice'
 infoTexts[TERRAIN_ORE] = 'Ore'
+infoTexts[TERRAIN_DOME] = '(Dome placement)'
 
 var score = {}
 
@@ -132,10 +138,11 @@ resourceNames[BUILDING_QUARRY] = 'quarry'
 resourceNames[BUILDING_HQ] = 'hq'
 resourceNames[BUILDING_ICE_COLLECTOR] = 'ice_collector'
 resourceNames[BUILDING_LIVING_QUARTERS] = 'living_quarters'
-resourceNames[BUILDING_METAL_AND_GLASS_TO_DOME] = 'alloy_and_glass_to_dome'
+resourceNames[BUILDING_METAL_AND_GLASS_TO_DOME] = 'dome_main'
 resourceNames[BUILDING_ICE_AND_HEAT_TO_WATER] = 'ice_and_heat_to_water'
 resourceNames[BUILDING_ORE_TO_METAL] = 'ore_to_metal'
 resourceNames[BUILDING_SAND_TO_GLASS] = 'sand_to_glass'
+resourceNames[BUILDING_DOME] = 'sand_to_glass'
 
 resourceNames[RESOURCE_PEOPLE] = 'resource_people'
 resourceNames[RESOURCE_HEAT] = 'resource_heat'
@@ -150,18 +157,21 @@ resourceNames[RESOURCE_DOME] = 'resource_dome'
 var selectedBuildingButton = null
 
 var buildingButtonTypes = [ // this is the order for the buttons
-  BUILDING_HEAT_GENERATOR,
-  BUILDING_MINING,
-  BUILDING_QUARRY,
-  // BUILDING_HQ,
-  BUILDING_ICE_COLLECTOR,
   BUILDING_LIVING_QUARTERS,
 
-  //Resource converters
-  BUILDING_METAL_AND_GLASS_TO_DOME,
+  BUILDING_HEAT_GENERATOR,
+  BUILDING_ICE_COLLECTOR,
   BUILDING_ICE_AND_HEAT_TO_WATER,
+
+  BUILDING_MINING,
   BUILDING_ORE_TO_METAL,
+
+  BUILDING_QUARRY,
   BUILDING_SAND_TO_GLASS,
+
+  BUILDING_METAL_AND_GLASS_TO_DOME,
+
+  BUILDING_DOME,
 ]
 
 var resourceTexts = {} // inited in gameScene create
@@ -231,24 +241,24 @@ var isTileProducingResource = function (tile, resource) {
   }
 }
 
-var isInsideGrid = function (x, y) {
-  return y >= 0 && y < rowCount && x >= 0 && x < colCount
+var getInsideGrid = function (x, y) {
+  return tiles.find(function (tile) {
+    return tile.x === x && tile.y === y
+  })
 }
 
 var produceResource = function (resource) {
-  for (var r = 0; r < rowCount; r++) {
-    for (var c = 0; c < colCount; c++) {
-      var tile = tiles[r][c]
+  for (var i = 0; i < tiles.length; i++) {
+    var tile = tiles[i]
 
-      if (isTileProducingResource(tile, resource)) {
+    if (isTileProducingResource(tile, resource)) {
+      baseProducedResources.push(resource)
+
+      // add in total 4 peoples from LQs
+      if (tile.buildingType === BUILDING_LIVING_QUARTERS && resource === RESOURCE_PEOPLE) {
         baseProducedResources.push(resource)
-
-        // add in total 4 peoples from LQs
-        if (tile.buildingType === BUILDING_LIVING_QUARTERS && resource === RESOURCE_PEOPLE) {
-          baseProducedResources.push(resource)
-          baseProducedResources.push(resource)
-          baseProducedResources.push(resource)
-        }
+        baseProducedResources.push(resource)
+        baseProducedResources.push(resource)
       }
     }
   }
@@ -281,10 +291,8 @@ var updateTiles = function () {
   // level 5
   produceResource(RESOURCE_DOME)
 
-  for (var r = 0; r < rowCount; r++) {
-    for (var c = 0; c < colCount; c++) {
-      tiles[r][c].update()
-    }
+  for (var i = 0; i < tiles.length; i++) {
+    tiles[i].update()
   }
 }
 
@@ -321,20 +329,18 @@ var updateNumbers = function () {
 }
 
 var updateTileMarkers = function () {
-  for (var r = 0; r < rowCount; r++) {
-    for (var c = 0; c < colCount; c++) {
-      var tile = tiles[r][c]
-      tile.isAvailableForSelectedBuilding =
-          buildingTerrainPermissions[selectedBuildingButton].includes(tile.terrainType)
+  for (var i = 0; i < tiles.length; i++) {
+    var tile = tiles[i]
+    tile.isAvailableForSelectedBuilding =
+        buildingTerrainPermissions[selectedBuildingButton].includes(tile.terrainType)
 
-      tile.greenMarkerSprite.visible = false
-      tile.yellowMarkerSprite.visible = false
-      if (tile.isAvailableForSelectedBuilding) {
-        if (tile.buildingType) {
-          tile.yellowMarkerSprite.visible = true
-        } else {
-          tile.greenMarkerSprite.visible = true
-        }
+    tile.greenMarkerSprite.visible = false
+    tile.yellowMarkerSprite.visible = false
+    if (tile.isAvailableForSelectedBuilding) {
+      if (tile.buildingType) {
+        tile.yellowMarkerSprite.visible = true
+      } else {
+        tile.greenMarkerSprite.visible = true
       }
     }
   }
@@ -353,12 +359,10 @@ var getResourceConsumed = function (resource) {
 }
 
 var findBuildingByType = function (buildingType) {
-  for (var r = 0; r < rowCount; r++) {
-    for (var c = 0; c < colCount; c++) {
-      var tile = tiles[r][c]
-      if (tile.buildingType === buildingType) {
-        return tile
-      }
+  for (var i = 0; i < tiles.length; i++) {
+    var tile = tiles[i]
+    if (tile.buildingType === buildingType) {
+      return tile
     }
   }
   return null
@@ -370,18 +374,27 @@ var getResourceTallyHo = function (resource) {
 
 var getSurroundingTiles = function (tile) {
   var surroundingTiles = []
-  if (isInsideGrid(tile.x + 1, tile.y)) {
-    surroundingTiles.push(tiles[tile.y][tile.x + 1])
+  
+  var tile = getInsideGrid(tile.x + 1, tile.y)
+  if (tile) {
+    surroundingTiles.push(tile)
   }
-  if (isInsideGrid(tile.x, tile.y + 1)) {
-    surroundingTiles.push(tiles[tile.y + 1][tile.x])
+
+  tile = getInsideGrid(tile.x, tile.y + 1)
+  if (tile) {
+    surroundingTiles.push(tile)
   }
-  if (isInsideGrid(tile.x - 1, tile.y)) {
-    surroundingTiles.push(tiles[tile.y][tile.x - 1])
+
+  tile = getInsideGrid(tile.x - 1, tile.y)
+  if (tile) {
+    surroundingTiles.push(tile)
   }
-  if (isInsideGrid(tile.x, tile.y - 1)) {
-    surroundingTiles.push(tiles[tile.y - 1][tile.x])
+
+  tile = getInsideGrid(tile.x, tile.y - 1)
+  if (tile) {
+    surroundingTiles.push(tile)
   }
+  
   return surroundingTiles
 }
 
@@ -398,36 +411,32 @@ var terraform = function () {
   score[RESOURCE_METAL] = getResourceTallyHo(RESOURCE_METAL)
   score[RESOURCE_GLASS] = getResourceTallyHo(RESOURCE_GLASS)
 
-  if (findBuildingByType(BUILDING_METAL_AND_GLASS_TO_DOME)) {
+  if (findBuildingByType(BUILDING_DOME)) {
     score.extra += SCORE_CONSTANT_DOME
     score.flares.push(FLARE_DOME_BUILT)
 
     var unbuiltTerrainCount = 0
-    for (var r = 0; r < rowCount; r++) {
-      for (var c = 0; c < colCount; c++) {
-        var tile = tiles[r][c]
-        if (!tile.buildingType) {
-          unbuiltTerrainCount++
-        }
+    for (var i = 0; i < tiles.length; i++) {
+      var tile = tiles[i]
+      if (!tile.buildingType) {
+        unbuiltTerrainCount++
       }
     }
 
     score.extra += unbuiltTerrainCount * SCORE_FACTOR_UNBUILT_TERRAIN
   }
 
-  breakhere: for (var r = 0; r < rowCount; r++) {
-    for (var c = 0; c < colCount; c++) {
-      var tile = tiles[r][c]
-      if (tile.buildingType === BUILDING_LIVING_QUARTERS) {
-        var surroundingTiles = getSurroundingTiles(tile)
-        var surroundingLivingQuarters = surroundingTiles.filter(function (_tile) {
-          return _tile.buildingType === BUILDING_LIVING_QUARTERS
-        })
-        if (surroundingLivingQuarters.length > 1) {
-          score.totalFactors.push(SCORE_FACTOR_TOO_BIG_LQ_CLUSTER)
-          score.flares.push(FLARE_TOO_BIG_LQ_CLUSTER)
-          break breakhere
-        }
+  breakhere: for (var i = 0; i < tiles.length; i++) {
+    var tile = tiles[i]
+    if (tile.buildingType === BUILDING_LIVING_QUARTERS) {
+      var surroundingTiles = getSurroundingTiles(tile)
+      var surroundingLivingQuarters = surroundingTiles.filter(function (_tile) {
+        return _tile.buildingType === BUILDING_LIVING_QUARTERS
+      })
+      if (surroundingLivingQuarters.length > 1) {
+        score.totalFactors.push(SCORE_FACTOR_TOO_BIG_LQ_CLUSTER)
+        score.flares.push(FLARE_TOO_BIG_LQ_CLUSTER)
+        break breakhere
       }
     }
   }
@@ -468,12 +477,18 @@ var Tile = function (x, y, terrainType) {
   this.iconsContainer.y = 2
   this.buildingContainer = new PIXI.Container()
 
-  if (terrainType === BUILDING_HQ) {
+  if (this.terrainType === BUILDING_HQ) {
     resourceName = resourceNames[TERRAIN_PLAIN]
     this.terrainSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
     this.changeBuilding(BUILDING_HQ)
   } else {
-    this.terrainSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
+    if (this.terrainType === TERRAIN_DOME) {
+      this.terrainSprite = new PIXI.Sprite(PIXI.Texture.EMPTY)
+      this.terrainSprite.width = 64
+      this.terrainSprite.height = 64
+    } else {
+      this.terrainSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
+    }
   }
 
   this.terrainSprite.interactive = true
@@ -590,14 +605,16 @@ var BuildingButton = function (buildingType, index) {
   buildingSprite.y = 6
   this.container.addChild(buildingSprite)
 
-  var producingIconResourceName = resourceNames[buildingProvides[buildingType]];
+  if (this.buildingType !== BUILDING_DOME) {
+    var producingIconResourceName = resourceNames[buildingProvides[buildingType]];
 
-  var buildingProvidesSprite = new PIXI.Sprite(PIXI.loader.resources[producingIconResourceName].texture)
-  buildingProvidesSprite.width = 16
-  buildingProvidesSprite.height = 16
-  buildingProvidesSprite.x = 100
-  buildingProvidesSprite.y = 26
-  this.container.addChild(buildingProvidesSprite)
+    var buildingProvidesSprite = new PIXI.Sprite(PIXI.loader.resources[producingIconResourceName].texture)
+    buildingProvidesSprite.width = 16
+    buildingProvidesSprite.height = 16
+    buildingProvidesSprite.x = 100
+    buildingProvidesSprite.y = 26
+    this.container.addChild(buildingProvidesSprite)
+  }
 
   this.container.y = index * 47
 }
@@ -731,16 +748,15 @@ var gameScene = {
       TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_SAND,
       TERRAIN_PLAIN, TERRAIN_PLAIN,TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN,
       TERRAIN_PLAIN, BUILDING_HQ  ,TERRAIN_PLAIN, TERRAIN_ORE,   TERRAIN_PLAIN, TERRAIN_ORE,
-      TERRAIN_PLAIN, TERRAIN_PLAIN,TERRAIN_ICE,   TERRAIN_PLAIN, TERRAIN_ICE,   TERRAIN_PLAIN,
+      TERRAIN_PLAIN, TERRAIN_PLAIN,TERRAIN_ICE,   TERRAIN_PLAIN, TERRAIN_ICE,   TERRAIN_DOME,
     ]
 
     tiles = []
     for (var r = 0; r < rowCount; r++) {
-      tiles[r] = []
       for (var c = 0; c < colCount; c++) {
         var terrainType = map.shift()
         var tile = new Tile(c, r, terrainType)
-        tiles[r][c] = tile
+        tiles.push(tile)
         this.tileContainer.addChild(tile.container)
       }
     }
@@ -821,6 +837,89 @@ var gameScene = {
     end_panel.interactive = true
     this.resultContainer.addChild(end_panel)
 
+    var resourcesColumn1 = [
+      RESOURCE_PEOPLE,
+      RESOURCE_WATER,
+      RESOURCE_METAL
+    ]
+    var resourcesColumn2 = [
+      RESOURCE_GLASS,
+      RESOURCE_SAND,
+      RESOURCE_HEAT
+    ]
+
+    var generateColumn = function (columnData, x) {
+      var yOffset = 0
+
+      for (var i = 0; i < columnData.length; i++) {
+        var resource = columnData[i]
+        var resourceText = (result[resource] === 0) ? "-" : result[resource];
+        var textObject = new PIXI.Text(resourceText, { fontSize: 16 })
+        var iconSprite = new PIXI.Sprite(PIXI.loader.resources[resource.toLowerCase()].texture)
+        var container = new PIXI.Container()
+        container.addChild(iconSprite)
+        container.addChild(textObject)
+
+        iconSprite.x = 0
+        iconSprite.y = 2
+        textObject.x = 20
+
+        container.x = x
+        container.y = 100 + yOffset
+        yOffset += 20
+
+        this.resultContainer.addChild(container)
+
+      }
+    }.bind(this)
+
+    generateColumn(resourcesColumn1, 120)
+    generateColumn(resourcesColumn2, 210)
+
+    var flare_x = 340
+    var flare_y = 90
+
+    //Positive flares
+    result.flares.forEach(function(flare) {
+      if (flare === FLARE_DOME_BUILT) {
+        var container = new PIXI.Container()
+        var flare_super = new PIXI.Sprite(PIXI.loader.resources["flare_super"].texture)
+        flare_super.y = 2
+        var textObject = new PIXI.Text("Dome built, yay", { fontSize: 16 })
+        textObject.x = 44
+        container.addChild(flare_super)
+        container.addChild(textObject)
+
+        container.x = flare_x
+        container.y = flare_y
+
+        this.resultContainer.addChild(container)
+
+        flare_y += 26
+      }
+    }.bind(this))
+
+    flare_y = 205
+    //Negative flares
+    result.flares.forEach(function(flare) {
+      if (flare === FLARE_TOO_BIG_LQ_CLUSTER) {
+        var container = new PIXI.Container()
+        var flare_disaster = new PIXI.Sprite(PIXI.loader.resources["flare_disaster"].texture)
+        flare_disaster.y = 2
+        var textObject = new PIXI.Text("LQ disaster", { fontSize: 16 })
+        textObject.x = 44
+        container.addChild(flare_disaster)
+        container.addChild(textObject)
+
+        container.x = flare_x
+        container.y = flare_y
+
+        this.resultContainer.addChild(container)
+
+        flare_y += 26
+      }
+    }.bind(this))
+
     var titleText = new PIXI.Text('Colony results', { fontSize: 40, fill: '#000000'})
     titleText.x = 252
     titleText.y = 5
@@ -828,7 +927,7 @@ var gameScene = {
 
     var resourceTitle = new PIXI.Text('Resource tally', { fontSize: 20, fill: '#000000'})
     resourceTitle.x = 118
-    resourceTitle.y = 53
+    resourceTitle.y = 57
     this.resultContainer.addChild(resourceTitle)
 
     var bonusTitle = new PIXI.Text('Bonuses', { fontSize: 20, fill: '#000000'})
