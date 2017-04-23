@@ -143,12 +143,15 @@ resourceScoreFactors[RESOURCE_METAL] = 3
 resourceScoreFactors[RESOURCE_WATER] = 10
 
 var SCORE_CONSTANT_DOME = 50
-var SCORE_FACTOR_TOO_BIG_LQ_CLUSTER = 0.5
-var SCORE_FACTOR_UNBUILT_TERRAIN = 12
+var SCORE_CONSTANT_UNBUILT_TERRAIN = 12
+
+var SCORE_FACTOR_TOO_BIG_LQ_CLUSTER = -0.9
+var SCORE_FACTOR_TREES_NEXT_TO_LQ = 0.05
 
 var FLARE_DOME_BUILT = 'FLARE_DOME_BUILT'
 var FLARE_TOO_BIG_LQ_CLUSTER = 'FLARE_TOO_BIG_LQ_CLUSTER'
 var FLARE_ICE_AND_DOME = 'FLARE_ICE_AND_DOME'
+var FLARE_TREES_NEXT_TO_LQ = 'FLARE_TREES_NEXT_TO_LQ'
 
 var resourceNames = {}
 resourceNames[TERRAIN_PLAIN] = 'tile_plain'
@@ -459,10 +462,28 @@ var countScore = function () {
       }
     }
 
-    score.extra += unbuiltTerrainCount * SCORE_FACTOR_UNBUILT_TERRAIN
+    score.extra += unbuiltTerrainCount * SCORE_CONSTANT_UNBUILT_TERRAIN
+
+    var isFound = false
+    for (var i = 0; i < tiles.length; i++) {
+      var tile = tiles[i]
+      if (tile.buildingType === BUILDING_LIVING_QUARTERS) {
+        var surroundingTiles = getSurroundingTiles(tile)
+        var surroundingUnbuiltTiles = surroundingTiles.filter(function (_tile) {
+          return !_tile.buildingType
+        })
+        if (surroundingUnbuiltTiles.length > 0) {
+          score.totalFactors.push(SCORE_FACTOR_TREES_NEXT_TO_LQ)
+          isFound = true
+        }
+      }
+    }
+    if (isFound) {
+      score.flares.push(FLARE_TREES_NEXT_TO_LQ)
+    }
   }
 
-  breakhere: for (var i = 0; i < tiles.length; i++) {
+  for (var i = 0; i < tiles.length; i++) {
     var tile = tiles[i]
     if (tile.buildingType === BUILDING_LIVING_QUARTERS) {
       var surroundingTiles = getSurroundingTiles(tile)
@@ -472,7 +493,7 @@ var countScore = function () {
       if (surroundingLivingQuarters.length > 1) {
         score.totalFactors.push(SCORE_FACTOR_TOO_BIG_LQ_CLUSTER)
         score.flares.push(FLARE_TOO_BIG_LQ_CLUSTER)
-        break breakhere
+        break
       }
     }
   }
@@ -491,17 +512,19 @@ var countScore = function () {
     score.totalFactors.push(0.25)
   }
 
-  score.total =
+  var baseTotal =
       score[RESOURCE_PEOPLE] +
       score[RESOURCE_GLASS] +
       score[RESOURCE_HEAT] +
       score[RESOURCE_WATER] +
       score[RESOURCE_SAND] +
       score[RESOURCE_METAL] +
-      score.extra
+      score.extra;
+
+  score.total = baseTotal
 
   for (var i = 0; i < score.totalFactors.length; i++) {
-    score.total *= score.totalFactors[i]
+    score.total += baseTotal * score.totalFactors[i]
   }
 
   score.total = Math.ceil(score.total)
@@ -1006,6 +1029,22 @@ var gameScene = {
         this.resultContainer.addChild(container)
 
         flare_y += 26
+      } else if (flare === FLARE_TREES_NEXT_TO_LQ) {
+        foundPositive = true
+        var container = new PIXI.Container()
+        var flare_super = new PIXI.Sprite(PIXI.loader.resources["flare_super"].texture)
+        flare_super.y = 2
+        var textObject = new PIXI.Text("Living Quarters have immediate access to a lush forest", { fontSize: 16 })
+        textObject.x = 44
+        container.addChild(flare_super)
+        container.addChild(textObject)
+
+        container.x = flare_x
+        container.y = flare_y
+
+        this.resultContainer.addChild(container)
+
+        flare_y += 26
       }
     }.bind(this))
     if (!foundPositive) {
@@ -1023,7 +1062,7 @@ var gameScene = {
         var container = new PIXI.Container()
         var flare_disaster = new PIXI.Sprite(PIXI.loader.resources["flare_disaster"].texture)
         flare_disaster.y = 2
-        var textObject = new PIXI.Text("More than two Living Quarters connected - Huge\nfire hazard and colony burned", { fontSize: 16 })
+        var textObject = new PIXI.Text("More than two adjacent Living Quarters causes\ndiseases to spread like the plague", { fontSize: 16 })
         textObject.x = 44
         container.addChild(flare_disaster)
         container.addChild(textObject)
