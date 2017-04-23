@@ -762,6 +762,8 @@ var gameScene = {
 
     updateGame()
 
+    selectedBuildingButton = null
+    setInformationBoxText('')
   },
   destroy: function () {
     this.container.destroy()
