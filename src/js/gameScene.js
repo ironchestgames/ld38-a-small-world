@@ -183,7 +183,7 @@ var isTileProducingResource = function (tile, resource) {
   if (!tile.buildingType) {
     return false
   }
-  
+
   switch (resource) {
 
     // level 1
@@ -305,7 +305,7 @@ var updateNumbers = function () {
     }
 
     textObject.text = ': ' +
-        produced + ' / ' + 
+        produced + ' / ' +
         consumed
   }
 }
@@ -575,6 +575,7 @@ var gameScene = {
   name: 'gameScene',
   create: function (sceneParams) {
     this.tweens = []
+    this.totalTime = 0;
 
     this.container = new PIXI.Container()
 
@@ -583,42 +584,32 @@ var gameScene = {
 
     var asteroidImage = new PIXI.Sprite(PIXI.loader.resources['astroid'].texture)
     asteroidImage.x = 128
-    asteroidImage.y = 104
+    asteroidImage.y = -500
+
+    var tweenMaster2 = new TweenLib.Tween({ y: -500 })
+      .to({y: 104}, 3000)
+      .easing(TweenLib.Easing.Quartic.Out)
+      .onUpdate(function(y) {
+        asteroidImage.y = this.y;
+      })
+      .start();
+    this.tweens.push(tweenMaster2)
     this.container.addChild(asteroidImage)
 
     var gameContainer = new PIXI.Container()
     this.gameContainer = gameContainer;
     this.gameContainer.x = 182
-    this.gameContainer.y = 132
-    var testY = { y: 100 };
-    var tween = new TweenLib.Tween(testY)
-      .to({y: 120}, 2000)
-      //.delay(1000)
-      .easing(TweenLib.Easing.Elastic.InOut)
+    this.gameContainer.y = -500
+    var tweenMaster = new TweenLib.Tween({ y: -500 })
+      .to({y: 132}, 3000)
+      .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function(y) {
-        console.log(this.y)
         gameContainer.y = this.y;
       })
-      //.start();
+      .start();
 
-
-      /*.easing(TWEEN.Easing.Elastic.InOut)
-      .onUpdate(function(y) {
-        console.log(y, this)
-          //gameContainer.y = this.y;
-      })
-      .start(0)*/
-      /*
-      //.duration(100)
-      /*.repeat()
-      .onComplete(function() {
-        console.log(this, 'complete')
-      })
-      //.delay(1000)
-      //.easing(TWEEN.Easing.Quadratic.Out)
-      //*/
-    this.tweens.push(tween)
-    window.kurt = tween;
+    this.tweens.push(tweenMaster)
+    //window.kurt = tweenMaster;
 
     this.tileContainer = new PIXI.Container()
 
@@ -726,9 +717,10 @@ var gameScene = {
     this.container.destroy()
   },
   update: function (delta) {
-    /*this.tweens.forEach(function(hmm) {
-      hmm.update(delta);
-    })*/
+    this.totalTime = this.totalTime + delta;
+    this.tweens.forEach(function(hmm) {
+      hmm.update(this.totalTime);
+    }.bind(this))
   },
   draw: function () {
     global.renderer.render(this.container)
