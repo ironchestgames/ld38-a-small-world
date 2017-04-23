@@ -103,6 +103,20 @@ infoTexts[TERRAIN_SAND] = 'Sand'
 infoTexts[TERRAIN_ICE] = 'Ice'
 infoTexts[TERRAIN_ORE] = 'Ore'
 
+var resourceScoreFactors = {}
+resourceScoreFactors[RESOURCE_HEAT] = 4
+resourceScoreFactors[RESOURCE_PEOPLE] = 5
+resourceScoreFactors[RESOURCE_SAND] = 2
+resourceScoreFactors[RESOURCE_GLASS] = 1
+resourceScoreFactors[RESOURCE_METAL] = 3
+resourceScoreFactors[RESOURCE_WATER] = 10
+
+var SCORE_CONSTANT_DOME = 50
+var SCORE_FACTOR_TOO_BIG_LQ_CLUSTER = 0.5
+var SCORE_FACTOR_UNBUILT_TERRAIN = 12
+
+var FLARE_DOME_BUILT = 'FLARE_DOME_BUILT'
+var FLARE_TOO_BIG_LQ_CLUSTER = 'FLARE_TOO_BIG_LQ_CLUSTER'
 
 var resourceNames = {}
 resourceNames[TERRAIN_PLAIN] = 'tile_plain'
@@ -348,56 +362,74 @@ var findBuildingByType = function (buildingType) {
   return null
 }
 
+var getResourceTallyHo = function (resource) {
+  return getResourceProduced(resource) * resourceScoreFactors[resource]
+}
+
+var getSurroundingTiles = function (tile) {
+  var surroundingTiles = []
+  if (isInsideGrid(tile.x + 1, tile.y)) {
+    surroundingTiles.push(tiles[tile.y][tile.x + 1])
+
+  } else if (isInsideGrid(tile.x, tile.y + 1)) {
+    surroundingTiles.push(tiles[tile.y + 1][tile.x])
+
+  } else if (isInsideGrid(tile.x - 1, tile.y)) {
+    surroundingTiles.push(tiles[tile.y][tile.x - 1])
+
+  } else if (isInsideGrid(tile.x, tile.y - 1)) {
+    surroundingTiles.push(tiles[tile.y - 1][tile.x])
+  }
+  return surroundingTiles
+}
+
 var terraform = function () {
-  var unbuiltTerrainCount = 0
-  for (var r = 0; r < rowCount; r++) {
+
+  var flares = []
+
+  var tallyHo = 0
+
+  tallyHo += getResourceTallyHo(RESOURCE_PEOPLE)
+  tallyHo += getResourceTallyHo(RESOURCE_HEAT)
+  tallyHo += getResourceTallyHo(RESOURCE_SAND)
+  tallyHo += getResourceTallyHo(RESOURCE_WATER)
+  tallyHo += getResourceTallyHo(RESOURCE_METAL)
+  tallyHo += getResourceTallyHo(RESOURCE_GLASS)
+
+  if (findBuildingByType(BUILDING_METAL_AND_GLASS_TO_DOME)) {
+    tallyHo += 50
+    flares.push(FLARE_DOME_BUILT)
+
+    var unbuiltTerrainCount = 0
+    for (var r = 0; r < rowCount; r++) {
+      for (var c = 0; c < colCount; c++) {
+        var tile = tiles[r][c]
+        if (!tile.buildingType) {
+          unbuiltTerrainCount++
+        }
+      }
+    }
+
+    tallyHo += unbuiltTerrainCount * SCORE_FACTOR_UNBUILT_TERRAIN
+  }
+
+  breakhere: for (var r = 0; r < rowCount; r++) {
     for (var c = 0; c < colCount; c++) {
       var tile = tiles[r][c]
-      if (!tile.buildingType) {
-        unbuiltTerrainCount++
+      if (tile.buildingType === BUILDING_LIVING_QUARTERS) {
+        var surroundingLivingQuarters = getSurroundingTiles(tile).filter(function (tile) {
+          return tile.buildingType === BUILDING_LIVING_QUARTERS
+        })
+        if (surroundingLivingQuarters.length === 3) {
+          tallyHo *= SCORE_FACTOR_TOO_BIG_LQ_CLUSTER
+          flares.push(FLARE_TOO_BIG_LQ_CLUSTER)
+          break breakhere
+        }
       }
     }
   }
-  var total = (getResourceProduced(RESOURCE_PEOPLE) - getResourceConsumed(RESOURCE_PEOPLE)) +
-      (getResourceProduced(RESOURCE_METAL) - getResourceConsumed(RESOURCE_METAL)) +
-      unbuiltTerrainCount
 
-
-  var tile = findBuildingByType(BUILDING_METAL_AND_GLASS_TO_DOME)
-  if (!(tile && isTileProducingResource(tile, RESOURCE_DOME))) {
-    setGameOverText('NO DOME\nLIVING QUARTERS SUPPLIES HELD FOR 3 MONTHS')
-    return
-  }
-
-  var tile = findBuildingByType(BUILDING_ICE_AND_HEAT_TO_WATER)
-  if (!(tile && isTileProducingResource(tile, RESOURCE_WATER))) {
-    setGameOverText('NO WATER PLANT\nLIVING QUARTERS SUPPLIES HELD FOR 3 MONTHS')
-    return
-  }
-
-  var unbuiltIceTerrainCount = 0
-  for (var r = 0; r < rowCount; r++) {
-    for (var c = 0; c < colCount; c++) {
-      var tile = tiles[r][c]
-      if (tile.terrainType === TERRAIN_ICE && tile.buildingType !== BUILDING_ICE_COLLECTOR) {
-        unbuiltIceTerrainCount++
-      }
-    }
-  }
-  if (unbuiltIceTerrainCount > 0) {
-    setGameOverText('TOO MUCH ICE LEFT\nIT MELTED AND NOW EVERYTHING HAS ALGAE AND MOLD, NO TREES')
-    return
-  }
-
-  var peopleSaldo = getResourceProduced(RESOURCE_PEOPLE) - getResourceConsumed(RESOURCE_PEOPLE)
-  if (peopleSaldo < 0) {
-    total = Math.ceil(total * 0.5)
-    setGameOverText('SPACE UNION SHUTS YOU DOWN\n' + total + ' YEARS')
-    return
-  }
-
-  total += 1
-  setGameOverText('THE COLONY LASTED ' + total + ' YEARS') // TODO: A MERE/THANKS TO YOU
+  setGameOverText('THE COLONY LASTED ' + tallyHo + ' YEARS')
 }
 
 var setInformationBoxText = function (text) {
@@ -580,7 +612,7 @@ var gameScene = {
 
     this.welcometextContainer = new PIXI.Container()
     var region = (Math.random() < 0.5) ? 'PO' : 'KG';
-    var welcomeText = new PIXI.Text('Welcome, to asteroid ' + region + '-56-AX-' + Math.round(Math.random() * 10032), { fontSize: 16, fill: '#ffffff'})
+    var welcomeText = new PIXI.Text('Welcome to asteroid ' + region + '-56-AX-' + Math.round(Math.random() * 10032), { fontSize: 16, fill: '#ffffff'})
     welcomeText.x = 270
     welcomeText.y = 270
     var tween_welcometext = new TweenLib.Tween({ alpha: 1 })
@@ -603,20 +635,6 @@ var gameScene = {
     })
     this.container.addChild(backgroundImage)
 
-    var asteroidImage = new PIXI.Sprite(PIXI.loader.resources['astroid'].texture)
-    asteroidImage.x = 128
-    asteroidImage.y = -500
-
-    var tween_asteriod = new TweenLib.Tween({ y: -500 })
-      .to({y: 104}, 3300)
-      .easing(TweenLib.Easing.Quartic.Out)
-      .onUpdate(function(y) {
-        asteroidImage.y = this.y;
-      })
-      .start();
-    this.tweens.push(tween_asteriod)
-    this.container.addChild(asteroidImage)
-
     var gameContainer = new PIXI.Container()
     this.gameContainer = gameContainer;
     this.gameContainer.x = 182
@@ -633,6 +651,11 @@ var gameScene = {
 
     this.tileContainer = new PIXI.Container()
 
+    var asteroidSprite = new PIXI.Sprite(PIXI.loader.resources['astroid'].texture)
+    asteroidSprite.x = 128 - 182
+    asteroidSprite.y = 104 - 132
+
+    this.gameContainer.addChild(asteroidSprite)
     this.gameContainer.addChild(this.tileContainer)
 
     var buildingPanelContainer = new PIXI.Container()
@@ -762,6 +785,8 @@ var gameScene = {
 
     updateGame()
 
+    selectedBuildingButton = null
+    setInformationBoxText('')
   },
   destroy: function () {
     this.container.destroy()
