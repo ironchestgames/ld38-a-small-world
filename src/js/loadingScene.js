@@ -16,7 +16,9 @@ var loadingScene = {
     .add('tile_ore', 'assets/images/tile_ore.png')
     .add('tile_sand', 'assets/images/tile_sand.png')
 
-    .add('dome_main', 'assets/images/dome_main.png')
+    .add('flare_super', 'assets/images/flare_super.png')
+    .add('flare_disaster', 'assets/images/flare_disaster.png')
+
     .add('asteroid_resources_panel', 'assets/images/asteroid_resources_panel.png')
     .add('end_screen_panel', 'assets/images/end_screen_panel.png')
     .add('background', 'assets/images/background.png')
@@ -34,6 +36,7 @@ var loadingScene = {
     .add('mining', 'assets/images/mining.png')
     .add('quarry', 'assets/images/quarry.png')
     .add('sand_to_glass', 'assets/images/sand_to_glass.png')
+    .add('dome_main', 'assets/images/dome_main.png')
 
     .add('resource_dome', 'assets/images/resource_dome.png')
     .add('resource_glass', 'assets/images/resource_glass.png')

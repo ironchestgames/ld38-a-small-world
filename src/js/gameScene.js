@@ -837,6 +837,89 @@ var gameScene = {
     end_panel.interactive = true
     this.resultContainer.addChild(end_panel)
 
+    var resourcesColumn1 = [
+      RESOURCE_PEOPLE,
+      RESOURCE_WATER,
+      RESOURCE_METAL
+    ]
+    var resourcesColumn2 = [
+      RESOURCE_GLASS,
+      RESOURCE_SAND,
+      RESOURCE_HEAT
+    ]
+
+    var generateColumn = function (columnData, x) {
+      var yOffset = 0
+
+      for (var i = 0; i < columnData.length; i++) {
+        var resource = columnData[i]
+        var resourceText = (result[resource] === 0) ? "-" : result[resource];
+        var textObject = new PIXI.Text(resourceText, { fontSize: 16 })
+        var iconSprite = new PIXI.Sprite(PIXI.loader.resources[resource.toLowerCase()].texture)
+        var container = new PIXI.Container()
+        container.addChild(iconSprite)
+        container.addChild(textObject)
+
+        iconSprite.x = 0
+        iconSprite.y = 2
+        textObject.x = 20
+
+        container.x = x
+        container.y = 100 + yOffset
+        yOffset += 20
+
+        this.resultContainer.addChild(container)
+
+      }
+    }.bind(this)
+
+    generateColumn(resourcesColumn1, 120)
+    generateColumn(resourcesColumn2, 210)
+
+    var flare_x = 340
+    var flare_y = 90
+
+    //Positive flares
+    result.flares.forEach(function(flare) {
+      if (flare === FLARE_DOME_BUILT) {
+        var container = new PIXI.Container()
+        var flare_super = new PIXI.Sprite(PIXI.loader.resources["flare_super"].texture)
+        flare_super.y = 2
+        var textObject = new PIXI.Text("Dome built, yay", { fontSize: 16 })
+        textObject.x = 44
+        container.addChild(flare_super)
+        container.addChild(textObject)
+
+        container.x = flare_x
+        container.y = flare_y
+
+        this.resultContainer.addChild(container)
+
+        flare_y += 26
+      }
+    }.bind(this))
+
+    flare_y = 205
+    //Negative flares
+    result.flares.forEach(function(flare) {
+      if (flare === FLARE_TOO_BIG_LQ_CLUSTER) {
+        var container = new PIXI.Container()
+        var flare_disaster = new PIXI.Sprite(PIXI.loader.resources["flare_disaster"].texture)
+        flare_disaster.y = 2
+        var textObject = new PIXI.Text("LQ disaster", { fontSize: 16 })
+        textObject.x = 44
+        container.addChild(flare_disaster)
+        container.addChild(textObject)
+
+        container.x = flare_x
+        container.y = flare_y
+
+        this.resultContainer.addChild(container)
+
+        flare_y += 26
+      }
+    }.bind(this))
+
     var titleText = new PIXI.Text('Colony results', { fontSize: 40, fill: '#000000'})
     titleText.x = 252
     titleText.y = 5
@@ -844,7 +927,7 @@ var gameScene = {
 
     var resourceTitle = new PIXI.Text('Resource tally', { fontSize: 20, fill: '#000000'})
     resourceTitle.x = 118
-    resourceTitle.y = 53
+    resourceTitle.y = 57
     this.resultContainer.addChild(resourceTitle)
 
     var bonusTitle = new PIXI.Text('Bonuses', { fontSize: 20, fill: '#000000'})
