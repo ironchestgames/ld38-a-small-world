@@ -76,6 +76,24 @@ buildingProvides[BUILDING_MINERAL_AND_METAL_TO_ALLOY] = RESOURCE_ALLOY
 buildingProvides[BUILDING_SAND_TO_GLASS] = RESOURCE_GLASS
 buildingProvides[BUILDING_SAND_TO_MINERALS] = RESOURCE_MINERALS
 
+var buildingTerrainPermissions = {}
+buildingTerrainPermissions[null] = []
+buildingTerrainPermissions[BUILDING_HEAT_GENERATOR] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ORE]
+buildingTerrainPermissions[BUILDING_MINING] = [TERRAIN_ORE]
+buildingTerrainPermissions[BUILDING_QUARRY] = [TERRAIN_SAND]
+buildingTerrainPermissions[BUILDING_HQ] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
+buildingTerrainPermissions[BUILDING_ICE_COLLECTOR] = [TERRAIN_ICE]
+buildingTerrainPermissions[BUILDING_LIVING_QUARTERS] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ORE]
+
+//Resource converters
+buildingTerrainPermissions[BUILDING_ALLOY_AND_GLASS_TO_DOME] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
+buildingTerrainPermissions[BUILDING_ICE_AND_HEAT_TO_WATER] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
+buildingTerrainPermissions[BUILDING_ORE_TO_METAL] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
+buildingTerrainPermissions[BUILDING_MINERAL_AND_METAL_TO_ALLOY] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
+buildingTerrainPermissions[BUILDING_SAND_TO_GLASS] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
+buildingTerrainPermissions[BUILDING_SAND_TO_MINERALS] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
+
+
 var resourceNames = {}
 resourceNames[TERRAIN_PLAIN] = 'tile_plain'
 resourceNames[TERRAIN_SAND] = 'tile_sand'
@@ -289,6 +307,21 @@ var updateNumbers = function () {
   }
 }
 
+var updateGreenMarkers = function () {
+  for (var r = 0; r < rowCount; r++) {
+    for (var c = 0; c < colCount; c++) {
+      var tile = tiles[r][c]
+      tile.isAvailableForSelectedBuilding =
+          buildingTerrainPermissions[selectedBuildingButton].includes(tile.terrain)
+
+      tile.greenMarkerSprite.visible = false
+      if (tile.isAvailableForSelectedBuilding) {
+        tile.greenMarkerSprite.visible = true
+      }
+    }
+  }
+}
+
 var getResourceProduced = function (resource) {
   return baseProducedResources.filter(function (producedResource) {
     return producedResource === resource
@@ -357,6 +390,7 @@ var Tile = function (x, y, terrainType) {
   this.y = y
   this.terrain = terrainType
   this.buildingType = null
+  this.isAvailableForSelectedBuilding = false
 
   var resourceName = resourceNames[terrainType]
 
@@ -376,14 +410,22 @@ var Tile = function (x, y, terrainType) {
   this.terrainSprite.interactive = true
   this.terrainSprite.on('click', function () {
     if (selectedBuildingButton) {
-      this.changeBuilding(selectedBuildingButton)
-      updateGame()
+      if (this.isAvailableForSelectedBuilding) {
+        this.changeBuilding(selectedBuildingButton)
+        selectedBuildingButton = null
+        updateGame()
+        updateGreenMarkers()
+      }
     }
   }.bind(this))
+
+  this.greenMarkerSprite = new PIXI.Sprite(PIXI.loader.resources['tile_placement_available'].texture)
+  this.greenMarkerSprite.visible = false
 
   this.container.addChild(this.terrainSprite)
   this.container.addChild(this.buildingContainer)
   this.container.addChild(this.iconsContainer)
+  this.container.addChild(this.greenMarkerSprite)
 
   this.container.x = x * 64
   this.container.y = y * 64
@@ -444,7 +486,9 @@ var BuildingButton = function (buildingType, index) {
   button.on('click', function () {
     if (this.isActive === true) {
       console.log(this.buildingType)
-      selectedBuildingButton = buildingType
+      selectedBuildingButton = this.buildingType
+
+      updateGreenMarkers()
     }
   }.bind(this))
   this.container.addChild(button)

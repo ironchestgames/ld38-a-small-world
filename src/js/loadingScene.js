@@ -8,6 +8,8 @@ var loadingScene = {
     PIXI.loader
 
     // buttons
+    .add('tile_placement_available', 'assets/images/tile_placement_available.png')
+
     .add('tile_plain', 'assets/images/tile_plain.png')
     .add('tile_ice', 'assets/images/tile_ice.png')
     .add('tile_ore', 'assets/images/tile_ore.png')
