@@ -764,7 +764,7 @@ Tile.prototype.changeBuilding = function (buildingType) {
       new PIXI.Rectangle(64 * 3, 0, 64, 64)))
 
     new TweenLib.Tween({ index: 0 })
-      .to({index: 20}, 5000)
+      .to({index: 15}, 4000)
       .repeat(Infinity)
       .onUpdate(function() {
         var idx = (this.index > 3) ? 0 : Math.round(this.index);
@@ -789,6 +789,30 @@ Tile.prototype.changeBuilding = function (buildingType) {
 
     new TweenLib.Tween({ index: 0 })
       .to({index: 40}, 10000)
+      .repeat(Infinity)
+      .onUpdate(function() {
+        var idx = (this.index > 3) ? 0 : Math.round(this.index);
+        buildingSprite.texture = sheet_textures[idx]
+      })
+      .start()
+  }
+
+  if (buildingType === BUILDING_LIVING_QUARTERS) {
+    var sheet_textures = []
+    sheet_textures.push(new PIXI.Texture(PIXI.loader.resources["living_quarters_spritesheet"].texture,
+      new PIXI.Rectangle(0, 0, 64, 64)))
+
+    sheet_textures.push(new PIXI.Texture(PIXI.loader.resources["living_quarters_spritesheet"].texture,
+      new PIXI.Rectangle(64, 0, 64, 64)))
+
+    sheet_textures.push(new PIXI.Texture(PIXI.loader.resources["living_quarters_spritesheet"].texture,
+      new PIXI.Rectangle(64 * 2, 0, 64, 64)))
+
+    sheet_textures.push(new PIXI.Texture(PIXI.loader.resources["living_quarters_spritesheet"].texture,
+      new PIXI.Rectangle(64 * 3, 0, 64, 64)))
+
+    new TweenLib.Tween({ index: 0 })
+      .to({index: 20}, 5000)
       .repeat(Infinity)
       .onUpdate(function() {
         var idx = (this.index > 3) ? 0 : Math.round(this.index);
