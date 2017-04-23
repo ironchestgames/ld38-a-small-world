@@ -22,8 +22,8 @@ var setUpGameRenderer = function () {
 
   // init pixi renderer
   var noWebgl = !!localStorage.getItem('vars:noWebgl')
-  var renderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight, {}, noWebgl)
-  document.body.appendChild(renderer.view)
+  var renderer = PIXI.autoDetectRenderer(800, 600, {}, noWebgl)
+  document.getElementById('canvas_container').appendChild(renderer.view)
   renderer.backgroundColor = 0x000000
 
   var appContainer = new PIXI.Container()
@@ -111,7 +111,7 @@ windowLoad(function () {
     if (screenOrientation().direction === wantedScreenOrientation) {
 
       // hide turn device icon
-      turnDeviceElement.style.visibility = 'hidden'
+      //turnDeviceElement.style.visibility = 'hidden'
 
       // set up everything pixi for the game
       setUpGameRenderer()
@@ -130,5 +130,5 @@ windowLoad(function () {
       turnDeviceElement.style.visibility = 'visible'
     }
   }, 100)
-  
+
 })

@@ -1,28 +1,58 @@
-<!doctype html>
 <html>
-  <head>
-    <title>html5-pixi-game-template</title>
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background-color: #292929;
-        color: #eee;
-      }
+<head>
+<title>A Small World</title>
+<script src="js/bundle.js"></script>
+<link rel="icon" href="favicon.png" type="image/png" sizes="16x16">
+<link href="http://fonts.googleapis.com/css?family=Chelsea+Market" rel="stylesheet" type="text/css">
+<style>
+body, div {
+    background-color: #1d2f38;
+    color: white;
+    padding: 0px;
+    margin: 0px;
+    font-family: Arial;
+    font-family: 'Chelsea Market', cursive;
+}
+.container {
+    position: absolute;
+    top: 5px;
+    left: 0;
+    right: 0;
+    margin:auto;
+    width: 1024px;
+}
 
-      #turn_device {
-        visibility: hidden;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        margin-left: -256px;
-        margin-top: -256px;
-      }
-    </style>
-  </head>
-  <body>
-    <img id="turn_device" src="assets/images/turn_device.png" />
-    <script type="text/javascript" src="js/bundle.js"></script>
-  </body>
+.text {
+    margin: 20px;
+}
+
+.instructions {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div id="canvas_container"></div>
+    <div class="text">
+        <h1>Instructions:</h1>
+        <div class="instructions">
+            <div>
+                <h1>A Small World</h1>
+                <h2>Colonize an asteroid by providing a sustainable ecosystem for its inhabitants.</h2>
+                <p>First, the main objective is to construct a Glass Dome around the asteroid. This is done by placing the "Dome" building. In order to place it, the base needs to provide some particular resources though.</p>
+                <p>If any building in the base meet the requirement for production (seen HERE) it will supply <i><b>all of the base</b> - including all buildings - with that resource</i>.</p>
+                <p>Experiment with different building placements to increase production and gain powerful bonuses.</p>
+                <p>Once you feel that your colony is ready, click the "TERRAFORM"-button. The more resources the base is producing, the longer sustainability of the colony (read: High score).</p>
+            </div>
+        </div>
+        <h2>Created by:</h2>
+        <p>Fredrik Järnbröst - Programming</p>
+        <p>Joel J Lydberg - Graphic Design</p>
+        <p>Erik Larsson - Game Design, Programming</p>
+    </div>
+</div>
+</body>
 </html>
