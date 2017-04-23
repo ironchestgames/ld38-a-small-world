@@ -580,7 +580,7 @@ var gameScene = {
 
     this.welcometextContainer = new PIXI.Container()
     var region = (Math.random() < 0.5) ? 'PO' : 'KG';
-    var welcomeText = new PIXI.Text('Welcome, to asteroid ' + region + '-56-AX-' + Math.round(Math.random() * 10032), { fontSize: 16, fill: '#ffffff'})
+    var welcomeText = new PIXI.Text('Welcome to asteroid ' + region + '-56-AX-' + Math.round(Math.random() * 10032), { fontSize: 16, fill: '#ffffff'})
     welcomeText.x = 270
     welcomeText.y = 270
     var tween_welcometext = new TweenLib.Tween({ alpha: 1 })
