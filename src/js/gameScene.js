@@ -707,6 +707,30 @@ Tile.prototype.changeBuilding = function (buildingType) {
       .start()
   }
 
+  if (buildingType === BUILDING_QUARRY) {
+    var sheet_textures = []
+    sheet_textures.push(new PIXI.Texture(PIXI.loader.resources["quarry-sheet"].texture,
+      new PIXI.Rectangle(0, 0, 64, 64)))
+
+    sheet_textures.push(new PIXI.Texture(PIXI.loader.resources["quarry-sheet"].texture,
+      new PIXI.Rectangle(64, 0, 64, 64)))
+
+    sheet_textures.push(new PIXI.Texture(PIXI.loader.resources["quarry-sheet"].texture,
+      new PIXI.Rectangle(64 * 2, 0, 64, 64)))
+
+    sheet_textures.push(new PIXI.Texture(PIXI.loader.resources["quarry-sheet"].texture,
+      new PIXI.Rectangle(64 * 2, 0, 64, 64)))
+
+    new TweenLib.Tween({ index: 0 })
+      .to({index: 10}, 2000)
+      .repeat(Infinity)
+      .onUpdate(function() {
+        var idx = (this.index > 3) ? 0 : Math.round(this.index);
+        buildingSprite.texture = sheet_textures[idx]
+      })
+      .start()
+  }
+
   if (buildingType === BUILDING_MINING) {
     var sheet_textures = []
     sheet_textures.push(new PIXI.Texture(PIXI.loader.resources["mining-sheet"].texture,

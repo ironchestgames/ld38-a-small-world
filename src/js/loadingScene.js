@@ -19,7 +19,6 @@ var loadingScene = {
     .add('flare_super', 'assets/images/flare_super.png')
     .add('flare_disaster', 'assets/images/flare_disaster.png')
 
-    .add('asteroid_resources_panel', 'assets/images/asteroid_resources_panel.png')
     .add('end_screen_panel', 'assets/images/end_screen_panel.png')
     .add('background', 'assets/images/background.png')
     .add('astroid', 'assets/images/astroid.png')
@@ -47,6 +46,7 @@ var loadingScene = {
     .add('mining-sheet', 'assets/images/mining-sheet.png')
     .add('heat_generator_spritesheet', 'assets/images/heat_generator_spritesheet.png')
     .add('hq_spritesheet', 'assets/images/hq_spritesheet.png')
+    .add('quarry-sheet', 'assets/images/quarry-sheet.png')
 
     .add('resource_dome', 'assets/images/resource_dome.png')
     .add('resource_glass', 'assets/images/resource_glass.png')
