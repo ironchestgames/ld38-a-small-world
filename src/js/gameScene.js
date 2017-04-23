@@ -101,7 +101,7 @@ infoTexts[BUILDING_METAL_AND_GLASS_TO_DOME] = 'Dome Maintenance Facility\nUses m
 infoTexts[BUILDING_ICE_AND_HEAT_TO_WATER] = 'Water Plant\nUses ice and heat to provide and control water levels on the asteroid'
 infoTexts[BUILDING_ORE_TO_METAL] = 'Metal Works\nUses ore to provide metal'
 infoTexts[BUILDING_SAND_TO_GLASS] = 'Glass Works\nUses sand to provide glass'
-infoTexts[BUILDING_DOME] = 'Dome\nHolds the atmosphere'
+infoTexts[BUILDING_DOME] = 'Dome\nHolds atmosphere'
 
 infoTexts[TERRAIN_PLAIN] = '(No resource)'
 infoTexts[TERRAIN_SAND] = 'Sand'
@@ -142,6 +142,7 @@ resourceNames[BUILDING_METAL_AND_GLASS_TO_DOME] = 'alloy_and_glass_to_dome'
 resourceNames[BUILDING_ICE_AND_HEAT_TO_WATER] = 'ice_and_heat_to_water'
 resourceNames[BUILDING_ORE_TO_METAL] = 'ore_to_metal'
 resourceNames[BUILDING_SAND_TO_GLASS] = 'sand_to_glass'
+resourceNames[BUILDING_DOME] = 'sand_to_glass'
 
 resourceNames[RESOURCE_PEOPLE] = 'resource_people'
 resourceNames[RESOURCE_HEAT] = 'resource_heat'
@@ -156,18 +157,21 @@ resourceNames[RESOURCE_DOME] = 'resource_dome'
 var selectedBuildingButton = null
 
 var buildingButtonTypes = [ // this is the order for the buttons
-  BUILDING_HEAT_GENERATOR,
-  BUILDING_MINING,
-  BUILDING_QUARRY,
-  // BUILDING_HQ,
-  BUILDING_ICE_COLLECTOR,
   BUILDING_LIVING_QUARTERS,
 
-  //Resource converters
-  BUILDING_METAL_AND_GLASS_TO_DOME,
+  BUILDING_HEAT_GENERATOR,
+  BUILDING_ICE_COLLECTOR,
   BUILDING_ICE_AND_HEAT_TO_WATER,
+
+  BUILDING_MINING,
   BUILDING_ORE_TO_METAL,
+
+  BUILDING_QUARRY,
   BUILDING_SAND_TO_GLASS,
+
+  BUILDING_METAL_AND_GLASS_TO_DOME,
+
+  BUILDING_DOME,
 ]
 
 var resourceTexts = {} // inited in gameScene create
@@ -404,7 +408,7 @@ var terraform = function () {
   score[RESOURCE_METAL] = getResourceTallyHo(RESOURCE_METAL)
   score[RESOURCE_GLASS] = getResourceTallyHo(RESOURCE_GLASS)
 
-  if (findBuildingByType(BUILDING_METAL_AND_GLASS_TO_DOME)) {
+  if (findBuildingByType(BUILDING_DOME)) {
     score.extra += SCORE_CONSTANT_DOME
     score.flares.push(FLARE_DOME_BUILT)
 
@@ -474,12 +478,18 @@ var Tile = function (x, y, terrainType) {
   this.iconsContainer.y = 2
   this.buildingContainer = new PIXI.Container()
 
-  if (terrainType === BUILDING_HQ) {
+  if (this.terrainType === BUILDING_HQ) {
     resourceName = resourceNames[TERRAIN_PLAIN]
     this.terrainSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
     this.changeBuilding(BUILDING_HQ)
   } else {
-    this.terrainSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
+    if (this.terrainType === TERRAIN_DOME) {
+      this.terrainSprite = new PIXI.Sprite(PIXI.Texture.EMPTY)
+      this.terrainSprite.width = 64
+      this.terrainSprite.height = 64
+    } else {
+      this.terrainSprite = new PIXI.Sprite(PIXI.loader.resources[resourceName].texture)
+    }
   }
 
   this.terrainSprite.interactive = true
@@ -596,14 +606,16 @@ var BuildingButton = function (buildingType, index) {
   buildingSprite.y = 6
   this.container.addChild(buildingSprite)
 
-  var producingIconResourceName = resourceNames[buildingProvides[buildingType]];
+  if (this.buildingType !== BUILDING_DOME) {
+    var producingIconResourceName = resourceNames[buildingProvides[buildingType]];
 
-  var buildingProvidesSprite = new PIXI.Sprite(PIXI.loader.resources[producingIconResourceName].texture)
-  buildingProvidesSprite.width = 16
-  buildingProvidesSprite.height = 16
-  buildingProvidesSprite.x = 100
-  buildingProvidesSprite.y = 26
-  this.container.addChild(buildingProvidesSprite)
+    var buildingProvidesSprite = new PIXI.Sprite(PIXI.loader.resources[producingIconResourceName].texture)
+    buildingProvidesSprite.width = 16
+    buildingProvidesSprite.height = 16
+    buildingProvidesSprite.x = 100
+    buildingProvidesSprite.y = 26
+    this.container.addChild(buildingProvidesSprite)
+  }
 
   this.container.y = index * 47
 }
@@ -737,7 +749,7 @@ var gameScene = {
       TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_SAND,
       TERRAIN_PLAIN, TERRAIN_PLAIN,TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN,
       TERRAIN_PLAIN, BUILDING_HQ  ,TERRAIN_PLAIN, TERRAIN_ORE,   TERRAIN_PLAIN, TERRAIN_ORE,
-      TERRAIN_PLAIN, TERRAIN_PLAIN,TERRAIN_ICE,   TERRAIN_PLAIN, TERRAIN_ICE,   TERRAIN_PLAIN,
+      TERRAIN_PLAIN, TERRAIN_PLAIN,TERRAIN_ICE,   TERRAIN_PLAIN, TERRAIN_ICE,   TERRAIN_DOME,
     ]
 
     tiles = []
