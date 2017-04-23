@@ -125,7 +125,7 @@ resourceNames[RESOURCE_ALLOY] = 'resource_alloy'
 resourceNames[RESOURCE_WATER] = 'resource_water'
 resourceNames[RESOURCE_DOME] = 'resource_dome'
 
-var terrains = [
+var map = [
   TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_SAND,
   TERRAIN_PLAIN, TERRAIN_PLAIN,TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN,
   TERRAIN_PLAIN, BUILDING_HQ  ,TERRAIN_PLAIN, TERRAIN_ORE,   TERRAIN_PLAIN, TERRAIN_ORE,
@@ -312,7 +312,7 @@ var updateTileMarkers = function () {
     for (var c = 0; c < colCount; c++) {
       var tile = tiles[r][c]
       tile.isAvailableForSelectedBuilding =
-          buildingTerrainPermissions[selectedBuildingButton].includes(tile.terrain)
+          buildingTerrainPermissions[selectedBuildingButton].includes(tile.terrainType)
 
       tile.greenMarkerSprite.visible = false
       tile.yellowMarkerSprite.visible = false
@@ -368,7 +368,7 @@ var terraform = function () {
   for (var r = 0; r < rowCount; r++) {
     for (var c = 0; c < colCount; c++) {
       var tile = tiles[r][c]
-      if (tile.terrain === TERRAIN_ICE && tile.buildingType !== BUILDING_ICE_COLLECTOR) {
+      if (tile.terrainType === TERRAIN_ICE && tile.buildingType !== BUILDING_ICE_COLLECTOR) {
         unbuiltIceTerrainCount++
       }
     }
@@ -390,10 +390,14 @@ var terraform = function () {
   console.log('TALLYHO', total)
 }
 
+var setInformationBoxText = function (text) {
+  gameScene.informationBoxText.text = text
+}
+
 var Tile = function (x, y, terrainType) {
   this.x = x
   this.y = y
-  this.terrain = terrainType
+  this.terrainType = terrainType
   this.buildingType = null
   this.isAvailableForSelectedBuilding = false
 
@@ -420,7 +424,15 @@ var Tile = function (x, y, terrainType) {
         selectedBuildingButton = null
         updateGame()
         updateTileMarkers()
+      } else {
+        if (this.terrainType === BUILDING_HQ) {
+          setInformationBoxText('can\'t replace HQ')
+        } else {
+          setInformationBoxText('can\'t build there (reasons)')
+        }
       }
+    } else {
+      setInformationBoxText('selected: ' + this.buildingType + ', ' + this.terrainType)
     }
   }.bind(this))
 
@@ -449,6 +461,8 @@ Tile.prototype.changeBuilding = function (buildingType) {
 
   this.buildingContainer.removeChildren()
   this.buildingContainer.addChild(buildingSprite)
+
+  setInformationBoxText('built: ' + this.buildingType)
 }
 
 Tile.prototype.update = function () {
@@ -494,10 +508,12 @@ var BuildingButton = function (buildingType, index) {
   button.interactive = true
   button.on('click', function () {
     if (this.isActive === true) {
-      console.log(this.buildingType)
       selectedBuildingButton = this.buildingType
 
       updateTileMarkers()
+      setInformationBoxText(this.buildingType)
+    } else {
+      setInformationBoxText('not available at this time')
     }
   }.bind(this))
   this.container.addChild(button)
@@ -561,10 +577,24 @@ var gameScene = {
     var baseResourcesPanelBackground = new PIXI.Sprite(PIXI.loader.resources['base_resources_panel'].texture)
     this.resourcePanelContainer.addChild(baseResourcesPanelBackground)
 
+    this.informationBoxContainer = new PIXI.Container()
+    this.informationBoxText = new PIXI.Text('', {
+      fontSize: 16,
+      fill: '#ffffff',
+      wordWrap: true,
+      wordWrapWidth: 474,
+    })
+    this.informationBoxText.y = 4
+    this.informationBoxText.x = 4
+    this.informationBoxContainer.addChild(this.informationBoxText)
+    this.informationBoxContainer.x = 128
+    this.informationBoxContainer.y = 104 + 364
+
     global.baseStage.addChild(this.container)
     this.container.addChild(this.gameContainer)
     this.container.addChild(this.buildingPanelContainer)
     this.container.addChild(this.resourcePanelContainer)
+    this.container.addChild(this.informationBoxContainer)
 
     var terraformButton = new PIXI.Sprite(PIXI.loader.resources['terraform_button'].texture)
     terraformButton.interactive = true
@@ -577,10 +607,8 @@ var gameScene = {
     for (var r = 0; r < rowCount; r++) {
       tiles[r] = []
       for (var c = 0; c < colCount; c++) {
-        // var randomIndex = Math.floor(Math.random() * terrains.length)
-        // var terrain = terrains.splice(randomIndex, 1)
-        var terrain = terrains.shift()
-        var tile = new Tile(c, r, terrain)
+        var terrainType = map.shift()
+        var tile = new Tile(c, r, terrainType)
         tiles[r][c] = tile
         this.tileContainer.addChild(tile.container)
       }
