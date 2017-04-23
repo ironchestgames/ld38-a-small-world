@@ -147,11 +147,13 @@ var SCORE_CONSTANT_UNBUILT_TERRAIN = 12
 
 var SCORE_FACTOR_TOO_BIG_LQ_CLUSTER = -0.9
 var SCORE_FACTOR_TREES_NEXT_TO_LQ = 0.05
+var SCORE_FACTOR_METAL_WORKS_NEXT_TO_TREES = -0.99
 
 var FLARE_DOME_BUILT = 'FLARE_DOME_BUILT'
 var FLARE_TOO_BIG_LQ_CLUSTER = 'FLARE_TOO_BIG_LQ_CLUSTER'
 var FLARE_ICE_AND_DOME = 'FLARE_ICE_AND_DOME'
 var FLARE_TREES_NEXT_TO_LQ = 'FLARE_TREES_NEXT_TO_LQ'
+var FLARE_METAL_WORKS_NEXT_TO_TREES = 'FLARE_METAL_WORKS_NEXT_TO_TREES'
 
 var resourceNames = {}
 resourceNames[TERRAIN_PLAIN] = 'tile_plain'
@@ -451,9 +453,12 @@ var countScore = function () {
   score[RESOURCE_GLASS] = getResourceTallyHo(RESOURCE_GLASS)
 
   if (findBuildingByType(BUILDING_DOME)) {
+
+    // DOME BUILT
     score.extra += SCORE_CONSTANT_DOME
     score.flares.push(FLARE_DOME_BUILT)
 
+    // UNBUILT TERRAIN -> TREES
     var unbuiltTerrainCount = 0
     for (var i = 0; i < tiles.length; i++) {
       var tile = tiles[i]
@@ -461,9 +466,9 @@ var countScore = function () {
         unbuiltTerrainCount++
       }
     }
-
     score.extra += unbuiltTerrainCount * SCORE_CONSTANT_UNBUILT_TERRAIN
 
+    // TREES NEXT TO LQs
     var isFound = false
     for (var i = 0; i < tiles.length; i++) {
       var tile = tiles[i]
@@ -481,8 +486,25 @@ var countScore = function () {
     if (isFound) {
       score.flares.push(FLARE_TREES_NEXT_TO_LQ)
     }
+
+    // METAL WORKS NEXT TO TREES (VERY BAD, FIRE)
+    for (var i = 0; i < tiles.length; i++) {
+      var tile = tiles[i]
+      if (tile.buildingType === BUILDING_ORE_TO_METAL) {
+        var surroundingTiles = getSurroundingTiles(tile)
+        var surroundingUnbuiltTiles = surroundingTiles.filter(function (_tile) {
+          return !_tile.buildingType
+        })
+        if (surroundingUnbuiltTiles.length > 0) {
+          score.totalFactors.push(SCORE_FACTOR_METAL_WORKS_NEXT_TO_TREES)
+          score.flares.push(FLARE_METAL_WORKS_NEXT_TO_TREES)
+          break
+        }
+      }
+    }
   }
 
+  // TOO BIG CLUSTERS OF LQ
   for (var i = 0; i < tiles.length; i++) {
     var tile = tiles[i]
     if (tile.buildingType === BUILDING_LIVING_QUARTERS) {
@@ -1080,6 +1102,23 @@ var gameScene = {
         var flare_disaster = new PIXI.Sprite(PIXI.loader.resources["flare_disaster"].texture)
         flare_disaster.y = 2
         var textObject = new PIXI.Text("Unharvested ice inside dome, ecosystem is\noverrun by algae", { fontSize: 16 })
+        textObject.x = 44
+        container.addChild(flare_disaster)
+        container.addChild(textObject)
+
+        container.x = flare_x
+        container.y = flare_y
+
+        this.resultContainer.addChild(container)
+
+        flare_y += 40
+      }
+      if (flare === FLARE_METAL_WORKS_NEXT_TO_TREES) {
+        foundNegative = true
+        var container = new PIXI.Container()
+        var flare_disaster = new PIXI.Sprite(PIXI.loader.resources["flare_disaster"].texture)
+        flare_disaster.y = 2
+        var textObject = new PIXI.Text("Metal Works next to forests is a huge fire hazard\n", { fontSize: 16 })
         textObject.x = 44
         container.addChild(flare_disaster)
         container.addChild(textObject)
