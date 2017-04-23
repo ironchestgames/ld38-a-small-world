@@ -399,24 +399,24 @@ var getResourceTallyHo = function (resource) {
 var getSurroundingTiles = function (tile) {
   var surroundingTiles = []
 
-  var tile = getInsideGrid(tile.x + 1, tile.y)
-  if (tile) {
-    surroundingTiles.push(tile)
+  var other = getInsideGrid(tile.x + 1, tile.y)
+  if (other) {
+    surroundingTiles.push(other)
   }
 
-  tile = getInsideGrid(tile.x, tile.y + 1)
-  if (tile) {
-    surroundingTiles.push(tile)
+  other = getInsideGrid(tile.x, tile.y + 1)
+  if (other) {
+    surroundingTiles.push(other)
   }
 
-  tile = getInsideGrid(tile.x - 1, tile.y)
-  if (tile) {
-    surroundingTiles.push(tile)
+  other = getInsideGrid(tile.x - 1, tile.y)
+  if (other) {
+    surroundingTiles.push(other)
   }
 
-  tile = getInsideGrid(tile.x, tile.y - 1)
-  if (tile) {
-    surroundingTiles.push(tile)
+  other = getInsideGrid(tile.x, tile.y - 1)
+  if (other) {
+    surroundingTiles.push(other)
   }
 
   return surroundingTiles
