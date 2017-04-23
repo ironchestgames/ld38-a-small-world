@@ -491,6 +491,7 @@ var Tile = function (x, y, terrainType) {
         updateGame()
 
         deselectBuildingButton()
+        setInformationBoxText('')
       } else {
         if (this.terrainType === BUILDING_HQ) {
           setInformationBoxText('Can\'t replace HQ')
@@ -534,8 +535,6 @@ Tile.prototype.changeBuilding = function (buildingType) {
 
   this.buildingContainer.removeChildren()
   this.buildingContainer.addChild(buildingSprite)
-
-  setInformationBoxText('built: ' + this.buildingType) // unsure about this mofo
 }
 
 Tile.prototype.update = function () {
