@@ -1,4 +1,5 @@
 var gameVars = require('./gameVars')
+var TweenLib = require('tween.js');
 
 var rowCount = 4
 var colCount = 6
@@ -163,6 +164,8 @@ resourceTexts[RESOURCE_MINERALS] = null
 resourceTexts[RESOURCE_ALLOY] = null
 resourceTexts[RESOURCE_WATER] = null
 resourceTexts[RESOURCE_DOME] = null
+
+//var tweens = null
 
 var buildingHasAllRequiredResources = function(tile) {
   var myBuildingNeeds = buildingNeeds[tile.buildingType]
@@ -571,6 +574,8 @@ BuildingButton.prototype.setActive = function (activeness) {
 var gameScene = {
   name: 'gameScene',
   create: function (sceneParams) {
+    this.tweens = []
+
     this.container = new PIXI.Container()
 
     var backgroundImage = new PIXI.Sprite(PIXI.loader.resources['background'].texture)
@@ -581,9 +586,39 @@ var gameScene = {
     asteroidImage.y = 104
     this.container.addChild(asteroidImage)
 
-    this.gameContainer = new PIXI.Container()
+    var gameContainer = new PIXI.Container()
+    this.gameContainer = gameContainer;
     this.gameContainer.x = 182
     this.gameContainer.y = 132
+    var testY = { y: 100 };
+    var tween = new TweenLib.Tween(testY)
+      .to({y: 120}, 2000)
+      //.delay(1000)
+      .easing(TweenLib.Easing.Elastic.InOut)
+      .onUpdate(function(y) {
+        console.log(this.y)
+        gameContainer.y = this.y;
+      })
+      //.start();
+
+
+      /*.easing(TWEEN.Easing.Elastic.InOut)
+      .onUpdate(function(y) {
+        console.log(y, this)
+          //gameContainer.y = this.y;
+      })
+      .start(0)*/
+      /*
+      //.duration(100)
+      /*.repeat()
+      .onComplete(function() {
+        console.log(this, 'complete')
+      })
+      //.delay(1000)
+      //.easing(TWEEN.Easing.Quadratic.Out)
+      //*/
+    this.tweens.push(tween)
+    window.kurt = tween;
 
     this.tileContainer = new PIXI.Container()
 
@@ -690,8 +725,10 @@ var gameScene = {
   destroy: function () {
     this.container.destroy()
   },
-  update: function () {
-
+  update: function (delta) {
+    /*this.tweens.forEach(function(hmm) {
+      hmm.update(delta);
+    })*/
   },
   draw: function () {
     global.renderer.render(this.container)

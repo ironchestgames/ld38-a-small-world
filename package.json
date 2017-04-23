@@ -30,6 +30,7 @@
     "obscen": "^0.x",
     "pixi.js": "^4.2.2",
     "screen-orientation": "^1.0.3",
+    "tween.js": "^16.6.0",
     "underscore": "^1.8.3",
     "window-load": "^1.0.0"
   }
