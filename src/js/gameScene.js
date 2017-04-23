@@ -399,24 +399,24 @@ var getResourceTallyHo = function (resource) {
 var getSurroundingTiles = function (tile) {
   var surroundingTiles = []
 
-  var tile = getInsideGrid(tile.x + 1, tile.y)
-  if (tile) {
-    surroundingTiles.push(tile)
+  var other = getInsideGrid(tile.x + 1, tile.y)
+  if (other) {
+    surroundingTiles.push(other)
   }
 
-  tile = getInsideGrid(tile.x, tile.y + 1)
-  if (tile) {
-    surroundingTiles.push(tile)
+  other = getInsideGrid(tile.x, tile.y + 1)
+  if (other) {
+    surroundingTiles.push(other)
   }
 
-  tile = getInsideGrid(tile.x - 1, tile.y)
-  if (tile) {
-    surroundingTiles.push(tile)
+  other = getInsideGrid(tile.x - 1, tile.y)
+  if (other) {
+    surroundingTiles.push(other)
   }
 
-  tile = getInsideGrid(tile.x, tile.y - 1)
-  if (tile) {
-    surroundingTiles.push(tile)
+  other = getInsideGrid(tile.x, tile.y - 1)
+  if (other) {
+    surroundingTiles.push(other)
   }
 
   return surroundingTiles
@@ -759,6 +759,8 @@ var gameScene = {
 
     this.plantsSprite = new PIXI.Sprite(PIXI.loader.resources['plants'].texture)
     this.plantsSprite.visible = false
+    this.plantsSprite.x = 128 - 182
+    this.plantsSprite.y = 104 - 132
 
     this.gameContainer.addChild(asteroidSprite)
     this.gameContainer.addChild(this.plantsSprite)
@@ -959,7 +961,6 @@ var gameScene = {
         yOffset += 20
 
         this.resultContainer.addChild(container)
-
       }
     }.bind(this)
 
@@ -969,13 +970,17 @@ var gameScene = {
     var flare_x = 340
     var flare_y = 90
 
+    var foundPositive = false
+    var foundNegative = false
+
     //Positive flares
     result.flares.forEach(function(flare) {
       if (flare === FLARE_DOME_BUILT) {
+        foundPositive = true
         var container = new PIXI.Container()
         var flare_super = new PIXI.Sprite(PIXI.loader.resources["flare_super"].texture)
         flare_super.y = 2
-        var textObject = new PIXI.Text("Dome built, yay", { fontSize: 16 })
+        var textObject = new PIXI.Text("The Dome is built and is sustaining an ecosystem", { fontSize: 16 })
         textObject.x = 44
         container.addChild(flare_super)
         container.addChild(textObject)
@@ -988,15 +993,22 @@ var gameScene = {
         flare_y += 26
       }
     }.bind(this))
+    if (!foundPositive) {
+      var textObject = new PIXI.Text("No bonuses - try to combine the placement\nof buildings and make sure to construct the dome.", { fontSize: 16 })
+      textObject.x = flare_x
+      textObject.y = flare_y
+      this.resultContainer.addChild(textObject)
+    }
 
     flare_y = 205
     //Negative flares
     result.flares.forEach(function(flare) {
       if (flare === FLARE_TOO_BIG_LQ_CLUSTER) {
+        foundNegative = true
         var container = new PIXI.Container()
         var flare_disaster = new PIXI.Sprite(PIXI.loader.resources["flare_disaster"].texture)
         flare_disaster.y = 2
-        var textObject = new PIXI.Text("LQ disaster", { fontSize: 16 })
+        var textObject = new PIXI.Text("More than two Living Quarters connected - Huge\nfire hazard and colony burned", { fontSize: 16 })
         textObject.x = 44
         container.addChild(flare_disaster)
         container.addChild(textObject)
@@ -1006,9 +1018,16 @@ var gameScene = {
 
         this.resultContainer.addChild(container)
 
-        flare_y += 26
+        flare_y += 40
       }
     }.bind(this))
+    if (!foundNegative) {
+      var textObject = new PIXI.Text("No penalties - good job!", { fontSize: 16 })
+      textObject.x = flare_x
+      textObject.y = flare_y
+      this.resultContainer.addChild(textObject)
+    }
+
 
     var titleText = new PIXI.Text('Colony results', { fontSize: 40, fill: '#000000'})
     titleText.x = 252
@@ -1040,17 +1059,24 @@ var gameScene = {
     colonyLifetimeTitle.y = 193
     this.resultContainer.addChild(colonyLifetimeTitle)
 
-    var lifetimeShadow = new PIXI.Text(result.total + ' years', { fontSize: 50, fill: '#000000'})
-    lifetimeShadow.x = 94
-    lifetimeShadow.y = 218
-    this.resultContainer.addChild(lifetimeShadow)
-
-    var lifetime = new PIXI.Text(result.total + ' years', { fontSize: 50, fill: '#ffffff'})
+    var lifetime = new PIXI.Text('', { fontSize: 50, fill: '#ffffff',
+      dropShadow: true,
+      dropShadowBlur: 0,
+      dropShadowColor: '#000000',
+      dropShadowAngle: Math.PI / 6,
+      dropShadowDistance: 3,
+    })
     lifetime.x = 92
     lifetime.y = 216
     this.resultContainer.addChild(lifetime)
 
-
+    new TweenLib.Tween({ total: 0 })
+      .to({ total: result.total }, 1500)
+      .easing(TweenLib.Easing.Quartic.Out)
+      .onUpdate(function() {
+        lifetime.text = Math.round(this.total) + ' years'
+      })
+      .start()
 
   },
   destroy: function () {
