@@ -432,7 +432,7 @@ var terraform = function () {
     }
   }
 
-  score.total = 
+  score.total =
       score[RESOURCE_PEOPLE] +
       score[RESOURCE_GLASS] +
       score[RESOURCE_HEAT] +
@@ -444,6 +444,8 @@ var terraform = function () {
   for (var i = 0; i < score.totalFactors.length; i++) {
     score.total *= score.totalFactors[i]
   }
+
+  score.total = Math.ceil(score.total)
 
   setGameOverText('THE COLONY LASTED ' + score.total + ' YEARS')
   console.log(score)
