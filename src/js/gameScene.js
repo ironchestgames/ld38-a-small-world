@@ -142,7 +142,7 @@ resourceNames[BUILDING_METAL_AND_GLASS_TO_DOME] = 'dome_main'
 resourceNames[BUILDING_ICE_AND_HEAT_TO_WATER] = 'ice_and_heat_to_water'
 resourceNames[BUILDING_ORE_TO_METAL] = 'ore_to_metal'
 resourceNames[BUILDING_SAND_TO_GLASS] = 'sand_to_glass'
-resourceNames[BUILDING_DOME] = 'sand_to_glass'
+resourceNames[BUILDING_DOME] = 'dome'
 
 resourceNames[RESOURCE_PEOPLE] = 'resource_people'
 resourceNames[RESOURCE_HEAT] = 'resource_heat'
@@ -491,7 +491,9 @@ var Tile = function (x, y, terrainType) {
     }
   }
 
-  this.terrainSprite.interactive = true
+  if (this.terrainType !== TERRAIN_DOME) {
+    this.terrainSprite.interactive = true
+  }
   this.terrainSprite.on('click', function () {
     if (selectedBuildingButton) {
       if (this.isAvailableForSelectedBuilding) {
@@ -534,6 +536,11 @@ var Tile = function (x, y, terrainType) {
   this.container.y = y * 64
 }
 
+Tile.prototype.changeTileScreenPosition = function (x, y) {
+  this.container.x = x
+  this.container.y = y
+}
+
 Tile.prototype.changeBuilding = function (buildingType) {
   var resourceName = resourceNames[buildingType]
 
@@ -543,6 +550,11 @@ Tile.prototype.changeBuilding = function (buildingType) {
 
   this.buildingContainer.removeChildren()
   this.buildingContainer.addChild(buildingSprite)
+
+  if (buildingType === BUILDING_DOME) {
+    buildingSprite.x = -271
+    buildingSprite.y = 43
+  }
 }
 
 Tile.prototype.update = function () {
@@ -589,6 +601,13 @@ var BuildingButton = function (buildingType, index) {
   button.on('click', function () {
     if (this.isActive === true) {
       selectedBuildingButton = this.buildingType
+
+      if (selectedBuildingButton === BUILDING_DOME) {
+        var domeTile = tiles.find(function (tile) {
+          return tile.terrainType === TERRAIN_DOME
+        })
+        domeTile.terrainSprite.interactive = true
+      }
 
       updateTileMarkers()
       setInformationBoxText(infoTexts[this.buildingType])
@@ -748,7 +767,7 @@ var gameScene = {
       TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_SAND,
       TERRAIN_PLAIN, TERRAIN_PLAIN,TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN,
       TERRAIN_PLAIN, BUILDING_HQ  ,TERRAIN_PLAIN, TERRAIN_ORE,   TERRAIN_PLAIN, TERRAIN_ORE,
-      TERRAIN_PLAIN, TERRAIN_PLAIN,TERRAIN_ICE,   TERRAIN_PLAIN, TERRAIN_ICE,   TERRAIN_DOME,
+      TERRAIN_PLAIN, TERRAIN_PLAIN,TERRAIN_ICE,   TERRAIN_PLAIN, TERRAIN_ICE,   TERRAIN_PLAIN,
     ]
 
     tiles = []
@@ -760,6 +779,11 @@ var gameScene = {
         this.tileContainer.addChild(tile.container)
       }
     }
+
+    var tile = new Tile(-10, -10, TERRAIN_DOME)
+    tile.changeTileScreenPosition(200, -100)
+    tiles.push(tile)
+    this.tileContainer.addChild(tile.container)
 
     var yOffset = 5
     for (var resourceTextName in resourceTexts) {
