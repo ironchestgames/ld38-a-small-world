@@ -423,6 +423,17 @@ var getSurroundingTiles = function (tile) {
 }
 
 var terraform = function () {
+  gameScene.plantsSprite.visible = true
+
+  tiles.forEach(function (tile) {
+    if (!tile.buildingType) {
+      var forest = new PIXI.Sprite(PIXI.loader.resources['trees'].texture)
+      tile.container.addChild(forest)
+    }
+  })
+}
+
+var countScore = function () {
 
   score.extra = 0
   score.totalFactors = []
@@ -746,7 +757,11 @@ var gameScene = {
     asteroidSprite.x = 128 - 182
     asteroidSprite.y = 104 - 132
 
+    this.plantsSprite = new PIXI.Sprite(PIXI.loader.resources['plants'].texture)
+    this.plantsSprite.visible = false
+
     this.gameContainer.addChild(asteroidSprite)
+    this.gameContainer.addChild(this.plantsSprite)
     this.gameContainer.addChild(this.tileContainer)
 
     var buildingPanelContainer = new PIXI.Container()
@@ -870,7 +885,7 @@ var gameScene = {
       .onUpdate(function() {
         _gameContainer.y = this.y;
       })
-      .onComplete(terraform)
+      .onComplete(countScore)
       .start()
 
     var _buildingPanelContainer = this.buildingPanelContainer
@@ -892,6 +907,11 @@ var gameScene = {
       .start()
   },
   showResultScreen: function(result) {
+
+    if (findBuildingByType(BUILDING_DOME)) {
+      terraform()
+    }
+
     this.resultContainer = new PIXI.Container()
     this.resultContainer.x = 9
     this.resultContainer.y = 291
