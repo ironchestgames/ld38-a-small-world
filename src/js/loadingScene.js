@@ -47,6 +47,7 @@ var loadingScene = {
     .add('heat_generator_spritesheet', 'assets/images/heat_generator_spritesheet.png')
     .add('hq_spritesheet', 'assets/images/hq_spritesheet.png')
     .add('quarry-sheet', 'assets/images/quarry-sheet.png')
+    .add('living_quarters_spritesheet', 'assets/images/living_quarters_spritesheet.png')
 
     .add('resource_dome', 'assets/images/resource_dome.png')
     .add('resource_glass', 'assets/images/resource_glass.png')
