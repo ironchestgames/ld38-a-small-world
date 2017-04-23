@@ -103,6 +103,8 @@ infoTexts[TERRAIN_SAND] = 'Sand'
 infoTexts[TERRAIN_ICE] = 'Ice'
 infoTexts[TERRAIN_ORE] = 'Ore'
 
+var score = {}
+
 var resourceScoreFactors = {}
 resourceScoreFactors[RESOURCE_HEAT] = 4
 resourceScoreFactors[RESOURCE_PEOPLE] = 5
@@ -370,14 +372,14 @@ var getSurroundingTiles = function (tile) {
   var surroundingTiles = []
   if (isInsideGrid(tile.x + 1, tile.y)) {
     surroundingTiles.push(tiles[tile.y][tile.x + 1])
-
-  } else if (isInsideGrid(tile.x, tile.y + 1)) {
+  }
+  if (isInsideGrid(tile.x, tile.y + 1)) {
     surroundingTiles.push(tiles[tile.y + 1][tile.x])
-
-  } else if (isInsideGrid(tile.x - 1, tile.y)) {
+  }
+  if (isInsideGrid(tile.x - 1, tile.y)) {
     surroundingTiles.push(tiles[tile.y][tile.x - 1])
-
-  } else if (isInsideGrid(tile.x, tile.y - 1)) {
+  }
+  if (isInsideGrid(tile.x, tile.y - 1)) {
     surroundingTiles.push(tiles[tile.y - 1][tile.x])
   }
   return surroundingTiles
@@ -385,20 +387,20 @@ var getSurroundingTiles = function (tile) {
 
 var terraform = function () {
 
-  var flares = []
+  score.extra = 0
+  score.totalFactors = []
+  score.flares = []
 
-  var tallyHo = 0
-
-  tallyHo += getResourceTallyHo(RESOURCE_PEOPLE)
-  tallyHo += getResourceTallyHo(RESOURCE_HEAT)
-  tallyHo += getResourceTallyHo(RESOURCE_SAND)
-  tallyHo += getResourceTallyHo(RESOURCE_WATER)
-  tallyHo += getResourceTallyHo(RESOURCE_METAL)
-  tallyHo += getResourceTallyHo(RESOURCE_GLASS)
+  score[RESOURCE_PEOPLE] = getResourceTallyHo(RESOURCE_PEOPLE)
+  score[RESOURCE_HEAT] = getResourceTallyHo(RESOURCE_HEAT)
+  score[RESOURCE_SAND] = getResourceTallyHo(RESOURCE_SAND)
+  score[RESOURCE_WATER] = getResourceTallyHo(RESOURCE_WATER)
+  score[RESOURCE_METAL] = getResourceTallyHo(RESOURCE_METAL)
+  score[RESOURCE_GLASS] = getResourceTallyHo(RESOURCE_GLASS)
 
   if (findBuildingByType(BUILDING_METAL_AND_GLASS_TO_DOME)) {
-    tallyHo += 50
-    flares.push(FLARE_DOME_BUILT)
+    score.extra += SCORE_CONSTANT_DOME
+    score.flares.push(FLARE_DOME_BUILT)
 
     var unbuiltTerrainCount = 0
     for (var r = 0; r < rowCount; r++) {
@@ -410,26 +412,41 @@ var terraform = function () {
       }
     }
 
-    tallyHo += unbuiltTerrainCount * SCORE_FACTOR_UNBUILT_TERRAIN
+    score.extra += unbuiltTerrainCount * SCORE_FACTOR_UNBUILT_TERRAIN
   }
 
   breakhere: for (var r = 0; r < rowCount; r++) {
     for (var c = 0; c < colCount; c++) {
       var tile = tiles[r][c]
       if (tile.buildingType === BUILDING_LIVING_QUARTERS) {
-        var surroundingLivingQuarters = getSurroundingTiles(tile).filter(function (tile) {
-          return tile.buildingType === BUILDING_LIVING_QUARTERS
+        var surroundingTiles = getSurroundingTiles(tile)
+        var surroundingLivingQuarters = surroundingTiles.filter(function (_tile) {
+          return _tile.buildingType === BUILDING_LIVING_QUARTERS
         })
-        if (surroundingLivingQuarters.length === 3) {
-          tallyHo *= SCORE_FACTOR_TOO_BIG_LQ_CLUSTER
-          flares.push(FLARE_TOO_BIG_LQ_CLUSTER)
+        if (surroundingLivingQuarters.length > 1) {
+          score.totalFactors.push(SCORE_FACTOR_TOO_BIG_LQ_CLUSTER)
+          score.flares.push(FLARE_TOO_BIG_LQ_CLUSTER)
           break breakhere
         }
       }
     }
   }
 
-  setGameOverText('THE COLONY LASTED ' + tallyHo + ' YEARS')
+  score.total = 
+      score[RESOURCE_PEOPLE] +
+      score[RESOURCE_GLASS] +
+      score[RESOURCE_HEAT] +
+      score[RESOURCE_WATER] +
+      score[RESOURCE_SAND] +
+      score[RESOURCE_METAL] +
+      score.extra
+
+  for (var i = 0; i < score.totalFactors.length; i++) {
+    score.total *= score.totalFactors[i]
+  }
+
+  setGameOverText('THE COLONY LASTED ' + score.total + ' YEARS')
+  console.log(score)
 }
 
 var setInformationBoxText = function (text) {
@@ -607,6 +624,8 @@ var gameScene = {
   create: function (sceneParams) {
     this.tweens = []
     this.totalTime = 0;
+
+    score = {}
 
     this.container = new PIXI.Container()
 
