@@ -84,23 +84,23 @@ buildingTerrainPermissions[BUILDING_ORE_TO_METAL] = [TERRAIN_PLAIN, TERRAIN_SAND
 buildingTerrainPermissions[BUILDING_SAND_TO_GLASS] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
 
 var infoTexts = {}
-infoTexts[BUILDING_HEAT_GENERATOR] = 'BUILDING_HEAT_GENERATOR'
-infoTexts[BUILDING_MINING] = 'BUILDING_MINING'
-infoTexts[BUILDING_QUARRY] = 'BUILDING_QUARRY'
-infoTexts[BUILDING_HQ] = 'BUILDING_HQ'
-infoTexts[BUILDING_ICE_COLLECTOR] = 'BUILDING_ICE_COLLECTOR'
-infoTexts[BUILDING_LIVING_QUARTERS] = 'BUILDING_LIVING_QUARTERS'
+infoTexts[BUILDING_HEAT_GENERATOR] = 'Heat Generator\nProvides heat'
+infoTexts[BUILDING_MINING] = 'Ore Mine\nProvides ore from ore tiles'
+infoTexts[BUILDING_QUARRY] = 'Quarry\nProvides sand from sand tiles'
+infoTexts[BUILDING_HQ] = 'Base HQ\nProvides a starting population\nCan not be removed'
+infoTexts[BUILDING_ICE_COLLECTOR] = 'Ice Collector\nProvides ice from ice tiles'
+infoTexts[BUILDING_LIVING_QUARTERS] = 'Living Quarters\nProvides 4 people'
 
 //Resource converters
-infoTexts[BUILDING_METAL_AND_GLASS_TO_DOME] = 'BUILDING_METAL_AND_GLASS_TO_DOME'
-infoTexts[BUILDING_ICE_AND_HEAT_TO_WATER] = 'BUILDING_ICE_AND_HEAT_TO_WATER'
-infoTexts[BUILDING_ORE_TO_METAL] = 'BUILDING_ORE_TO_METAL'
-infoTexts[BUILDING_SAND_TO_GLASS] = 'BUILDING_SAND_TO_GLASS'
+infoTexts[BUILDING_METAL_AND_GLASS_TO_DOME] = 'Dome Maintenance Facility\nUses metal and glass to construct and maintain the dome'
+infoTexts[BUILDING_ICE_AND_HEAT_TO_WATER] = 'Water Plant\nUses ice and heat to provide and control water levels on the asteroid'
+infoTexts[BUILDING_ORE_TO_METAL] = 'Metal Works\nUses ore to provide metal'
+infoTexts[BUILDING_SAND_TO_GLASS] = 'Glass Works\nUses sand to provide glass'
 
-infoTexts[TERRAIN_PLAIN] = 'TERRAIN_PLAIN'
-infoTexts[TERRAIN_SAND] = 'TERRAIN_SAND'
-infoTexts[TERRAIN_ICE] = 'TERRAIN_ICE'
-infoTexts[TERRAIN_ORE] = 'TERRAIN_ORE'
+infoTexts[TERRAIN_PLAIN] = '(No resource)'
+infoTexts[TERRAIN_SAND] = 'Sand'
+infoTexts[TERRAIN_ICE] = 'Ice'
+infoTexts[TERRAIN_ORE] = 'Ore'
 
 
 var resourceNames = {}
@@ -431,16 +431,16 @@ var Tile = function (x, y, terrainType) {
     if (selectedBuildingButton) {
       if (this.isAvailableForSelectedBuilding) {
         this.changeBuilding(selectedBuildingButton)
-        selectedBuildingButton = null
         updateGame()
-        updateTileMarkers()
       } else {
         if (this.terrainType === BUILDING_HQ) {
-          setInformationBoxText('can\'t replace HQ')
+          setInformationBoxText('Can\'t replace HQ')
         } else {
-          setInformationBoxText('can\'t build there (reasons)')
+          setInformationBoxText('Must place building on green tiles')
         }
       }
+      selectedBuildingButton = null
+      updateTileMarkers()
     } else {
       setInformationBoxText(
           'selected: ' +
@@ -568,6 +568,12 @@ var gameScene = {
     this.container = new PIXI.Container()
 
     var backgroundImage = new PIXI.Sprite(PIXI.loader.resources['background'].texture)
+    backgroundImage.interactive = true
+    backgroundImage.on('click', function () {
+      selectedBuildingButton = null
+      updateTileMarkers()
+      setInformationBoxText('')
+    })
     this.container.addChild(backgroundImage)
 
     var asteroidImage = new PIXI.Sprite(PIXI.loader.resources['astroid'].texture)
