@@ -626,6 +626,27 @@ Tile.prototype.changeBuilding = function (buildingType) {
       .start()
   }
 
+  if (buildingType === BUILDING_ORE_TO_METAL) {
+    var sheet_textures = []
+    sheet_textures.push(new PIXI.Texture(PIXI.loader.resources["ore_to_metal-sheet"].texture,
+      new PIXI.Rectangle(0, 0, 64, 64)))
+
+    sheet_textures.push(new PIXI.Texture(PIXI.loader.resources["ore_to_metal-sheet"].texture,
+      new PIXI.Rectangle(64, 0, 64, 64)))
+
+    sheet_textures.push(new PIXI.Texture(PIXI.loader.resources["ore_to_metal-sheet"].texture,
+      new PIXI.Rectangle(64 * 2, 0, 64, 64)))
+
+    new TweenLib.Tween({ index: 0 })
+      .to({index: 3}, 1000)
+      .repeat(Infinity)
+      .onUpdate(function() {
+        var idx = (this.index > 2) ? 0 : Math.round(this.index);
+        buildingSprite.texture = sheet_textures[idx]
+      })
+      .start()
+  }
+
   this.buildingType = buildingType
 
   this.buildingContainer.removeChildren()

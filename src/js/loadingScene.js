@@ -39,9 +39,11 @@ var loadingScene = {
     .add('quarry', 'assets/images/quarry.png')
     .add('sand_to_glass', 'assets/images/sand_to_glass.png')
     .add('dome_main', 'assets/images/dome_main.png')
-    .add('dome_main_spritesheet', 'assets/images/dome_main_spritesheet.png')
     .add('dome', 'assets/images/dome.png')
     .add('dome_icon', 'assets/images/dome_icon.png')
+
+    .add('dome_main_spritesheet', 'assets/images/dome_main_spritesheet.png')
+    .add('ore_to_metal-sheet', 'assets/images/ore_to_metal-sheet.png')
 
     .add('resource_dome', 'assets/images/resource_dome.png')
     .add('resource_glass', 'assets/images/resource_glass.png')
