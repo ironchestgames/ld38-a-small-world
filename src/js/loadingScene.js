@@ -18,6 +18,7 @@ var loadingScene = {
 
     .add('alloy_and_glass_to_dome', 'assets/images/alloy_and_glass_to_dome.png')
     .add('asteroid_resources_panel', 'assets/images/asteroid_resources_panel.png')
+    .add('end_screen_panel', 'assets/images/end_screen_panel.png')
     .add('background', 'assets/images/background.png')
     .add('astroid', 'assets/images/astroid.png')
     .add('base_resources_panel', 'assets/images/base_resources_panel.png')
@@ -33,7 +34,7 @@ var loadingScene = {
     .add('mining', 'assets/images/mining.png')
     .add('quarry', 'assets/images/quarry.png')
     .add('sand_to_glass', 'assets/images/sand_to_glass.png')
-    
+
     .add('resource_dome', 'assets/images/resource_dome.png')
     .add('resource_glass', 'assets/images/resource_glass.png')
     .add('resource_heat', 'assets/images/resource_heat.png')
@@ -43,14 +44,14 @@ var loadingScene = {
     .add('resource_people', 'assets/images/resource_people.png')
     .add('resource_sand', 'assets/images/resource_sand.png')
     .add('resource_water', 'assets/images/resource_water.png')
-    
+
     .add('resource_missing_overlay', 'assets/images/resource_missing_overlay.png')
-    
+
     .add('helpicon_cross', 'assets/images/helpicon_cross.png')
     .add('helpicon_check', 'assets/images/helpicon_check.png')
 
     .add('arrow', 'assets/images/arrow.png')
-    
+
     .load(function () {
       this.changeScene(localStorage.scene || 'gameScene', sceneParams)
     }.bind(this))

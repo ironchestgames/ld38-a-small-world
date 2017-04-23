@@ -448,7 +448,8 @@ var terraform = function () {
   score.total = Math.ceil(score.total)
 
   setGameOverText('THE COLONY LASTED ' + score.total + ' YEARS')
-  console.log(score)
+
+  gameScene.showResultScreen(score)
 }
 
 var setInformationBoxText = function (text) {
@@ -723,7 +724,7 @@ var gameScene = {
     var terraformButton = new PIXI.Sprite(PIXI.loader.resources['terraform_button'].texture)
     terraformButton.interactive = true
     terraformButton.on('click', function () {
-      this.showResultScreen()
+      this.transitionToResultScreen()
     }.bind(this))
 
     this.gameOverContainer = new PIXI.Container()
@@ -802,7 +803,7 @@ var gameScene = {
     selectedBuildingButton = null
     setInformationBoxText('')
   },
-  showResultScreen: function() {
+  transitionToResultScreen: function() {
     var _gameContainer = this.gameContainer
     new TweenLib.Tween({ y: 182 })
       .to({y: 0}, 700)
@@ -830,6 +831,48 @@ var gameScene = {
         _resourcePanelContainer.x = this.x;
       })
       .start()
+  },
+  showResultScreen: function(result) {
+    this.resultContainer = new PIXI.Container()
+    this.resultContainer.x = 9
+    this.resultContainer.y = 291
+    this.container.addChild(this.resultContainer)
+
+    var end_panel = new PIXI.Sprite(PIXI.loader.resources['end_screen_panel'].texture)
+    this.resultContainer.addChild(end_panel)
+
+    var titleText = new PIXI.Text('Colony results', { fontSize: 40, fill: '#000000'})
+    titleText.x = 252
+    titleText.y = 5
+    this.resultContainer.addChild(titleText)
+
+    var resourceTitle = new PIXI.Text('Resource tally', { fontSize: 20, fill: '#000000'})
+    resourceTitle.x = 118
+    resourceTitle.y = 53
+    this.resultContainer.addChild(resourceTitle)
+
+    var bonusTitle = new PIXI.Text('Bonuses', { fontSize: 20, fill: '#000000'})
+    bonusTitle.x = 337
+    bonusTitle.y = 66
+    this.resultContainer.addChild(bonusTitle)
+
+    var penaltyTitle = new PIXI.Text('Penalties', { fontSize: 20, fill: '#000000'})
+    penaltyTitle.x = 337
+    penaltyTitle.y = 179
+    this.resultContainer.addChild(penaltyTitle)
+
+    var colonyLifetimeShadowTitle = new PIXI.Text('Colony lifetime', { fontSize: 20, fill: '#000000'})
+    colonyLifetimeShadowTitle.x = 130
+    colonyLifetimeShadowTitle.y = 195
+    this.resultContainer.addChild(colonyLifetimeShadowTitle)
+
+    var colonyLifetimeTitle = new PIXI.Text('Colony lifetime', { fontSize: 20, fill: '#ffffff'})
+    colonyLifetimeTitle.x = 128
+    colonyLifetimeTitle.y = 193
+    this.resultContainer.addChild(colonyLifetimeTitle)
+
+
+
   },
   destroy: function () {
     this.container.destroy()
