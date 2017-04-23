@@ -48,7 +48,7 @@ buildingNeeds[BUILDING_ICE_COLLECTOR] = [RESOURCE_PEOPLE]
 buildingNeeds[BUILDING_LIVING_QUARTERS] = []
 
 //Resource converters
-buildingNeeds[BUILDING_METAL_AND_GLASS_TO_DOME] = [RESOURCE_PEOPLE, RESOURCE_GLASS]
+buildingNeeds[BUILDING_METAL_AND_GLASS_TO_DOME] = [RESOURCE_PEOPLE, RESOURCE_GLASS, RESOURCE_METAL]
 buildingNeeds[BUILDING_ICE_AND_HEAT_TO_WATER] = [RESOURCE_PEOPLE, RESOURCE_ICE, RESOURCE_HEAT]
 buildingNeeds[BUILDING_ORE_TO_METAL] = [RESOURCE_PEOPLE, RESOURCE_ORE]
 buildingNeeds[BUILDING_SAND_TO_GLASS] = [RESOURCE_PEOPLE, RESOURCE_SAND]
@@ -179,7 +179,7 @@ var isTileProducingResource = function (tile, resource) {
   if (!tile.buildingType) {
     return false
   }
-  
+
   switch (resource) {
 
     // level 1
@@ -298,7 +298,7 @@ var updateNumbers = function () {
     }
 
     textObject.text = ': ' +
-        produced + ' / ' + 
+        produced + ' / ' +
         consumed
   }
 }
