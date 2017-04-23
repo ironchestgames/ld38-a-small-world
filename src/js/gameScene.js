@@ -103,6 +103,8 @@ infoTexts[TERRAIN_SAND] = 'Sand'
 infoTexts[TERRAIN_ICE] = 'Ice'
 infoTexts[TERRAIN_ORE] = 'Ore'
 
+var score = {}
+
 var resourceScoreFactors = {}
 resourceScoreFactors[RESOURCE_HEAT] = 4
 resourceScoreFactors[RESOURCE_PEOPLE] = 5
@@ -370,14 +372,14 @@ var getSurroundingTiles = function (tile) {
   var surroundingTiles = []
   if (isInsideGrid(tile.x + 1, tile.y)) {
     surroundingTiles.push(tiles[tile.y][tile.x + 1])
-
-  } else if (isInsideGrid(tile.x, tile.y + 1)) {
+  }
+  if (isInsideGrid(tile.x, tile.y + 1)) {
     surroundingTiles.push(tiles[tile.y + 1][tile.x])
-
-  } else if (isInsideGrid(tile.x - 1, tile.y)) {
+  }
+  if (isInsideGrid(tile.x - 1, tile.y)) {
     surroundingTiles.push(tiles[tile.y][tile.x - 1])
-
-  } else if (isInsideGrid(tile.x, tile.y - 1)) {
+  }
+  if (isInsideGrid(tile.x, tile.y - 1)) {
     surroundingTiles.push(tiles[tile.y - 1][tile.x])
   }
   return surroundingTiles
@@ -385,20 +387,20 @@ var getSurroundingTiles = function (tile) {
 
 var terraform = function () {
 
-  var flares = []
+  score.extra = 0
+  score.totalFactors = []
+  score.flares = []
 
-  var tallyHo = 0
-
-  tallyHo += getResourceTallyHo(RESOURCE_PEOPLE)
-  tallyHo += getResourceTallyHo(RESOURCE_HEAT)
-  tallyHo += getResourceTallyHo(RESOURCE_SAND)
-  tallyHo += getResourceTallyHo(RESOURCE_WATER)
-  tallyHo += getResourceTallyHo(RESOURCE_METAL)
-  tallyHo += getResourceTallyHo(RESOURCE_GLASS)
+  score[RESOURCE_PEOPLE] = getResourceTallyHo(RESOURCE_PEOPLE)
+  score[RESOURCE_HEAT] = getResourceTallyHo(RESOURCE_HEAT)
+  score[RESOURCE_SAND] = getResourceTallyHo(RESOURCE_SAND)
+  score[RESOURCE_WATER] = getResourceTallyHo(RESOURCE_WATER)
+  score[RESOURCE_METAL] = getResourceTallyHo(RESOURCE_METAL)
+  score[RESOURCE_GLASS] = getResourceTallyHo(RESOURCE_GLASS)
 
   if (findBuildingByType(BUILDING_METAL_AND_GLASS_TO_DOME)) {
-    tallyHo += 50
-    flares.push(FLARE_DOME_BUILT)
+    score.extra += SCORE_CONSTANT_DOME
+    score.flares.push(FLARE_DOME_BUILT)
 
     var unbuiltTerrainCount = 0
     for (var r = 0; r < rowCount; r++) {
@@ -410,36 +412,46 @@ var terraform = function () {
       }
     }
 
-    tallyHo += unbuiltTerrainCount * SCORE_FACTOR_UNBUILT_TERRAIN
+    score.extra += unbuiltTerrainCount * SCORE_FACTOR_UNBUILT_TERRAIN
   }
 
   breakhere: for (var r = 0; r < rowCount; r++) {
     for (var c = 0; c < colCount; c++) {
       var tile = tiles[r][c]
       if (tile.buildingType === BUILDING_LIVING_QUARTERS) {
-        var surroundingLivingQuarters = getSurroundingTiles(tile).filter(function (tile) {
-          return tile.buildingType === BUILDING_LIVING_QUARTERS
+        var surroundingTiles = getSurroundingTiles(tile)
+        var surroundingLivingQuarters = surroundingTiles.filter(function (_tile) {
+          return _tile.buildingType === BUILDING_LIVING_QUARTERS
         })
-        if (surroundingLivingQuarters.length === 3) {
-          tallyHo *= SCORE_FACTOR_TOO_BIG_LQ_CLUSTER
-          flares.push(FLARE_TOO_BIG_LQ_CLUSTER)
+        if (surroundingLivingQuarters.length > 1) {
+          score.totalFactors.push(SCORE_FACTOR_TOO_BIG_LQ_CLUSTER)
+          score.flares.push(FLARE_TOO_BIG_LQ_CLUSTER)
           break breakhere
         }
       }
     }
   }
 
-  setGameOverText('THE COLONY LASTED ' + tallyHo + ' YEARS')
+  score.total =
+      score[RESOURCE_PEOPLE] +
+      score[RESOURCE_GLASS] +
+      score[RESOURCE_HEAT] +
+      score[RESOURCE_WATER] +
+      score[RESOURCE_SAND] +
+      score[RESOURCE_METAL] +
+      score.extra
+
+  for (var i = 0; i < score.totalFactors.length; i++) {
+    score.total *= score.totalFactors[i]
+  }
+
+  score.total = Math.ceil(score.total)
+
+  gameScene.showResultScreen(score)
 }
 
 var setInformationBoxText = function (text) {
   gameScene.informationBoxText.text = text
-}
-
-var setGameOverText = function (text) {
-  gameScene.gameOverContainer.visible = true
-  gameScene.gameOverContainer.interactive = true
-  gameScene.gameOverText.text = text
 }
 
 var Tile = function (x, y, terrainType) {
@@ -472,6 +484,7 @@ var Tile = function (x, y, terrainType) {
         updateGame()
 
         deselectBuildingButton()
+        setInformationBoxText('')
       } else {
         if (this.terrainType === BUILDING_HQ) {
           setInformationBoxText('Can\'t replace HQ')
@@ -515,8 +528,6 @@ Tile.prototype.changeBuilding = function (buildingType) {
 
   this.buildingContainer.removeChildren()
   this.buildingContainer.addChild(buildingSprite)
-
-  setInformationBoxText('built: ' + this.buildingType) // unsure about this mofo
 }
 
 Tile.prototype.update = function () {
@@ -608,6 +619,8 @@ var gameScene = {
     this.tweens = []
     this.totalTime = 0;
 
+    score = {}
+
     this.container = new PIXI.Container()
 
     this.welcometextContainer = new PIXI.Container()
@@ -615,15 +628,15 @@ var gameScene = {
     var welcomeText = new PIXI.Text('Welcome to asteroid ' + region + '-56-AX-' + Math.round(Math.random() * 10032), { fontSize: 16, fill: '#ffffff'})
     welcomeText.x = 270
     welcomeText.y = 270
-    var tween_welcometext = new TweenLib.Tween({ alpha: 1 })
-      .to({alpha: 0}, 600)
-      .delay(400)
+
+    new TweenLib.Tween({ alpha: 1 })
+      .to({alpha: 0}, 600) //600
+      .delay(1) //400
       .easing(TweenLib.Easing.Quartic.Out)
-      .onUpdate(function(y) {
+      .onUpdate(function() {
         welcomeText.alpha = this.alpha;
       })
-      .start();
-    this.tweens.push(tween_welcometext)
+      .start()
     this.welcometextContainer.addChild(welcomeText)
 
     var backgroundImage = new PIXI.Sprite(PIXI.loader.resources['background'].texture)
@@ -639,15 +652,14 @@ var gameScene = {
     this.gameContainer = gameContainer;
     this.gameContainer.x = 182
     this.gameContainer.y = -500
-    var tween_gamecontainer = new TweenLib.Tween({ y: -500 })
-      .to({y: 132}, 3300)
+
+    new TweenLib.Tween({ y: -500 })
+      .to({y: 132}, 1) //3300
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function(y) {
         gameContainer.y = this.y;
       })
-      .start();
-
-    this.tweens.push(tween_gamecontainer)
+      .start()
 
     this.tileContainer = new PIXI.Container()
 
@@ -663,16 +675,14 @@ var gameScene = {
     this.buildingPanelContainer.x = 656
     this.buildingPanelContainer.y = 38 - 700
 
-    var tween_buildingPanel = new TweenLib.Tween({ y: 38 - 700 })
-      .to({y: 38}, 300)
-      .delay(3000)
+    new TweenLib.Tween({ y: 38 - 700 })
+      .to({y: 38}, 1) //300
+      .delay(1) //3000
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function() {
         buildingPanelContainer.y = this.y;
       })
-      .start();
-    this.tweens.push(tween_buildingPanel)
-
+      .start()
 
     var resourcePanelContainer = new PIXI.Container()
     this.resourcePanelContainer = resourcePanelContainer;
@@ -681,14 +691,13 @@ var gameScene = {
     this.resourcePanelContainer.y = 60 - 700
 
     var tween_resource_panel = new TweenLib.Tween({ y: 60 - 700 })
-      .to({y: 60}, 300)
-      .delay(3000)
+      .to({y: 60}, 1) //300
+      .delay(1) //3000
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function() {
         resourcePanelContainer.y = this.y;
       })
-      .start();
-    this.tweens.push(tween_resource_panel)
+      .start()
     this.resourcePanelContainer.addChild(baseResourcesPanelBackground)
 
     this.informationBoxContainer = new PIXI.Container()
@@ -707,25 +716,8 @@ var gameScene = {
     var terraformButton = new PIXI.Sprite(PIXI.loader.resources['terraform_button'].texture)
     terraformButton.interactive = true
     terraformButton.on('click', function () {
-      terraform()
-    })
-
-    this.gameOverContainer = new PIXI.Container()
-    var gameOverBackground = new PIXI.Sprite(PIXI.loader.resources['background'].texture)
-    this.gameOverContainer.addChild(gameOverBackground)
-    this.gameOverText = new PIXI.Text('', {
-      fontSize: 20,
-      fill: '#ffff00',
-      wordWrap: true,
-      wordWrapWidth: 600,
-    })
-    this.gameOverText.x = 100
-    this.gameOverText.y = 100
-    this.gameOverContainer.addChild(this.gameOverText)
-    this.gameOverContainer.on('click', function () {
-      this.changeScene('gameScene') // start over
+      this.transitionToResultScreen()
     }.bind(this))
-    this.gameOverContainer.visible = false
 
     global.baseStage.addChild(this.container)
     this.container.addChild(this.welcometextContainer)
@@ -734,7 +726,6 @@ var gameScene = {
     this.container.addChild(this.resourcePanelContainer)
     this.container.addChild(this.informationBoxContainer)
     this.container.addChild(terraformButton)
-    this.container.addChild(this.gameOverContainer)
 
     var map = [
       TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_PLAIN, TERRAIN_SAND,
@@ -788,14 +779,96 @@ var gameScene = {
     selectedBuildingButton = null
     setInformationBoxText('')
   },
+  transitionToResultScreen: function() {
+    var _gameContainer = this.gameContainer
+    new TweenLib.Tween({ y: 182 })
+      .to({y: 0}, 700)
+      .easing(TweenLib.Easing.Quartic.InOut)
+      .onUpdate(function() {
+        _gameContainer.y = this.y;
+      })
+      .onComplete(terraform)
+      .start()
+
+    var _buildingPanelContainer = this.buildingPanelContainer
+    new TweenLib.Tween({ x: 656 })
+      .to({x: 900}, 400)
+      .easing(TweenLib.Easing.Quartic.In)
+      .onUpdate(function() {
+        _buildingPanelContainer.x = this.x;
+      })
+      .start()
+
+    var _resourcePanelContainer = this.resourcePanelContainer
+    new TweenLib.Tween({ x: 20 })
+      .to({x: -300}, 400)
+      .easing(TweenLib.Easing.Quartic.In)
+      .onUpdate(function() {
+        _resourcePanelContainer.x = this.x;
+      })
+      .start()
+  },
+  showResultScreen: function(result) {
+    this.resultContainer = new PIXI.Container()
+    this.resultContainer.x = 9
+    this.resultContainer.y = 291
+    this.container.addChild(this.resultContainer)
+
+    var end_panel = new PIXI.Sprite(PIXI.loader.resources['end_screen_panel'].texture)
+    end_panel.on('click', function () {
+      this.changeScene('gameScene') // start over
+    }.bind(this))
+    end_panel.interactive = true
+    this.resultContainer.addChild(end_panel)
+
+    var titleText = new PIXI.Text('Colony results', { fontSize: 40, fill: '#000000'})
+    titleText.x = 252
+    titleText.y = 5
+    this.resultContainer.addChild(titleText)
+
+    var resourceTitle = new PIXI.Text('Resource tally', { fontSize: 20, fill: '#000000'})
+    resourceTitle.x = 118
+    resourceTitle.y = 53
+    this.resultContainer.addChild(resourceTitle)
+
+    var bonusTitle = new PIXI.Text('Bonuses', { fontSize: 20, fill: '#000000'})
+    bonusTitle.x = 337
+    bonusTitle.y = 66
+    this.resultContainer.addChild(bonusTitle)
+
+    var penaltyTitle = new PIXI.Text('Penalties', { fontSize: 20, fill: '#000000'})
+    penaltyTitle.x = 337
+    penaltyTitle.y = 179
+    this.resultContainer.addChild(penaltyTitle)
+
+    var colonyLifetimeShadowTitle = new PIXI.Text('Colony lifetime', { fontSize: 20, fill: '#000000'})
+    colonyLifetimeShadowTitle.x = 130
+    colonyLifetimeShadowTitle.y = 195
+    this.resultContainer.addChild(colonyLifetimeShadowTitle)
+
+    var colonyLifetimeTitle = new PIXI.Text('Colony lifetime', { fontSize: 20, fill: '#ffffff'})
+    colonyLifetimeTitle.x = 128
+    colonyLifetimeTitle.y = 193
+    this.resultContainer.addChild(colonyLifetimeTitle)
+
+    var lifetimeShadow = new PIXI.Text('456 years', { fontSize: 50, fill: '#000000'})
+    lifetimeShadow.x = 94
+    lifetimeShadow.y = 218
+    this.resultContainer.addChild(lifetimeShadow)
+
+    var lifetime = new PIXI.Text('456 years', { fontSize: 50, fill: '#ffffff'})
+    lifetime.x = 92
+    lifetime.y = 216
+    this.resultContainer.addChild(lifetime)
+
+
+
+  },
   destroy: function () {
     this.container.destroy()
   },
   update: function (delta) {
-    this.totalTime = this.totalTime + delta;
-    this.tweens.forEach(function(hmm) {
-      hmm.update(this.totalTime);
-    }.bind(this))
+    TweenLib.update()
   },
   draw: function () {
     global.renderer.render(this.container)
