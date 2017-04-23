@@ -19,7 +19,6 @@ var loadingScene = {
     .add('flare_super', 'assets/images/flare_super.png')
     .add('flare_disaster', 'assets/images/flare_disaster.png')
 
-    .add('asteroid_resources_panel', 'assets/images/asteroid_resources_panel.png')
     .add('end_screen_panel', 'assets/images/end_screen_panel.png')
     .add('background', 'assets/images/background.png')
     .add('astroid', 'assets/images/astroid.png')
