@@ -88,20 +88,33 @@ buildingTerrainPermissions[BUILDING_ORE_TO_METAL] = [TERRAIN_PLAIN, TERRAIN_SAND
 buildingTerrainPermissions[BUILDING_SAND_TO_GLASS] = [TERRAIN_PLAIN, TERRAIN_SAND, TERRAIN_ICE, TERRAIN_ORE]
 buildingTerrainPermissions[BUILDING_DOME] = [TERRAIN_DOME]
 
+var buildingNamesCapitalized = {}
+buildingNamesCapitalized[BUILDING_HEAT_GENERATOR] = 'HEAT GENERATOR'
+buildingNamesCapitalized[BUILDING_MINING] = 'ORE MINE'
+buildingNamesCapitalized[BUILDING_QUARRY] = 'QUARRY'
+buildingNamesCapitalized[BUILDING_HQ] = 'BASE HQ'
+buildingNamesCapitalized[BUILDING_ICE_COLLECTOR] = 'ICE COLLECTOR'
+buildingNamesCapitalized[BUILDING_LIVING_QUARTERS] = 'LIVING QUARTERS'
+buildingNamesCapitalized[BUILDING_METAL_AND_GLASS_TO_DOME] = 'DOME MAINTENANCE FACILITY'
+buildingNamesCapitalized[BUILDING_ICE_AND_HEAT_TO_WATER] = 'WATER PLANT'
+buildingNamesCapitalized[BUILDING_ORE_TO_METAL] = 'METAL WORKS'
+buildingNamesCapitalized[BUILDING_SAND_TO_GLASS] = 'GLASS WORKS'
+buildingNamesCapitalized[BUILDING_DOME] = 'DOME'
+
 var infoTexts = {}
-infoTexts[BUILDING_HEAT_GENERATOR] = 'HEAT GENERATOR\nProvides heat'
-infoTexts[BUILDING_MINING] = 'ORE MINE\nProvides ore from ore tiles'
-infoTexts[BUILDING_QUARRY] = 'QUARRY\nProvides sand from sand tiles'
-infoTexts[BUILDING_HQ] = 'BASE HQ\nProvides a starting population\nCan not be removed'
-infoTexts[BUILDING_ICE_COLLECTOR] = 'ICE COLLECTOR\nProvides ice from ice tiles'
-infoTexts[BUILDING_LIVING_QUARTERS] = 'LIVING QUARTERS\nProvides 4 people'
+infoTexts[BUILDING_HEAT_GENERATOR] = buildingNamesCapitalized[BUILDING_HEAT_GENERATOR] + '\nProduces heat'
+infoTexts[BUILDING_MINING] = buildingNamesCapitalized[BUILDING_MINING] + '\nProduces ore from ore tiles'
+infoTexts[BUILDING_QUARRY] = buildingNamesCapitalized[BUILDING_QUARRY] + '\nProduces sand from sand tiles'
+infoTexts[BUILDING_HQ] = buildingNamesCapitalized[BUILDING_HQ] + '\nProvides a starting population\nCan not be removed'
+infoTexts[BUILDING_ICE_COLLECTOR] = buildingNamesCapitalized[BUILDING_ICE_COLLECTOR] + '\nProduces ice from ice tiles'
+infoTexts[BUILDING_LIVING_QUARTERS] = buildingNamesCapitalized[BUILDING_LIVING_QUARTERS] + '\nProvides 4 people'
 
 //Resource converters
-infoTexts[BUILDING_METAL_AND_GLASS_TO_DOME] = 'DOME MAINTENANCE FACILITY\nUses metal and glass to construct and maintain the dome'
-infoTexts[BUILDING_ICE_AND_HEAT_TO_WATER] = 'WATER PLANT\nUses ice and heat to provide and control water levels on the asteroid'
-infoTexts[BUILDING_ORE_TO_METAL] = 'METAL WORKS\nUses ore to provide metal'
-infoTexts[BUILDING_SAND_TO_GLASS] = 'GLASS WORKS\nUses sand to provide glass'
-infoTexts[BUILDING_DOME] = 'DOME\nHolds atmosphere'
+infoTexts[BUILDING_METAL_AND_GLASS_TO_DOME] = buildingNamesCapitalized[BUILDING_METAL_AND_GLASS_TO_DOME] + '\nConsumes metal and glass to construct and maintain the dome'
+infoTexts[BUILDING_ICE_AND_HEAT_TO_WATER] = buildingNamesCapitalized[BUILDING_ICE_AND_HEAT_TO_WATER] + '\nConsumes ice and heat to produce water\nControls water levels on the asteroid'
+infoTexts[BUILDING_ORE_TO_METAL] = buildingNamesCapitalized[BUILDING_ORE_TO_METAL] + '\nConsumes ore to produce metal'
+infoTexts[BUILDING_SAND_TO_GLASS] = buildingNamesCapitalized[BUILDING_SAND_TO_GLASS] + '\nConsumes sand to produce glass'
+infoTexts[BUILDING_DOME] = buildingNamesCapitalized[BUILDING_DOME] + '\nHolds atmosphere'
 
 infoTexts[TERRAIN_PLAIN] = '(No resource)'
 infoTexts[TERRAIN_SAND] = 'SAND'
@@ -130,7 +143,7 @@ buttonHumanTexts[RESOURCE_ICE] = 'Ice'
 buttonHumanTexts[RESOURCE_GLASS] = 'Glass'
 buttonHumanTexts[RESOURCE_METAL] = 'Metal'
 buttonHumanTexts[RESOURCE_WATER] = 'Water'
-buttonHumanTexts[RESOURCE_DOME] = 'Dome'
+buttonHumanTexts[RESOURCE_DOME] = 'Dome parts'
 
 var score = {}
 
@@ -927,7 +940,17 @@ var BuildingButton = function (buildingType, index) {
       updateTileMarkers()
       setInformationBoxText(infoTexts[this.buildingType])
     } else {
-      setInformationBoxText('This building is locked')
+      var buildingNeed = buildingNeeds[this.buildingType].filter(function (resource) {
+        return resource !== RESOURCE_PEOPLE
+      })
+      var str = buildingNamesCapitalized[this.buildingType] + ' (LOCKED)\nTo unlock this building, make sure your base produces:\n'
+      for (var i = 0; i < buildingNeed.length; i++) {
+        if (i > 0) {
+          str += ', '
+        }
+        str += buttonHumanTexts[buildingNeed[i]]
+      }
+      setInformationBoxText(str)
     }
   }.bind(this))
   this.container.addChild(button)
@@ -1086,7 +1109,7 @@ var gameScene = {
     this.resourcePanelContainer.addChild(resourcePanelTitle)
     this.resourcePanelContainer.interactive = true
     this.resourcePanelContainer.on('click', function () {
-      setInformationBoxText('COLONY RESOURCES\nSome resources might give a bonus if you have a surplus (numbers in green), and some might give a penalty if you have a deficit (numbers in red)')
+      setInformationBoxText('COLONY RESOURCES\nNumbers in green - surplus (might give bonus)\nNumbers in red - deficit (might give penalty)')
     })
 
     this.informationBoxContainer = new PIXI.Container()
