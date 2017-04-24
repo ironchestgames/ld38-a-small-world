@@ -351,9 +351,9 @@ var updateNumbers = function () {
 
     textObject.style.fill = '#000000'
     if (produced - consumed > 0) {
-      textObject.style.fill = '#00ff00'
+      textObject.style.fill = '#00aa00'
     } else if (produced - consumed < 0) {
-      textObject.style.fill = '#ff0000'
+      textObject.style.fill = '#dd0000'
     }
 
     textObject.text = ': ' +
@@ -1059,6 +1059,13 @@ var gameScene = {
     this.resourcePanelContainer.x = 10
     this.resourcePanelContainer.y = 60 - 700
 
+    var resourcePanelTitle = new PIXI.Text('Resources', {
+      fontSize: 12,
+    })
+
+    resourcePanelTitle.x = 10
+    resourcePanelTitle.y = 4
+
     var tween_resource_panel = new TweenLib.Tween({ y: 60 - 700 })
       .to({y: 60}, (skipInto) ? 1 : 300)
       .delay((skipInto) ? 1 : 3000)
@@ -1067,7 +1074,13 @@ var gameScene = {
         resourcePanelContainer.y = this.y;
       })
       .start()
+
     this.resourcePanelContainer.addChild(baseResourcesPanelBackground)
+    this.resourcePanelContainer.addChild(resourcePanelTitle)
+    this.resourcePanelContainer.interactive = true
+    this.resourcePanelContainer.on('click', function () {
+      setInformationBoxText('COLONY RESOURCES\nSome resources might give a bonus if you have a surplus (numbers in green), and some might give a penalty if you have a deficit (numbers in red)')
+    })
 
     this.informationBoxContainer = new PIXI.Container()
     this.informationBoxText = new PIXI.Text('', {
@@ -1121,7 +1134,7 @@ var gameScene = {
     tiles.push(tile)
     this.tileContainer.addChild(tile.container)
 
-    var yOffset = 5
+    var yOffset = 20
     for (var resourceTextName in resourceTexts) {
       var textObject = new PIXI.Text('', { fontSize: 16, })
       var iconSprite = new PIXI.Sprite(PIXI.loader.resources[resourceTextName.toLowerCase()].texture)
@@ -1129,9 +1142,9 @@ var gameScene = {
       container.addChild(iconSprite)
       container.addChild(textObject)
 
-      iconSprite.x = 6
+      iconSprite.x = 4
       iconSprite.y = 2
-      textObject.x = 22
+      textObject.x = 20
 
       container.y = yOffset
       yOffset += 20
