@@ -445,7 +445,7 @@ var updateNumbers = function () {
 
 
     if (resourceTextName === RESOURCE_PEOPLE) {
-      if (produced - consumed > 0) {
+      if (produced - consumed >= 0) {
         textObject.style.fill = '#00aa00'
       } else if (produced - consumed < 0) {
         textObject.style.fill = '#dd0000'
