@@ -1099,6 +1099,11 @@ var gameScene = {
     })
     this.container.addChild(backgroundImage)
 
+    //particles
+    this.particleContainer = new PIXI.particles.ParticleContainer(1000)
+    this.createStartParticles(this.particleContainer)
+    this.container.addChild(this.particleContainer)
+
     var gameContainer = new PIXI.Container()
     this.gameContainer = gameContainer;
     this.gameContainer.x = 182
@@ -1601,11 +1606,29 @@ var gameScene = {
       .start()
 
   },
+  createStartParticles: function(container) {
+    this.particles = []
+    for (var i = 0; i < 30; i++) {
+      var sprite = new PIXI.Sprite(PIXI.loader.resources['star'].texture)
+      sprite.x = Math.random() * 800
+      sprite.y = Math.random() * 600
+      this.particles.push(sprite)
+      container.addChild(sprite)
+    }
+  },
+  updateParticles: function() {
+    this.particles.forEach(function(particle) {
+      particle.y = particle.y + 0.1
+      if (particle.y > 600)
+        particle.y = 0
+    })
+  },
   destroy: function () {
     this.container.destroy()
   },
   update: function (delta) {
     TweenLib.update()
+    this.updateParticles()
   },
   draw: function () {
     global.renderer.render(this.container)
