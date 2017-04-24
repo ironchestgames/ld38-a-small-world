@@ -242,12 +242,12 @@ var buildingButtonTypes = [ // this is the order for the buttons
 var resourceTexts = {} // inited in gameScene create
 resourceTexts[RESOURCE_PEOPLE] = null
 resourceTexts[RESOURCE_HEAT] = null
-resourceTexts[RESOURCE_ORE] = null
-resourceTexts[RESOURCE_SAND] = null
 resourceTexts[RESOURCE_ICE] = null
-resourceTexts[RESOURCE_GLASS] = null
-resourceTexts[RESOURCE_METAL] = null
 resourceTexts[RESOURCE_WATER] = null
+resourceTexts[RESOURCE_ORE] = null
+resourceTexts[RESOURCE_METAL] = null
+resourceTexts[RESOURCE_SAND] = null
+resourceTexts[RESOURCE_GLASS] = null
 resourceTexts[RESOURCE_DOME] = null
 
 var music_ambient = new Audio('assets/sounds/music_ambient.ogg')
