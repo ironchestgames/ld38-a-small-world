@@ -264,29 +264,29 @@ music_ending.addEventListener('ended', function() {
     this.play();
 }, false);
 
-var clickSound1 = new Audio('assets/sounds/click1.ogg')
+var clickSound1 = new Audio('assets/sounds/click_select_building.ogg')
 clickSound1.volume = 0.5
 
-var clickSound2 = new Audio('assets/sounds/click2.ogg')
+var clickSound2 = new Audio('assets/sounds/click_deselect_building.ogg')
 clickSound2.volume = 0.5
 
-var clickSound3 = new Audio('assets/sounds/click3.ogg')
+var clickSound3 = new Audio('assets/sounds/click_deselect_all.ogg')
 clickSound3.volume = 0.5
 
-var clickSound4 = new Audio('assets/sounds/click4.ogg')
+var clickSound4 = new Audio('assets/sounds/colonize.ogg')
 clickSound4.volume = 0.5
 
-var clickSound5 = new Audio('assets/sounds/click5.ogg')
+var clickSound5 = new Audio('assets/sounds/build.ogg')
 clickSound5.volume = 0.5
 
 var sounds = {
   'music_ambient': music_ambient,
   'music_ending': music_ending,
-  'click1': clickSound1,
-  'click2': clickSound2,
-  'click3': clickSound3,
-  'click4': clickSound4,
-  'click5': clickSound5
+  'click_select_building': clickSound1,
+  'click_deselect_building': clickSound2,
+  'click_deselect_all': clickSound3,
+  'colonize': clickSound4,
+  'build': clickSound5
 }
 
 var audioManager = {
@@ -741,7 +741,7 @@ var Tile = function (x, y, terrainType) {
   this.terrainSprite.on('click', function () {
     if (selectedBuildingButton) {
       if (this.isAvailableForSelectedBuilding) {
-        audioManager.playSound('click5')
+        audioManager.playSound('build')
         this.changeBuilding(selectedBuildingButton)
         updateGame()
 
@@ -1057,7 +1057,7 @@ var BuildingButton = function (buildingType, index) {
   button.on('click', function () {
 
     if (this.isActive === true) {
-      audioManager.playSound('click1')
+      audioManager.playSound('click_select_building')
       selectedBuildingButton = this.buildingType
 
       if (selectedBuildingButton === BUILDING_DOME) {
@@ -1071,7 +1071,7 @@ var BuildingButton = function (buildingType, index) {
       setInformationBoxText(infoTexts[this.buildingType])
       updateBuildingButtons()
     } else {
-      audioManager.playSound('click2')
+      audioManager.playSound('click_deselect_building')
       var buildingNeed = buildingNeeds[this.buildingType].filter(function (resource) {
         return resource !== RESOURCE_PEOPLE
       })
@@ -1199,7 +1199,7 @@ var gameScene = {
     backgroundImage.interactive = true
     backgroundImage.on('click', function () {
       selectedBuildingButton = null
-      audioManager.playSound('click3')
+      audioManager.playSound('click_deselect_all')
       updateTileMarkers()
       setInformationBoxText('')
       updateBuildingButtons()
@@ -1308,7 +1308,7 @@ var gameScene = {
     terraformButton.interactive = true
     terraformButton.visible = false
     terraformButton.on('click', function () {
-      audioManager.playSound('click4')
+      audioManager.playSound('colonize')
       audioManager.playMusic('music_ending')
       terraformButton.visible = false
       this.transitionToResultScreen()
@@ -1774,7 +1774,9 @@ var gameScene = {
     floaterContainer.x = (tile.x * 64) + 30
     floaterContainer.y = tile.y * 64
 
-    var test = new PIXI.Text('+1', { fontSize: 14, fill: '#ffffff',
+    var text = (tile.buildingType === BUILDING_LIVING_QUARTERS) ? "+4" : "+1"
+    
+    var test = new PIXI.Text(text, { fontSize: 14, fill: '#ffffff',
       dropShadow: true,
       dropShadowBlur: 0,
       dropShadowColor: '#000000',
