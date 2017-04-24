@@ -259,10 +259,6 @@ music_ambient.addEventListener('ended', function() {
 
 var music_ending = new Audio('assets/sounds/music_ending.ogg')
 music_ending.volume = 0.3
-music_ending.addEventListener('ended', function() {
-    this.currentTime = 0
-    this.play();
-}, false);
 
 var clickSound1 = new Audio('assets/sounds/click_select_building.ogg')
 clickSound1.volume = 0.5
@@ -1258,7 +1254,7 @@ var gameScene = {
     this.resourcePanelContainer = resourcePanelContainer;
     var baseResourcesPanelBackground = new PIXI.Sprite(PIXI.loader.resources['base_resources_panel'].texture)
     this.resourcePanelContainer.x = 10
-    this.resourcePanelContainer.y = 60 - 700
+    this.resourcePanelContainer.y = 68 - 700
 
     var resourcePanelTitle = new PIXI.Text('Resources', {
       fontSize: 12,
@@ -1276,8 +1272,8 @@ var gameScene = {
     resourcePanelExplanation.x = 6
     resourcePanelExplanation.y = 204
 
-    var tween_resource_panel = new TweenLib.Tween({ y: 60 - 700 })
-      .to({y: 60}, (skipInto) ? 1 : 300)
+    var tween_resource_panel = new TweenLib.Tween({ y: 68 - 700 })
+      .to({y: 68}, (skipInto) ? 1 : 300)
       .delay((skipInto) ? 1 : 4000)
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function() {
@@ -1303,8 +1299,8 @@ var gameScene = {
     this.informationBoxContainer.y = 104 + 364
 
     var terraformButton = new PIXI.Sprite(PIXI.loader.resources['colonize_button'].texture)
-    terraformButton.x = 5
-    terraformButton.y = 5
+    terraformButton.x = 10
+    terraformButton.y = 10
     terraformButton.interactive = true
     terraformButton.visible = false
     terraformButton.on('click', function () {
@@ -1775,7 +1771,7 @@ var gameScene = {
     floaterContainer.y = tile.y * 64
 
     var text = (tile.buildingType === BUILDING_LIVING_QUARTERS) ? "+4" : "+1"
-    
+
     var test = new PIXI.Text(text, { fontSize: 14, fill: '#ffffff',
       dropShadow: true,
       dropShadowBlur: 0,
