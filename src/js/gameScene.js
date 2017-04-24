@@ -939,16 +939,16 @@ var BuildingButton = function (buildingType, index) {
   buildingSprite.y = 6
   this.container.addChild(buildingSprite)
 
-  var buildingName = new PIXI.Text(buttonHumanTexts[buildingType], { fontSize: 12, fill: '#9e9e9e'})
-  buildingName.x = 42
-  buildingName.y = 7
-  this.container.addChild(buildingName)
+  this.buildingName = new PIXI.Text(buttonHumanTexts[buildingType], { fontSize: 12, fill: '#9e9e9e'})
+  this.buildingName.x = 42
+  this.buildingName.y = 7
+  this.container.addChild(this.buildingName)
 
   if (this.buildingType === BUILDING_DOME) {
-    var producesName = new PIXI.Text('Encapsulation', { fontSize: 10, fill: '#9e9e9e'})
-    producesName.x = 42
-    producesName.y = 26
-    this.container.addChild(producesName)
+    this.producesName = new PIXI.Text('Terraforming', { fontSize: 10, fill: '#9e9e9e'})
+    this.producesName.x = 42
+    this.producesName.y = 26
+    this.container.addChild(this.producesName)
   } else {
     var producingIconResourceName = resourceNames[buildingProvides[buildingType]];
 
@@ -959,10 +959,10 @@ var BuildingButton = function (buildingType, index) {
     buildingProvidesSprite.y = 24
     this.container.addChild(buildingProvidesSprite)
 
-    var producesName = new PIXI.Text(buttonHumanTexts[buildingProvides[buildingType]], { fontSize: 10, fill: '#9e9e9e'})
-    producesName.x = 62
-    producesName.y = 26
-    this.container.addChild(producesName)
+    this.producesName = new PIXI.Text(buttonHumanTexts[buildingProvides[buildingType]], { fontSize: 10, fill: '#9e9e9e'})
+    this.producesName.x = 62
+    this.producesName.y = 26
+    this.container.addChild(this.producesName)
   }
 
   this.container.y = index * 47
@@ -970,9 +970,13 @@ var BuildingButton = function (buildingType, index) {
 
 BuildingButton.prototype.setActive = function (activeness) {
   if (activeness === false) {
-    this.container.alpha = 0.5
+    this.container.alpha = 0.6
+    this.buildingName.style.fill = '#383838'
+    this.producesName.style.fill = '#383838'
   } else {
-     this.container.alpha = 1
+    this.container.alpha = 1
+    this.buildingName.style.fill = '#9e9e9e'
+    this.producesName.style.fill = '#9e9e9e'
   }
 
   this.isActive = !!activeness
