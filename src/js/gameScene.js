@@ -163,9 +163,11 @@ var SCORE_FACTOR_TREES_NEXT_TO_LQ = 0.05
 var SCORE_FACTOR_METAL_WORKS_NEXT_TO_TREES = -0.7
 var SCORE_FACTOR_OVERWORKED_POPULATION = -0.75
 var SCORE_FACTOR_ICE_WITHOUT_COLLECTORS = -0.25
+var SCORE_FACTOR_ALL_WATER_IN_WATER_CHAIN = 0.5
 
 var FLARE_DOME_BUILT = 'FLARE_DOME_BUILT'
 var FLARE_TREES_NEXT_TO_LQ = 'FLARE_TREES_NEXT_TO_LQ'
+var FLARE_ALL_WATER_IN_WATER_CHAIN = 'FLARE_ALL_WATER_IN_WATER_CHAIN'
 
 var FLARE_TOO_BIG_LQ_CLUSTER = 'FLARE_TOO_BIG_LQ_CLUSTER'
 var FLARE_ICE_AND_DOME = 'FLARE_ICE_AND_DOME'
@@ -557,6 +559,21 @@ var countScore = function () {
     score.totalFactors.push(SCORE_FACTOR_OVERWORKED_POPULATION)
   }
 
+  // ALL WATER IS IN WATER CHAIN
+  var uncollectedIce = tiles.filter(function (tile) {
+    return tile.terrainType === TERRAIN_ICE && tile.buildingType !== BUILDING_ICE_COLLECTOR
+  }).length
+
+  var waterProduced = getResourceProduced(RESOURCE_WATER)
+  var heatProduced = getResourceProduced(RESOURCE_HEAT)
+  var iceProduced = getResourceProduced(RESOURCE_ICE)
+
+  if (uncollectedIce === 0 &&
+      iceProduced === waterProduced &&
+      heatProduced === waterProduced) {
+    score.flares.push(FLARE_ALL_WATER_IN_WATER_CHAIN)
+    score.totalFactors.push(SCORE_FACTOR_ALL_WATER_IN_WATER_CHAIN)
+  }
 
   // sum
 
@@ -1321,12 +1338,32 @@ var gameScene = {
         this.resultContainer.addChild(container)
 
         flare_y += flareOffsetYSingleLine
-      } else if (flare === FLARE_TREES_NEXT_TO_LQ) {
+      }
+
+      if (flare === FLARE_TREES_NEXT_TO_LQ) {
         foundPositive = true
         var container = new PIXI.Container()
         var flare_super = new PIXI.Sprite(PIXI.loader.resources["flare_super"].texture)
         flare_super.y = 2
         var textObject = new PIXI.Text("Living Quarters have immediate access to a lush forest", { fontSize: flareFontSize })
+        textObject.x = 44
+        container.addChild(flare_super)
+        container.addChild(textObject)
+
+        container.x = flare_x
+        container.y = flare_y
+
+        this.resultContainer.addChild(container)
+
+        flare_y += flareOffsetYSingleLine
+      }
+
+      if (flare === FLARE_ALL_WATER_IN_WATER_CHAIN) {
+        foundPositive = true
+        var container = new PIXI.Container()
+        var flare_super = new PIXI.Sprite(PIXI.loader.resources["flare_super"].texture)
+        flare_super.y = 2
+        var textObject = new PIXI.Text("Water system is perfectly tuned", { fontSize: flareFontSize })
         textObject.x = 44
         container.addChild(flare_super)
         container.addChild(textObject)
