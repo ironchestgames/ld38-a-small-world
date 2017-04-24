@@ -23,7 +23,7 @@ var splashScene = {
     var str = '\n\n' +
         '\n\n' +
         '\n\n\n\n\n' +
-        '        Click to continue'
+        '       Click to continue'
 
     var text = new PIXI.Text(str, {
       fontSize: 36,
