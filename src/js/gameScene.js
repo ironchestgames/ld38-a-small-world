@@ -1247,6 +1247,15 @@ var gameScene = {
     resourcePanelTitle.x = 10
     resourcePanelTitle.y = 4
 
+    var resourcePanelExplanation = new PIXI.Text('Click on a resource to get more info', {
+      fontSize: 12,
+      wordWrap: true,
+      wordWrapWidth: 76,
+    })
+
+    resourcePanelExplanation.x = 6
+    resourcePanelExplanation.y = 204
+
     var tween_resource_panel = new TweenLib.Tween({ y: 60 - 700 })
       .to({y: 60}, (skipInto) ? 1 : 300)
       .delay((skipInto) ? 1 : 3000)
@@ -1258,6 +1267,7 @@ var gameScene = {
 
     this.resourcePanelContainer.addChild(baseResourcesPanelBackground)
     this.resourcePanelContainer.addChild(resourcePanelTitle)
+    this.resourcePanelContainer.addChild(resourcePanelExplanation)
 
     this.informationBoxContainer = new PIXI.Container()
     this.informationBoxText = new PIXI.Text('', {
