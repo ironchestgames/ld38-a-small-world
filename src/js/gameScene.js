@@ -600,10 +600,10 @@ var countScore = function () {
       score[RESOURCE_HEAT] +
       score[RESOURCE_WATER] +
       score[RESOURCE_SAND] +
-      score[RESOURCE_METAL] +
-      score.extra;
+      score[RESOURCE_METAL]
 
-  score.total = baseTotal
+  score.baseTotal = baseTotal
+  score.total = baseTotal + score.extra
 
   for (var i = 0; i < score.totalFactors.length; i++) {
     score.total += baseTotal * score.totalFactors[i]
@@ -1319,7 +1319,7 @@ var gameScene = {
 
       for (var i = 0; i < columnData.length; i++) {
         var resource = columnData[i]
-        var resourceText = (result[resource] === 0) ? "-" : result[resource];
+        var resourceText = resourceScoreFactors[resource] + ' x ' + getResourceProduced(resource)
         var textObject = new PIXI.Text(resourceText, { fontSize: 16 })
         var iconSprite = new PIXI.Sprite(PIXI.loader.resources[resource.toLowerCase()].texture)
         var container = new PIXI.Container()
@@ -1338,8 +1338,13 @@ var gameScene = {
       }
     }.bind(this)
 
-    generateColumn(resourcesColumn1, 120)
+    generateColumn(resourcesColumn1, 110)
     generateColumn(resourcesColumn2, 210)
+
+    var resourcePointsSum = new PIXI.Text('total: ' + score.baseTotal, { fontSize: 16 })
+    resourcePointsSum.x = 210
+    resourcePointsSum.y = 158
+    this.resultContainer.addChild(resourcePointsSum)
 
     var flare_x = 340
     var flare_y = 83
