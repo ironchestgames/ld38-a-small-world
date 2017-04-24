@@ -8,6 +8,8 @@ var loadingScene = {
     PIXI.loader
 
     // buttons
+    .add('ASTEROIDARCHITECT', 'assets/images/ASTEROIDARCHITECT.png')
+
     .add('tile_placement_available', 'assets/images/tile_placement_available.png')
     .add('tile_placement_yellow', 'assets/images/tile_placement_yellow.png')
 
@@ -70,7 +72,7 @@ var loadingScene = {
     .add('arrow', 'assets/images/arrow.png')
 
     .load(function () {
-      this.changeScene('howtoScene', sceneParams)
+      this.changeScene('splashScene', sceneParams)
     }.bind(this))
   },
   destroy: function () {
