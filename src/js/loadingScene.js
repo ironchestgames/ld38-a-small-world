@@ -19,6 +19,8 @@ var loadingScene = {
     .add('tile_sand', 'assets/images/tile_sand.png')
 
     .add('button_hover', 'assets/images/button_hover.png')
+    
+    .add('speaker', 'assets/images/speaker.png')
 
     .add('flare_super', 'assets/images/flare_super.png')
     .add('flare_disaster', 'assets/images/flare_disaster.png')
