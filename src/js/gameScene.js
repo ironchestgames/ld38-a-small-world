@@ -469,9 +469,9 @@ var countScore = function () {
   score[RESOURCE_METAL] = getResourceTallyHo(RESOURCE_METAL)
   score[RESOURCE_GLASS] = getResourceTallyHo(RESOURCE_GLASS)
 
+  // DOME BUILT
   if (findBuildingByType(BUILDING_DOME)) {
 
-    // DOME BUILT
     score.extra += SCORE_CONSTANT_DOME
     score.flares.push(FLARE_DOME_BUILT)
 
@@ -519,7 +519,21 @@ var countScore = function () {
         }
       }
     }
+
+    // ICE WITHOUT COLLECTORS
+    var iceWithoutCollector = 0
+    for (var i = 0; i < tiles.length; i++) {
+      var tile = tiles[i]
+      if (tile.terrainType === TERRAIN_ICE && tile.buildingType !== BUILDING_ICE_COLLECTOR)
+        iceWithoutCollector++
+    }
+    if (iceWithoutCollector > 0) {
+      score.flares.push(FLARE_ICE_AND_DOME)
+      score.totalFactors.push(SCORE_FACTOR_ICE_WITHOUT_COLLECTORS)
+    }
   }
+
+  // --- regardless of dome ---
 
   // TOO BIG CLUSTERS OF LQ
   for (var i = 0; i < tiles.length; i++) {
@@ -537,26 +551,14 @@ var countScore = function () {
     }
   }
 
-  // ICE WITHOUT COLLECTORS
-  var foundDome = false
-  var iceWithoutCollector = 0
-  for (var i = 0; i < tiles.length; i++) {
-    var tile = tiles[i]
-    if (tile.buildingType === BUILDING_DOME)
-      foundDome = true
-    if (tile.terrainType === TERRAIN_ICE && tile.buildingType !== BUILDING_ICE_COLLECTOR)
-      iceWithoutCollector++
-  }
-  if (foundDome && iceWithoutCollector > 0) {
-    score.flares.push(FLARE_ICE_AND_DOME)
-    score.totalFactors.push(SCORE_FACTOR_ICE_WITHOUT_COLLECTORS)
-  }
-
   // OVERWORKED POPULATION
   if (getResourceProduced(RESOURCE_PEOPLE) - getResourceConsumed(RESOURCE_PEOPLE) < 0) {
     score.flares.push(FLARE_OVERWORKED_POPULATION)
     score.totalFactors.push(SCORE_FACTOR_OVERWORKED_POPULATION)
   }
+
+
+  // sum
 
   var baseTotal =
       score[RESOURCE_PEOPLE] +
@@ -1362,7 +1364,7 @@ var gameScene = {
         var container = new PIXI.Container()
         var flare_disaster = new PIXI.Sprite(PIXI.loader.resources["flare_disaster"].texture)
         flare_disaster.y = 2
-        var textObject = new PIXI.Text("Unharvested ice inside dome, ecosystem is unbalanced and\noverrun with algae", { fontSize: flareFontSize })
+        var textObject = new PIXI.Text("Unharvested ice inside dome, it melts and make the water levels\nin the dome uncontrollable", { fontSize: flareFontSize })
         textObject.x = 44
         container.addChild(flare_disaster)
         container.addChild(textObject)
