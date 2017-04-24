@@ -1070,14 +1070,27 @@ var gameScene = {
     var skipInto = false
 
     this.welcometextContainer = new PIXI.Container()
-    var region = (Math.random() < 0.5) ? 'PO' : 'KG';
-    var welcomeText = new PIXI.Text('Welcome to asteroid\n' + region + '-56-AX-' + Math.round(Math.random() * 10032), {
+    var year = Math.ceil(1990 + Math.random() * 27)
+    var name = gameVars.asteroidNames[Math.floor(Math.random() * (gameVars.asteroidNames.length - 1.1))]
+
+    var alphabet = 'ABCDEFGHIJKLMNOPQRSTUZXYZ'
+    var numbers = '123456789'
+    function getRandomCharacterFromString(str) {
+      return str[Math.floor(Math.random() * (str.length - 1.1))]
+    }
+    var randomLettersAndDigits = 
+        getRandomCharacterFromString(alphabet) +
+        getRandomCharacterFromString(alphabet) +
+        getRandomCharacterFromString(numbers) +
+        getRandomCharacterFromString(numbers)
+
+    var welcomeText = new PIXI.Text('Welcome to asteroid\n' + year + ' ' + randomLettersAndDigits + ' "' + name + '"', {
       fontSize: 48,
       fill: global.menuColor,
       align: 'center',
     })
-    welcomeText.x = 190
-    welcomeText.y = 230
+    welcomeText.x = (800 - welcomeText.width) / 2
+    welcomeText.y = 220
 
     new TweenLib.Tween({ alpha: 1 })
       .to({alpha: 0}, (skipInto) ? 1 : 600)
