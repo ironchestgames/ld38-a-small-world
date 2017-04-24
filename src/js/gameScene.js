@@ -1163,7 +1163,10 @@ var gameScene = {
       .onUpdate(function() {
         _gameContainer.y = this.y;
       })
-      .onComplete(countScore)
+      .onComplete(function () {
+        deselectBuildingButton()
+        countScore()
+      })
       .start()
 
     var _buildingPanelContainer = this.buildingPanelContainer
