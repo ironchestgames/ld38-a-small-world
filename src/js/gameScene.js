@@ -1741,10 +1741,10 @@ var gameScene = {
     this.floatContainer.removeChildren()
 
     var floaterContainer = new PIXI.Container()
-    floaterContainer.x = tile.x * 64
+    floaterContainer.x = (tile.x * 64) + 30
     floaterContainer.y = tile.y * 64
 
-    var test = new PIXI.Text('Base gains resource', { fontSize: 14, fill: '#ffffff',
+    var test = new PIXI.Text('+1', { fontSize: 14, fill: '#ffffff',
       dropShadow: true,
       dropShadowBlur: 0,
       dropShadowColor: '#000000',
@@ -1756,7 +1756,7 @@ var gameScene = {
     floaterContainer.addChild(test)
 
     var resourceIcon = new PIXI.Sprite(PIXI.loader.resources[resource.toLowerCase()].texture)
-    resourceIcon.x = 135
+    resourceIcon.x = 20
     resourceIcon.y = 2
     floaterContainer.addChild(resourceIcon)
 
