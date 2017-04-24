@@ -250,6 +250,55 @@ resourceTexts[RESOURCE_METAL] = null
 resourceTexts[RESOURCE_WATER] = null
 resourceTexts[RESOURCE_DOME] = null
 
+var music_ambient = new Audio('assets/sounds/music_ambient.ogg')
+music_ambient.addEventListener('ended', function() {
+    this.currentTime = 0;
+    this.play();
+}, false);
+var music_ending = new Audio('assets/sounds/music_ending.ogg')
+music_ending.addEventListener('ended', function() {
+    this.currentTime = 0;
+    this.play();
+}, false);
+var clickSound1 = new Audio('assets/sounds/click1.ogg')
+var clickSound2 = new Audio('assets/sounds/click2.ogg')
+var clickSound3 = new Audio('assets/sounds/click3.ogg')
+var clickSound4 = new Audio('assets/sounds/click4.ogg')
+var sounds = {
+  'music_ambient': music_ambient,
+  'music_ending': music_ending,
+  'click1': clickSound1,
+  'click2': clickSound2,
+  'click3': clickSound3,
+  'click4': clickSound4
+}
+
+var audioManager = {
+  muted: false,
+  lastMusic: null,
+  playSound: function(name) {
+    if (!this.muted)
+      sounds[name].play()
+  },
+  playMusic: function(name) {
+    if (this.lastMusic)
+        this.lastMusic.pause()
+
+    this.lastMusic = sounds[name]
+    if (!this.muted) {
+      sounds[name].currentTime = 0
+      sounds[name].play()
+    }
+  },
+  toggle: function() {
+    this.muted = !this.muted
+
+    if (!this.lastMusic) return
+
+    (this.muted) ? this.lastMusic.pause() : this.lastMusic.play()
+  }
+}
+
 var deselectBuildingButton = function () {
   selectedBuildingButton = null
   updateTileMarkers()
@@ -672,6 +721,7 @@ var Tile = function (x, y, terrainType) {
   this.terrainSprite.on('click', function () {
     if (selectedBuildingButton) {
       if (this.isAvailableForSelectedBuilding) {
+        audioManager.playSound('click3')
         this.changeBuilding(selectedBuildingButton)
         updateGame()
 
@@ -985,7 +1035,9 @@ var BuildingButton = function (buildingType, index) {
   var button = new PIXI.Sprite(PIXI.loader.resources['building_button'].texture)
   button.interactive = true
   button.on('click', function () {
+
     if (this.isActive === true) {
+      audioManager.playSound('click1')
       selectedBuildingButton = this.buildingType
 
       if (selectedBuildingButton === BUILDING_DOME) {
@@ -999,6 +1051,7 @@ var BuildingButton = function (buildingType, index) {
       setInformationBoxText(infoTexts[this.buildingType])
       updateBuildingButtons()
     } else {
+      audioManager.playSound('click2')
       var buildingNeed = buildingNeeds[this.buildingType].filter(function (resource) {
         return resource !== RESOURCE_PEOPLE
       })
@@ -1078,6 +1131,8 @@ BuildingButton.prototype.setActive = function (activeness) {
 var gameScene = {
   name: 'gameScene',
   create: function (sceneParams) {
+    audioManager.playMusic('music_ambient')
+    
     this.tweens = []
     this.totalTime = 0;
 
@@ -1124,6 +1179,7 @@ var gameScene = {
     backgroundImage.interactive = true
     backgroundImage.on('click', function () {
       selectedBuildingButton = null
+      audioManager.playSound('click3')
       updateTileMarkers()
       setInformationBoxText('')
       updateBuildingButtons()
@@ -1222,9 +1278,23 @@ var gameScene = {
     terraformButton.interactive = true
     terraformButton.visible = false
     terraformButton.on('click', function () {
+      audioManager.playSound('click4')
+      audioManager.playMusic('music_ending')
       terraformButton.visible = false
       this.transitionToResultScreen()
     }.bind(this))
+
+    var muteSprite = new PIXI.Sprite(PIXI.loader.resources['speaker'].texture)
+    muteSprite.interactive = true
+    muteSprite.x = 770
+    muteSprite.y = 5
+    muteSprite.alpha = (audioManager.muted) ? 0.3 : 1
+    muteSprite.on('click', function () {
+      audioManager.toggle()
+      muteSprite.alpha = (muteSprite.alpha === 1) ? 0.3 : 1
+    })
+    this.container.addChild(muteSprite)
+
 
     global.baseStage.addChild(this.container)
     this.container.addChild(this.welcometextContainer)
