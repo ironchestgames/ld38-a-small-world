@@ -1028,6 +1028,9 @@ var gameScene = {
       .onUpdate(function(y) {
         gameContainer.y = this.y;
       })
+      .onComplete(function () {
+        terraformButton.visible = true
+      })
       .start()
 
     this.tileContainer = new PIXI.Container()
@@ -1099,6 +1102,7 @@ var gameScene = {
     terraformButton.x = 5
     terraformButton.y = 5
     terraformButton.interactive = true
+    terraformButton.visible = false
     terraformButton.on('click', function () {
       terraformButton.visible = false
       this.transitionToResultScreen()
