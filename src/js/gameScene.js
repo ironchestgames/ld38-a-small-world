@@ -251,26 +251,42 @@ resourceTexts[RESOURCE_GLASS] = null
 resourceTexts[RESOURCE_DOME] = null
 
 var music_ambient = new Audio('assets/sounds/music_ambient.ogg')
+music_ambient.volume = 0.3
 music_ambient.addEventListener('ended', function() {
-    this.currentTime = 0;
+    this.currentTime = 0
     this.play();
 }, false);
+
 var music_ending = new Audio('assets/sounds/music_ending.ogg')
+music_ending.volume = 0.3
 music_ending.addEventListener('ended', function() {
-    this.currentTime = 0;
+    this.currentTime = 0
     this.play();
 }, false);
+
 var clickSound1 = new Audio('assets/sounds/click1.ogg')
+clickSound1.volume = 0.5
+
 var clickSound2 = new Audio('assets/sounds/click2.ogg')
+clickSound2.volume = 0.5
+
 var clickSound3 = new Audio('assets/sounds/click3.ogg')
+clickSound3.volume = 0.5
+
 var clickSound4 = new Audio('assets/sounds/click4.ogg')
+clickSound4.volume = 0.5
+
+var clickSound5 = new Audio('assets/sounds/click5.ogg')
+clickSound5.volume = 0.5
+
 var sounds = {
   'music_ambient': music_ambient,
   'music_ending': music_ending,
   'click1': clickSound1,
   'click2': clickSound2,
   'click3': clickSound3,
-  'click4': clickSound4
+  'click4': clickSound4,
+  'click5': clickSound5
 }
 
 var audioManager = {
@@ -725,7 +741,7 @@ var Tile = function (x, y, terrainType) {
   this.terrainSprite.on('click', function () {
     if (selectedBuildingButton) {
       if (this.isAvailableForSelectedBuilding) {
-        audioManager.playSound('click3')
+        audioManager.playSound('click5')
         this.changeBuilding(selectedBuildingButton)
         updateGame()
 
