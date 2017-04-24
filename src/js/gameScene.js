@@ -114,18 +114,18 @@ buildingNamesCapitalized[BUILDING_SAND_TO_GLASS] = 'GLASS WORKS'
 buildingNamesCapitalized[BUILDING_DOME] = 'DOME'
 
 var infoTexts = {}
-infoTexts[BUILDING_HEAT_GENERATOR] = buildingNamesCapitalized[BUILDING_HEAT_GENERATOR] + '\nProduces heat'
-infoTexts[BUILDING_MINING] = buildingNamesCapitalized[BUILDING_MINING] + '\nProduces ore from ore tiles'
-infoTexts[BUILDING_QUARRY] = buildingNamesCapitalized[BUILDING_QUARRY] + '\nProduces sand from sand tiles'
-infoTexts[BUILDING_HQ] = buildingNamesCapitalized[BUILDING_HQ] + '\nProvides a starting population\nCan not be removed'
-infoTexts[BUILDING_ICE_COLLECTOR] = buildingNamesCapitalized[BUILDING_ICE_COLLECTOR] + '\nProduces ice from ice tiles'
+infoTexts[BUILDING_HEAT_GENERATOR] = buildingNamesCapitalized[BUILDING_HEAT_GENERATOR] + '\nProduces heat\n1 Workplace'
+infoTexts[BUILDING_MINING] = buildingNamesCapitalized[BUILDING_MINING] + '\nProduces ore from ore tiles\n1 Workplace'
+infoTexts[BUILDING_QUARRY] = buildingNamesCapitalized[BUILDING_QUARRY] + '\nProduces sand from sand tiles\n1 Workplace'
+infoTexts[BUILDING_HQ] = buildingNamesCapitalized[BUILDING_HQ] + '\nProvides 1 People\nCan not be removed'
+infoTexts[BUILDING_ICE_COLLECTOR] = buildingNamesCapitalized[BUILDING_ICE_COLLECTOR] + '\nProduces ice from ice tiles\n1 Workplace'
 infoTexts[BUILDING_LIVING_QUARTERS] = buildingNamesCapitalized[BUILDING_LIVING_QUARTERS] + '\nProvides 4 people'
 
 //Resource converters
-infoTexts[BUILDING_METAL_AND_GLASS_TO_DOME] = buildingNamesCapitalized[BUILDING_METAL_AND_GLASS_TO_DOME] + '\nConsumes metal and glass to construct and maintain the dome'
-infoTexts[BUILDING_ICE_AND_HEAT_TO_WATER] = buildingNamesCapitalized[BUILDING_ICE_AND_HEAT_TO_WATER] + '\nConsumes ice and heat to produce water\nControls water levels on the asteroid'
-infoTexts[BUILDING_ORE_TO_METAL] = buildingNamesCapitalized[BUILDING_ORE_TO_METAL] + '\nConsumes ore to produce metal'
-infoTexts[BUILDING_SAND_TO_GLASS] = buildingNamesCapitalized[BUILDING_SAND_TO_GLASS] + '\nConsumes sand to produce glass'
+infoTexts[BUILDING_METAL_AND_GLASS_TO_DOME] = buildingNamesCapitalized[BUILDING_METAL_AND_GLASS_TO_DOME] + '\nConsumes metal and glass to construct and maintain the dome\n1 Workplace'
+infoTexts[BUILDING_ICE_AND_HEAT_TO_WATER] = buildingNamesCapitalized[BUILDING_ICE_AND_HEAT_TO_WATER] + '\nConsumes ice and heat to produce water\nControls water levels on the asteroid\n1 Workplace'
+infoTexts[BUILDING_ORE_TO_METAL] = buildingNamesCapitalized[BUILDING_ORE_TO_METAL] + '\nConsumes ore to produce metal\n1 Workplace'
+infoTexts[BUILDING_SAND_TO_GLASS] = buildingNamesCapitalized[BUILDING_SAND_TO_GLASS] + '\nConsumes sand to produce glass\n1 Workplace'
 infoTexts[BUILDING_DOME] = buildingNamesCapitalized[BUILDING_DOME] + '\nHolds atmosphere'
 
 infoTexts[TERRAIN_PLAIN] = '(No resource)'
@@ -1349,7 +1349,7 @@ var gameScene = {
 
           if (key === RESOURCE_PEOPLE) {
             producingWord = 'Total'
-            consumingWord = 'Working'
+            consumingWord = 'Workplaces'
           }
 
           var str = buttonHumanTexts[key] +
