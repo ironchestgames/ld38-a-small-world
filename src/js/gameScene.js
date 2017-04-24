@@ -435,16 +435,20 @@ var updateNumbers = function () {
     var produced = getResourceProduced(resourceTextName)
     var consumed = getResourceConsumed(resourceTextName)
 
-    textObject.style.fill = '#000000'
-    if (produced - consumed > 0) {
-      textObject.style.fill = '#00aa00'
-    } else if (produced - consumed < 0) {
-      textObject.style.fill = '#dd0000'
-    }
 
-    textObject.text = ': ' +
-        produced + ' / ' +
-        consumed
+    if (resourceTextName === RESOURCE_PEOPLE) {
+      if (produced - consumed > 0) {
+        textObject.style.fill = '#00aa00'
+      } else if (produced - consumed < 0) {
+        textObject.style.fill = '#dd0000'
+      }
+      textObject.text = ':  ' +
+          produced + ' / ' +
+          consumed
+    } else {
+      textObject.style.fill = '#000000'
+      textObject.text = (produced === 0) ? ":  -" : ":  " + produced
+    }
   }
 }
 
