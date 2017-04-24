@@ -276,13 +276,17 @@ clickSound3.volume = 0.5
 var clickSound4 = new Audio('assets/sounds/click4.ogg')
 clickSound4.volume = 0.5
 
+var clickSound5 = new Audio('assets/sounds/click5.ogg')
+clickSound5.volume = 0.5
+
 var sounds = {
   'music_ambient': music_ambient,
   'music_ending': music_ending,
   'click1': clickSound1,
   'click2': clickSound2,
   'click3': clickSound3,
-  'click4': clickSound4
+  'click4': clickSound4,
+  'click5': clickSound5
 }
 
 var audioManager = {
@@ -737,7 +741,7 @@ var Tile = function (x, y, terrainType) {
   this.terrainSprite.on('click', function () {
     if (selectedBuildingButton) {
       if (this.isAvailableForSelectedBuilding) {
-        audioManager.playSound('click3')
+        audioManager.playSound('click5')
         this.changeBuilding(selectedBuildingButton)
         updateGame()
 
