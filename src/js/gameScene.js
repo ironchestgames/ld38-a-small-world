@@ -1171,7 +1171,7 @@ var gameScene = {
 
     new TweenLib.Tween({ alpha: 1 })
       .to({alpha: 0}, (skipInto) ? 1 : 600)
-      .delay((skipInto) ? 1 : 1600)
+      .delay((skipInto) ? 1 : 2600)
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function() {
         welcomeText.alpha = this.alpha;
@@ -1202,7 +1202,7 @@ var gameScene = {
 
     new TweenLib.Tween({ y: -500 })
       .to({y: 132}, (skipInto) ? 1 : 3300)
-      .delay((skipInto) ? 1 : 1200)
+      .delay((skipInto) ? 1 : 2200)
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function(y) {
         gameContainer.y = this.y;
@@ -1231,7 +1231,7 @@ var gameScene = {
 
     new TweenLib.Tween({ y: 38 - 700 })
       .to({y: 38}, (skipInto) ? 1 : 300)
-      .delay((skipInto) ? 1 : 3000)
+      .delay((skipInto) ? 1 : 4000)
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function() {
         buildingPanelContainer.y = this.y;
@@ -1253,7 +1253,7 @@ var gameScene = {
 
     var tween_resource_panel = new TweenLib.Tween({ y: 60 - 700 })
       .to({y: 60}, (skipInto) ? 1 : 300)
-      .delay((skipInto) ? 1 : 3000)
+      .delay((skipInto) ? 1 : 4000)
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function() {
         resourcePanelContainer.y = this.y;
