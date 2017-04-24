@@ -1,6 +1,6 @@
 # A Small World
 ## A small city builder/puzzle game about colonizing an asteroid
-### Made for Ludum Dare 38 in 72 hours
+### Made for [Ludum Dare 38](https://ldjam.com/) in 72 hours
 
 Play online in your browser here: [http://schweinstudios.se/a_small_world](http://schweinstudios.se/a_small_world)
 
