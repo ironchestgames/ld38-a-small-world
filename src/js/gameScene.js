@@ -1067,6 +1067,7 @@ var BuildingButton = function (buildingType, index) {
       setInformationBoxText(infoTexts[this.buildingType])
       updateBuildingButtons()
     } else {
+      deselectBuildingButton()
       audioManager.playSound('click_deselect_building')
       var buildingNeed = buildingNeeds[this.buildingType].filter(function (resource) {
         return resource !== RESOURCE_PEOPLE
