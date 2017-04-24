@@ -16,7 +16,7 @@ var howtoScene = {
 
     var str = '1  Place your buildings\n\n' +
         '2  Press\n\n' +
-        '3  Go to 1 and do better!\n\n\n\n\n' +
+        '3  Try again\n\n\n\n\n' +
         '        Click to begin'
 
     var text = new PIXI.Text(str, {
