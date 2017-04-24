@@ -259,10 +259,6 @@ music_ambient.addEventListener('ended', function() {
 
 var music_ending = new Audio('assets/sounds/music_ending.ogg')
 music_ending.volume = 0.3
-music_ending.addEventListener('ended', function() {
-    this.currentTime = 0
-    this.play();
-}, false);
 
 var clickSound1 = new Audio('assets/sounds/click_select_building.ogg')
 clickSound1.volume = 0.5
