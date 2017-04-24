@@ -165,6 +165,7 @@ var SCORE_FACTOR_METAL_WORKS_NEXT_TO_TREES = -0.7
 var SCORE_FACTOR_OVERWORKED_POPULATION = -0.75
 var SCORE_FACTOR_ICE_WITHOUT_COLLECTORS = -0.25
 var SCORE_FACTOR_ALL_WATER_IN_WATER_CHAIN = 0.5
+var SCORE_FACTOR_DOME_NOT_MAINTAINED = -0.5
 
 var FLARE_DOME_BUILT = 'FLARE_DOME_BUILT'
 var FLARE_TREES_NEXT_TO_LQ = 'FLARE_TREES_NEXT_TO_LQ'
@@ -174,6 +175,7 @@ var FLARE_TOO_BIG_LQ_CLUSTER = 'FLARE_TOO_BIG_LQ_CLUSTER'
 var FLARE_ICE_AND_DOME = 'FLARE_ICE_AND_DOME'
 var FLARE_METAL_WORKS_NEXT_TO_TREES = 'FLARE_METAL_WORKS_NEXT_TO_TREES'
 var FLARE_OVERWORKED_POPULATION = 'FLARE_OVERWORKED_POPULATION'
+var FLARE_DOME_NOT_MAINTAINED = 'FLARE_DOME_NOT_MAINTAINED'
 
 var resourceNames = {}
 resourceNames[TERRAIN_PLAIN] = 'tile_plain'
@@ -479,6 +481,13 @@ var countScore = function () {
     score.extra += SCORE_CONSTANT_DOME
     score.flares.push(FLARE_DOME_BUILT)
 
+    // DOME NOT MAINTAINED
+    var domeParts = getResourceProduced(RESOURCE_DOME)
+    if (domeParts === 0) {
+      score.flares.push(FLARE_DOME_NOT_MAINTAINED)
+      score.totalFactors.push(SCORE_FACTOR_DOME_NOT_MAINTAINED)
+    }
+
     // UNBUILT TERRAIN -> TREES
     var unbuiltTerrainCount = 0
     for (var i = 0; i < tiles.length; i++) {
@@ -658,7 +667,7 @@ var Tile = function (x, y, terrainType) {
     } else {
       var str = infoTexts[this.terrainType]
       if (this.buildingType && this.buildingType !== BUILDING_HQ) {
-        str = infoTexts[this.buildingType] + ', ' + str
+        str = infoTexts[this.buildingType] + '\n(terrain: ' + str + ')'
       }
       setInformationBoxText(str)
     }
@@ -1439,6 +1448,24 @@ var gameScene = {
         var flare_disaster = new PIXI.Sprite(PIXI.loader.resources["flare_disaster"].texture)
         flare_disaster.y = 2
         var textObject = new PIXI.Text("The Space Worker Union shuts you down because\nyour population is overworked", { fontSize: flareFontSize })
+        textObject.x = 44
+        container.addChild(flare_disaster)
+        container.addChild(textObject)
+
+        container.x = flare_x
+        container.y = flare_y
+
+        this.resultContainer.addChild(container)
+
+        flare_y += flareOffsetYDoubleLine
+      }
+
+      if (flare === FLARE_DOME_NOT_MAINTAINED) {
+        foundNegative = true
+        var container = new PIXI.Container()
+        var flare_disaster = new PIXI.Sprite(PIXI.loader.resources["flare_disaster"].texture)
+        flare_disaster.y = 2
+        var textObject = new PIXI.Text("The resource chain for maintaining the dome is broken,\ncracks and rust weakens the dome until the inevitable collapse", { fontSize: flareFontSize })
         textObject.x = 44
         container.addChild(flare_disaster)
         container.addChild(textObject)
