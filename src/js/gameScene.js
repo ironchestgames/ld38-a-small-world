@@ -154,6 +154,7 @@ resourceScoreFactors[RESOURCE_SAND] = 2
 resourceScoreFactors[RESOURCE_GLASS] = 1
 resourceScoreFactors[RESOURCE_METAL] = 3
 resourceScoreFactors[RESOURCE_WATER] = 10
+resourceScoreFactors[RESOURCE_DOME] = 9
 
 var SCORE_CONSTANT_DOME = 50
 var SCORE_CONSTANT_UNBUILT_TERRAIN = 12
@@ -470,6 +471,7 @@ var countScore = function () {
   score[RESOURCE_WATER] = getResourceTallyHo(RESOURCE_WATER)
   score[RESOURCE_METAL] = getResourceTallyHo(RESOURCE_METAL)
   score[RESOURCE_GLASS] = getResourceTallyHo(RESOURCE_GLASS)
+  score[RESOURCE_DOME] = getResourceTallyHo(RESOURCE_DOME)
 
   // DOME BUILT
   if (findBuildingByType(BUILDING_DOME)) {
@@ -1274,17 +1276,18 @@ var gameScene = {
 
     var resourcesColumn1 = [
       RESOURCE_PEOPLE,
+      RESOURCE_HEAT,
       RESOURCE_WATER,
-      RESOURCE_METAL
+      RESOURCE_DOME,
     ]
     var resourcesColumn2 = [
+      RESOURCE_METAL,
       RESOURCE_GLASS,
       RESOURCE_SAND,
-      RESOURCE_HEAT
     ]
 
     var generateColumn = function (columnData, x) {
-      var yOffset = 0
+      var yOffset = -6
 
       for (var i = 0; i < columnData.length; i++) {
         var resource = columnData[i]
