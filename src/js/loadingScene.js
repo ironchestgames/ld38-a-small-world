@@ -33,6 +33,7 @@ var loadingScene = {
     .add('base_resources_panel', 'assets/images/base_resources_panel.png')
     .add('building_button', 'assets/images/building_button.png')
     .add('colonize_button', 'assets/images/colonize_button.png')
+    .add('restart_button', 'assets/images/restart_button.png')
     .add('building_panel', 'assets/images/building_panel.png')
     .add('heat_generator', 'assets/images/heat_generator.png')
     .add('hq', 'assets/images/hq.png')

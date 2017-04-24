@@ -1453,14 +1453,10 @@ var gameScene = {
     end_panel.interactive = true
     this.resultContainer.addChild(end_panel)
 
-    var tryAgainText = new PIXI.Text('Try again', {
-      fontSize: 36,
-      fill: global.menuColor,
-    })
-    tryAgainText.x = 600
-    tryAgainText.y = 8
-
-    this.resultContainer.addChild(tryAgainText)
+    var restart_button = new PIXI.Sprite(PIXI.loader.resources["restart_button"].texture)
+    restart_button.x = 627
+    restart_button.y = 3
+    this.resultContainer.addChild(restart_button)
 
     var resourcesColumn1 = [
       RESOURCE_PEOPLE,
