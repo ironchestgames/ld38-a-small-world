@@ -170,6 +170,7 @@ var SCORE_FACTOR_DOME_NOT_MAINTAINED = -0.5
 var FLARE_DOME_BUILT = 'FLARE_DOME_BUILT'
 var FLARE_TREES_NEXT_TO_LQ = 'FLARE_TREES_NEXT_TO_LQ'
 var FLARE_ALL_WATER_IN_WATER_CHAIN = 'FLARE_ALL_WATER_IN_WATER_CHAIN'
+var FLARE_FOREST_IS_GOOD = 'FLARE_FOREST_IS_GOOD'
 
 var FLARE_TOO_BIG_LQ_CLUSTER = 'FLARE_TOO_BIG_LQ_CLUSTER'
 var FLARE_ICE_AND_DOME = 'FLARE_ICE_AND_DOME'
@@ -502,7 +503,10 @@ var countScore = function () {
         unbuiltTerrainCount++
       }
     }
-    score.extra += unbuiltTerrainCount * SCORE_CONSTANT_UNBUILT_TERRAIN
+    if (unbuiltTerrainCount > 0) {
+      score.flares.push(FLARE_FOREST_IS_GOOD)
+      score.extra += unbuiltTerrainCount * SCORE_CONSTANT_UNBUILT_TERRAIN
+    }
 
     // TREES NEXT TO LQs
     var isFound = false
@@ -1416,6 +1420,24 @@ var gameScene = {
         var flare_super = new PIXI.Sprite(PIXI.loader.resources["flare_super"].texture)
         flare_super.y = 2
         var textObject = new PIXI.Text("Water system is perfectly tuned", { fontSize: flareFontSize })
+        textObject.x = 44
+        container.addChild(flare_super)
+        container.addChild(textObject)
+
+        container.x = flare_x
+        container.y = flare_y
+
+        this.resultContainer.addChild(container)
+
+        flare_y += flareOffsetYSingleLine
+      }
+
+      if (flare === FLARE_FOREST_IS_GOOD) {
+        foundPositive = true
+        var container = new PIXI.Container()
+        var flare_super = new PIXI.Sprite(PIXI.loader.resources["flare_super"].texture)
+        flare_super.y = 2
+        var textObject = new PIXI.Text("Having healthy forests is vital to self-sustainability", { fontSize: flareFontSize })
         textObject.x = 44
         container.addChild(flare_super)
         container.addChild(textObject)
