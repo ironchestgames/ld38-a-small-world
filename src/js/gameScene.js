@@ -1230,10 +1230,18 @@ var gameScene = {
 
       container.interactive = true
       var closure = function (key) { // </3
-        container.on('click', function (event) {
+        container.on('click', function () {
+          var producingWord = 'Producing'
+          var consumingWord = 'Consuming'
+
+          if (key === RESOURCE_PEOPLE) {
+            producingWord = 'Total'
+            consumingWord = 'Working'
+          }
+
           var str = buttonHumanTexts[key] +
-              '\n\nProducing: ' + getResourceProduced(key) +
-              '\nConsuming: ' + getResourceConsumed(key)
+              '\n\n' + producingWord + ': ' + getResourceProduced(key) +
+              '\n' + consumingWord + ': ' + getResourceConsumed(key)
 
           setInformationBoxText(str)
         })
