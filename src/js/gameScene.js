@@ -1073,7 +1073,7 @@ var gameScene = {
     var region = (Math.random() < 0.5) ? 'PO' : 'KG';
     var welcomeText = new PIXI.Text('Welcome to asteroid\n' + region + '-56-AX-' + Math.round(Math.random() * 10032), {
       fontSize: 48,
-      fill: '#ffffff',
+      fill: global.menuColor,
       align: 'center',
     })
     welcomeText.x = 190
@@ -1326,6 +1326,15 @@ var gameScene = {
     }.bind(this))
     end_panel.interactive = true
     this.resultContainer.addChild(end_panel)
+
+    var tryAgainText = new PIXI.Text('Try again', {
+      fontSize: 36,
+      fill: global.menuColor,
+    })
+    tryAgainText.x = 600
+    tryAgainText.y = 8
+
+    this.resultContainer.addChild(tryAgainText)
 
     var resourcesColumn1 = [
       RESOURCE_PEOPLE,
