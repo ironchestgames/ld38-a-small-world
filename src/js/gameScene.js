@@ -1159,10 +1159,6 @@ var gameScene = {
 
     this.resourcePanelContainer.addChild(baseResourcesPanelBackground)
     this.resourcePanelContainer.addChild(resourcePanelTitle)
-    this.resourcePanelContainer.interactive = true
-    this.resourcePanelContainer.on('click', function () {
-      setInformationBoxText('COLONY RESOURCES\nNumbers in green - surplus (might give bonus)\nNumbers in red - deficit (might give penalty)')
-    })
 
     this.informationBoxContainer = new PIXI.Container()
     this.informationBoxText = new PIXI.Text('', {
@@ -1231,6 +1227,18 @@ var gameScene = {
 
       container.y = yOffset
       yOffset += 20
+
+      container.interactive = true
+      var closure = function (key) { // </3
+        container.on('click', function (event) {
+          var str = buttonHumanTexts[key] +
+              '\n\nProducing: ' + getResourceProduced(key) +
+              '\nConsuming: ' + getResourceConsumed(key)
+
+          setInformationBoxText(str)
+        })
+      }
+      closure(resourceTextName)
 
       this.resourcePanelContainer.addChild(container)
 
