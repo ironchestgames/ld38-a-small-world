@@ -269,9 +269,6 @@ clickSound2.volume = 0.5
 var clickSound3 = new Audio('assets/sounds/click_deselect_all.ogg')
 clickSound3.volume = 0.5
 
-var clickSound4 = new Audio('assets/sounds/colonize.ogg')
-clickSound4.volume = 0.5
-
 var clickSound5 = new Audio('assets/sounds/build.ogg')
 clickSound5.volume = 0.5
 
@@ -281,7 +278,6 @@ var sounds = {
   'click_select_building': clickSound1,
   'click_deselect_building': clickSound2,
   'click_deselect_all': clickSound3,
-  'colonize': clickSound4,
   'build': clickSound5
 }
 
@@ -1305,7 +1301,6 @@ var gameScene = {
     terraformButton.interactive = true
     terraformButton.visible = false
     terraformButton.on('click', function () {
-      audioManager.playSound('colonize')
       audioManager.playMusic('music_ending')
       terraformButton.visible = false
       this.transitionToResultScreen()
