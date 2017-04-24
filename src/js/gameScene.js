@@ -238,6 +238,7 @@ resourceTexts[RESOURCE_DOME] = null
 var deselectBuildingButton = function () {
   selectedBuildingButton = null
   updateTileMarkers()
+  updateBuildingButtons()
 }
 
 var buildingHasAllRequiredResources = function(tile) {
@@ -348,6 +349,11 @@ var updateTiles = function () {
 
 var updateBuildingButtons = function () {
   for (var buildingType in buildingButtons) {
+    if (selectedBuildingButton === buildingType) {
+      buildingButtons[buildingType].setSelected(true)  
+    } else {
+      buildingButtons[buildingType].setSelected(false)
+    }
     var buildingButton = buildingButtons[buildingType]
     buildingButton.setActive(true)
     var myBuildingNeeds = buildingNeeds[buildingButton.buildingType]
@@ -960,6 +966,7 @@ var BuildingButton = function (buildingType, index) {
 
       updateTileMarkers()
       setInformationBoxText(infoTexts[this.buildingType])
+      updateBuildingButtons()
     } else {
       var buildingNeed = buildingNeeds[this.buildingType].filter(function (resource) {
         return resource !== RESOURCE_PEOPLE
@@ -1009,7 +1016,17 @@ var BuildingButton = function (buildingType, index) {
     this.container.addChild(this.producesName)
   }
 
+  this.buildingSelectedFrame = new PIXI.Sprite(PIXI.loader.resources['button_hover'].texture)
+  this.buildingSelectedFrame.x = -2
+  this.buildingSelectedFrame.y = -2
+  this.buildingSelectedFrame.visible = false
+  this.container.addChild(this.buildingSelectedFrame)
+
   this.container.y = index * 47
+}
+
+BuildingButton.prototype.setSelected = function(mode) {
+  this.buildingSelectedFrame.visible = !!mode
 }
 
 BuildingButton.prototype.setActive = function (activeness) {
@@ -1065,6 +1082,7 @@ var gameScene = {
       selectedBuildingButton = null
       updateTileMarkers()
       setInformationBoxText('')
+      updateBuildingButtons()
     })
     this.container.addChild(backgroundImage)
 
@@ -1223,6 +1241,7 @@ var gameScene = {
 
     selectedBuildingButton = null
     setInformationBoxText('')
+    updateBuildingButtons()
   },
   transitionToResultScreen: function() {
     var _gameContainer = this.gameContainer
