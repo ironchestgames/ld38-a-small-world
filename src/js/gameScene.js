@@ -169,7 +169,7 @@ resourceScoreFactors[RESOURCE_WATER] = 10
 resourceScoreFactors[RESOURCE_DOME] = 9
 
 var SCORE_CONSTANT_DOME = 50
-var SCORE_CONSTANT_UNBUILT_TERRAIN = 19
+var SCORE_CONSTANT_UNBUILT_TERRAIN = 12
 
 var SCORE_FACTOR_TOO_BIG_LQ_CLUSTER = -0.65
 var SCORE_FACTOR_TREES_NEXT_TO_LQ = 0.05
@@ -269,9 +269,6 @@ clickSound2.volume = 0.5
 var clickSound3 = new Audio('assets/sounds/click_deselect_all.ogg')
 clickSound3.volume = 0.5
 
-var clickSound4 = new Audio('assets/sounds/colonize.ogg')
-clickSound4.volume = 0.5
-
 var clickSound5 = new Audio('assets/sounds/build.ogg')
 clickSound5.volume = 0.5
 
@@ -281,7 +278,6 @@ var sounds = {
   'click_select_building': clickSound1,
   'click_deselect_building': clickSound2,
   'click_deselect_all': clickSound3,
-  'colonize': clickSound4,
   'build': clickSound5
 }
 
@@ -449,7 +445,7 @@ var updateNumbers = function () {
 
 
     if (resourceTextName === RESOURCE_PEOPLE) {
-      if (produced - consumed > 0) {
+      if (produced - consumed >= 0) {
         textObject.style.fill = '#00aa00'
       } else if (produced - consumed < 0) {
         textObject.style.fill = '#dd0000'
@@ -1255,7 +1251,7 @@ var gameScene = {
     this.resourcePanelContainer = resourcePanelContainer;
     var baseResourcesPanelBackground = new PIXI.Sprite(PIXI.loader.resources['base_resources_panel'].texture)
     this.resourcePanelContainer.x = 10
-    this.resourcePanelContainer.y = 68 - 700
+    this.resourcePanelContainer.y = 90 - 700
 
     var resourcePanelTitle = new PIXI.Text('Resources', {
       fontSize: 12,
@@ -1273,8 +1269,8 @@ var gameScene = {
     resourcePanelExplanation.x = 6
     resourcePanelExplanation.y = 204
 
-    var tween_resource_panel = new TweenLib.Tween({ y: 68 - 700 })
-      .to({y: 68}, (skipInto) ? 1 : 300)
+    var tween_resource_panel = new TweenLib.Tween({ y: 90 - 700 })
+      .to({y: 90}, (skipInto) ? 1 : 300)
       .delay((skipInto) ? 1 : 4000)
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function() {
@@ -1301,11 +1297,10 @@ var gameScene = {
 
     var terraformButton = new PIXI.Sprite(PIXI.loader.resources['colonize_button'].texture)
     terraformButton.x = 10
-    terraformButton.y = 10
+    terraformButton.y = 37
     terraformButton.interactive = true
     terraformButton.visible = false
     terraformButton.on('click', function () {
-      audioManager.playSound('colonize')
       audioManager.playMusic('music_ending')
       terraformButton.visible = false
       this.transitionToResultScreen()
