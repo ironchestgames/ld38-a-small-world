@@ -1251,7 +1251,7 @@ var gameScene = {
     this.resourcePanelContainer = resourcePanelContainer;
     var baseResourcesPanelBackground = new PIXI.Sprite(PIXI.loader.resources['base_resources_panel'].texture)
     this.resourcePanelContainer.x = 10
-    this.resourcePanelContainer.y = 68 - 700
+    this.resourcePanelContainer.y = 90 - 700
 
     var resourcePanelTitle = new PIXI.Text('Resources', {
       fontSize: 12,
@@ -1269,8 +1269,8 @@ var gameScene = {
     resourcePanelExplanation.x = 6
     resourcePanelExplanation.y = 204
 
-    var tween_resource_panel = new TweenLib.Tween({ y: 68 - 700 })
-      .to({y: 68}, (skipInto) ? 1 : 300)
+    var tween_resource_panel = new TweenLib.Tween({ y: 90 - 700 })
+      .to({y: 90}, (skipInto) ? 1 : 300)
       .delay((skipInto) ? 1 : 4000)
       .easing(TweenLib.Easing.Quartic.Out)
       .onUpdate(function() {
@@ -1297,7 +1297,7 @@ var gameScene = {
 
     var terraformButton = new PIXI.Sprite(PIXI.loader.resources['colonize_button'].texture)
     terraformButton.x = 10
-    terraformButton.y = 10
+    terraformButton.y = 37
     terraformButton.interactive = true
     terraformButton.visible = false
     terraformButton.on('click', function () {
