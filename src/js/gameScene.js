@@ -1235,7 +1235,7 @@ var gameScene = {
 
     var buildingPanelContainer = new PIXI.Container()
     this.buildingPanelContainer = buildingPanelContainer;
-    this.buildingPanelContainer.x = 656
+    this.buildingPanelContainer.x = 640
     this.buildingPanelContainer.y = 38 - 700
 
     new TweenLib.Tween({ y: 38 - 700 })
@@ -1308,8 +1308,8 @@ var gameScene = {
 
     var muteSprite = new PIXI.Sprite(PIXI.loader.resources['speaker'].texture)
     muteSprite.interactive = true
-    muteSprite.x = 770
-    muteSprite.y = 5
+    muteSprite.x = 774
+    muteSprite.y = 14
     muteSprite.alpha = (audioManager.muted) ? 0.3 : 1
     muteSprite.on('click', function () {
       audioManager.toggle()
