@@ -1,3 +1,8 @@
-# HTML5 PixiJS game template
+#A Small World
+##A small city builder/puzzle game about colonizing an asteroid
+###Made for Ludum Dare 38 in 72 hours
 
-I made this only for myself. Please comment if you find it useful.
+Created by:
+* Fredrik Järnbröst - Programming
+* Joel J Lydberg - Graphic Design
+* Erik Larsson - Game Design, Programming
