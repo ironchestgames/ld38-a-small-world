@@ -68,6 +68,7 @@ var loadingScene = {
     .add('helpicon_check', 'assets/images/helpicon_check.png')
 
     .add('arrow', 'assets/images/arrow.png')
+    .add('star', 'assets/images/star.png')
 
     .load(function () {
       this.changeScene(localStorage.scene || 'gameScene', sceneParams)
