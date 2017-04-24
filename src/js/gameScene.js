@@ -450,7 +450,7 @@ var updateNumbers = function () {
       } else if (produced - consumed < 0) {
         textObject.style.fill = '#dd0000'
       }
-      textObject.text = ':  ' +
+      textObject.text = ': ' +
           produced + ' / ' +
           consumed
     } else {
