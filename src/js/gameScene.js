@@ -992,6 +992,12 @@ var BuildingButton = function (buildingType, index) {
   }.bind(this))
   this.container.addChild(button)
 
+  this.buildingSelectedFrame = new PIXI.Sprite(PIXI.loader.resources['button_hover'].texture)
+  this.buildingSelectedFrame.x = -2
+  this.buildingSelectedFrame.y = -2
+  this.buildingSelectedFrame.visible = false
+  this.container.addChild(this.buildingSelectedFrame)
+
   var buildingSprite = new PIXI.Sprite(PIXI.loader.resources[buildingResourceName].texture)
   buildingSprite.width = 32
   buildingSprite.height = 32
@@ -1024,12 +1030,6 @@ var BuildingButton = function (buildingType, index) {
     this.producesName.y = 26
     this.container.addChild(this.producesName)
   }
-
-  this.buildingSelectedFrame = new PIXI.Sprite(PIXI.loader.resources['button_hover'].texture)
-  this.buildingSelectedFrame.x = -2
-  this.buildingSelectedFrame.y = -2
-  this.buildingSelectedFrame.visible = false
-  this.container.addChild(this.buildingSelectedFrame)
 
   this.container.y = index * 47
 }
