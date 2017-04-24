@@ -89,24 +89,24 @@ buildingTerrainPermissions[BUILDING_SAND_TO_GLASS] = [TERRAIN_PLAIN, TERRAIN_SAN
 buildingTerrainPermissions[BUILDING_DOME] = [TERRAIN_DOME]
 
 var infoTexts = {}
-infoTexts[BUILDING_HEAT_GENERATOR] = 'Heat Generator\nProvides heat'
-infoTexts[BUILDING_MINING] = 'Ore Mine\nProvides ore from ore tiles'
-infoTexts[BUILDING_QUARRY] = 'Quarry\nProvides sand from sand tiles'
-infoTexts[BUILDING_HQ] = 'Base HQ\nProvides a starting population\nCan not be removed'
-infoTexts[BUILDING_ICE_COLLECTOR] = 'Ice Collector\nProvides ice from ice tiles'
-infoTexts[BUILDING_LIVING_QUARTERS] = 'Living Quarters\nProvides 4 people'
+infoTexts[BUILDING_HEAT_GENERATOR] = 'HEAT GENERATOR\nProvides heat'
+infoTexts[BUILDING_MINING] = 'ORE MINE\nProvides ore from ore tiles'
+infoTexts[BUILDING_QUARRY] = 'QUARRY\nProvides sand from sand tiles'
+infoTexts[BUILDING_HQ] = 'BASE HQ\nProvides a starting population\nCan not be removed'
+infoTexts[BUILDING_ICE_COLLECTOR] = 'ICE COLLECTOR\nProvides ice from ice tiles'
+infoTexts[BUILDING_LIVING_QUARTERS] = 'LIVING QUARTERS\nProvides 4 people'
 
 //Resource converters
-infoTexts[BUILDING_METAL_AND_GLASS_TO_DOME] = 'Dome Maintenance Facility\nUses metal and glass to construct and maintain the dome'
-infoTexts[BUILDING_ICE_AND_HEAT_TO_WATER] = 'Water Plant\nUses ice and heat to provide and control water levels on the asteroid'
-infoTexts[BUILDING_ORE_TO_METAL] = 'Metal Works\nUses ore to provide metal'
-infoTexts[BUILDING_SAND_TO_GLASS] = 'Glass Works\nUses sand to provide glass'
-infoTexts[BUILDING_DOME] = 'Dome\nHolds atmosphere'
+infoTexts[BUILDING_METAL_AND_GLASS_TO_DOME] = 'DOME MAINTENANCE FACILITY\nUses metal and glass to construct and maintain the dome'
+infoTexts[BUILDING_ICE_AND_HEAT_TO_WATER] = 'WATER PLANT\nUses ice and heat to provide and control water levels on the asteroid'
+infoTexts[BUILDING_ORE_TO_METAL] = 'METAL WORKS\nUses ore to provide metal'
+infoTexts[BUILDING_SAND_TO_GLASS] = 'GLASS WORKS\nUses sand to provide glass'
+infoTexts[BUILDING_DOME] = 'DOME\nHolds atmosphere'
 
 infoTexts[TERRAIN_PLAIN] = '(No resource)'
-infoTexts[TERRAIN_SAND] = 'Sand'
-infoTexts[TERRAIN_ICE] = 'Ice'
-infoTexts[TERRAIN_ORE] = 'Ore'
+infoTexts[TERRAIN_SAND] = 'SAND'
+infoTexts[TERRAIN_ICE] = 'ICE'
+infoTexts[TERRAIN_ORE] = 'ORE'
 infoTexts[TERRAIN_DOME] = '(Dome placement)'
 
 var buttonHumanTexts = {}
