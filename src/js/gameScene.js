@@ -26,6 +26,18 @@ var RESOURCE_METAL = 'RESOURCE_METAL'
 var RESOURCE_WATER = 'RESOURCE_WATER'
 var RESOURCE_DOME = 'RESOURCE_DOME'
 
+var allResources = {
+  RESOURCE_PEOPLE: RESOURCE_PEOPLE,
+  RESOURCE_HEAT: RESOURCE_HEAT,
+  RESOURCE_ORE: RESOURCE_ORE,
+  RESOURCE_SAND: RESOURCE_SAND,
+  RESOURCE_ICE: RESOURCE_ICE,
+  RESOURCE_GLASS: RESOURCE_GLASS,
+  RESOURCE_METAL: RESOURCE_METAL,
+  RESOURCE_WATER: RESOURCE_WATER,
+  RESOURCE_DOME: RESOURCE_DOME
+}
+
 //Base buildings
 var BUILDING_HEAT_GENERATOR = 'BUILDING_HEAT_GENERATOR'
 var BUILDING_MINING = 'BUILDING_MINING'
@@ -915,6 +927,12 @@ Tile.prototype.changeBuilding = function (buildingType) {
   this.buildingContainer.removeChildren()
   this.buildingContainer.addChild(buildingSprite)
 
+  for (var resource in allResources) {
+    if (isTileProducingResource(this, resource)) {
+      gameScene.showFloat(resource, this)
+    }
+  }
+  
   if (buildingType === BUILDING_DOME) {
     buildingSprite.x = -271
     buildingSprite.y = 43
@@ -1127,8 +1145,11 @@ var gameScene = {
     this.asteroidSprite.x = 128 - 182
     this.asteroidSprite.y = 104 - 132
 
+    this.floatContainer = new PIXI.Container()
+
     this.gameContainer.addChild(this.asteroidSprite)
     this.gameContainer.addChild(this.tileContainer)
+    this.gameContainer.addChild(this.floatContainer)
 
     var buildingPanelContainer = new PIXI.Container()
     this.buildingPanelContainer = buildingPanelContainer;
@@ -1622,6 +1643,43 @@ var gameScene = {
       if (particle.y > 600)
         particle.y = 0
     })
+  },
+  showFloat: function(resource, tile) {
+    if (tile.buildingType && tile.buildingType === BUILDING_HQ) return
+    this.floatContainer.removeChildren()
+
+    var floaterContainer = new PIXI.Container()
+    floaterContainer.x = tile.x * 64
+    floaterContainer.y = tile.y * 64
+
+    var test = new PIXI.Text('Base gains resource', { fontSize: 14, fill: '#ffffff',
+      dropShadow: true,
+      dropShadowBlur: 0,
+      dropShadowColor: '#000000',
+      dropShadowAngle: Math.PI / 6,
+      dropShadowDistance: 2,
+    })
+    test.x = 0
+    test.y = 0
+    floaterContainer.addChild(test)
+
+    var resourceIcon = new PIXI.Sprite(PIXI.loader.resources[resource.toLowerCase()].texture)
+    resourceIcon.x = 135
+    resourceIcon.y = 2
+    floaterContainer.addChild(resourceIcon)
+
+    new TweenLib.Tween({ y: tile.y * 64 })
+      .to({ y: (tile.y * 64) - 40 }, 2600)
+      .easing(TweenLib.Easing.Quartic.Out)
+      .onUpdate(function() {
+        floaterContainer.y = this.y
+      })
+      .onComplete(function() {
+        floaterContainer.visible = false
+      })
+      .start()
+
+    this.floatContainer.addChild(floaterContainer)
   },
   destroy: function () {
     this.container.destroy()
