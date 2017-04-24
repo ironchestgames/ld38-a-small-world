@@ -7,6 +7,7 @@ var windowLoad = require('window-load')
 var screenOrientation = require('screen-orientation')
 var ob = require('obscen')
 var loadingScene = require('./loadingScene')
+var howtoScene = require('./howtoScene')
 var gameScene = require('./gameScene')
 
 var fpsText
@@ -17,6 +18,8 @@ var PORTRAIT = 'portrait'
 var wantedScreenOrientation = LANDSCAPE
 var isGameShowing = false
 var timestep = 1000 / 30
+
+global.menuColor = '#4FD193'
 
 var setUpGameRenderer = function () {
 
@@ -60,6 +63,7 @@ windowLoad(function () {
 
   sceneManager.setScenes([
     loadingScene,
+    howtoScene,
     gameScene,
     ])
 

@@ -70,7 +70,7 @@ var loadingScene = {
     .add('arrow', 'assets/images/arrow.png')
 
     .load(function () {
-      this.changeScene(localStorage.scene || 'gameScene', sceneParams)
+      this.changeScene('howtoScene', sceneParams)
     }.bind(this))
   },
   destroy: function () {
