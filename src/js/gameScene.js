@@ -1774,7 +1774,9 @@ var gameScene = {
     floaterContainer.x = (tile.x * 64) + 30
     floaterContainer.y = tile.y * 64
 
-    var test = new PIXI.Text('+1', { fontSize: 14, fill: '#ffffff',
+    var text = (tile.buildingType === BUILDING_LIVING_QUARTERS) ? "+4" : "+1"
+    
+    var test = new PIXI.Text(text, { fontSize: 14, fill: '#ffffff',
       dropShadow: true,
       dropShadowBlur: 0,
       dropShadowColor: '#000000',
