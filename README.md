@@ -12,7 +12,7 @@ To run the code locally, install [node](https://nodejs.org/), clone the repo and
 
 ...and point your browser to [http://localhost:1234](http://localhost:1234)
 
-Made with [Pixi.js](www.pixijs.com)
+Made with [Pixi.js](http://www.pixijs.com)
 
 Created by:
 * Fredrik Järnbröst - Programming
